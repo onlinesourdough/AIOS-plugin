@@ -21,16 +21,13 @@ template seed may be converted. On failure preserve its reported recovery state.
 Re-enter the final root after transfer and inspect generated instructions,
 identity, source provenance and expected fresh Git history and remotes.
 
-For software projects, continue from accepted context using the shared
-[foundation content contract](../../aios-project-foundation/references/foundation.md)
-and [document contract](../../aios-project-foundation/references/documents.md).
 The template supplies a neutral seed, not a working application or verified
 deployment. Populate applicable sources from real facts and implementation;
 preserve unresolved decisions until settled. Keep template attribution separate
-from the product's licensing decision. Other project types need only their
+from the product's licensing decision. Each project type needs only its
 applicable authoring, validation and delivery responsibilities.
 
-Use [Project Foundation](../../aios-project-foundation/SKILL.md) when the accepted
-result includes establishing or repairing engineering foundations. The new
-project owns its files and future maintenance; template provenance is history,
-not a runtime dependency or an instruction to refresh existing projects.
+When the accepted result also needs a substantial engineering foundation, use a
+separately selected method such as Factory Foundation, or report the gap.
+The new project owns its files and future maintenance; template provenance is
+history, not a runtime dependency or an instruction to refresh existing projects.

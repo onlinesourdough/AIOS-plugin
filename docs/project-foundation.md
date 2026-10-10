@@ -1,5 +1,24 @@
 # Project Foundation
 
+## 0.28.0: retired in favor of Factory Foundation
+
+AIOS 0.28.0 removes the `aios-project-foundation` skill, its references and its
+native entrypoint. Engineering preparation of a new or existing software
+project now uses the separately usable
+[Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation)
+skill from [Factory](https://github.com/arcitai/factory). It can be used
+directly in Codex or Claude; T3 Code is not required for that preparation.
+AIOS has no runtime dependency on Factory, does not install it and does not
+copy its content.
+
+Create Project still starts content, research, business and software workspaces,
+with Git optional. Small coding work stays direct with Write Code and the
+shared Spec, Build and Review. When accepted work needs a substantial
+engineering foundation and no such method is selected, AIOS reports the gap.
+Immutable `v0.27.0` retains the removed source for recovery. The sections below
+are historical records of earlier releases; their links and claims describe
+those versions, not the current package.
+
 ## 0.17.0: workspace setup and engineering readiness
 
 Create Project now establishes useful context and a simple workspace for

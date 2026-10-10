@@ -1,5 +1,8 @@
 # Project creation: 0.17.0
 
+Historical record. AIOS 0.28.0 later retired Project Foundation; see the
+[current note](project-foundation.md#0280-retired-in-favor-of-factory-foundation).
+
 Baseline: `v0.16.0` / `082cfe3a9168c06526f9c53f309687a92f3a551b`.
 
 ## Accepted boundary

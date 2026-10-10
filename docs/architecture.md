@@ -13,7 +13,7 @@ task; AIOS has no model runner, background service or permission system.
 | Skills | Reusable methods, standards and judgment, with references and small helpers as needed |
 | Project workspace | Local requirements, working files, outputs, proof and recovery; Git is selected when useful |
 | Optional System | A separately maintained specialist with its own dependencies or operational needs |
-| Native manifests | Package identity and discovery over the same 26 skills |
+| Native manifests | Package identity and discovery over the same 25 skills |
 | Codex sidebar | A host-managed local MCP App for numbered source setup and a dashboard; stores private navigation names/links, with no company-content copy or chat handoff |
 
 ## Work and methods
@@ -46,14 +46,18 @@ such as Power BI and its Windows Desktop workflow. Its repository owns its
 requirements, dependencies, proof and recovery. A script or a long skill alone
 does not require a System. Create Project establishes the appropriate workspace
 and context. A selected repository template is an optional seed; it does not add
-a second project identity or copy AIOS phases. Project Foundation owns software
-engineering readiness, including repairs to existing projects. Create System is
-retired; reusable methods use Manage Skills.
+a second project identity or copy AIOS phases. Create System is retired;
+reusable methods use Manage Skills. Project Foundation was retired in 0.28.0;
+substantial software engineering foundations use a separately selected method,
+such as [Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation),
+or the gap is reported. AIOS ships no replacement engineering contract.
 
-Software & Defence Factory is a separate work environment and method. The
-operator may use it with an AIOS-assisted project under the project's accepted
-scope. This is not an AIOS runtime integration, shared credential store or
-automatic software handoff. The selected execution environment owns its controls.
+[Factory](https://github.com/arcitai/factory) is a separate package of
+Foundation, AgentOps and ADLC methods for T3 Code and native coding agents.
+The operator may use it with an AIOS-assisted project under the project's
+accepted scope. Neither package depends on or installs the other; there is no
+runtime integration, shared credential store or automatic software handoff. The
+selected execution environment owns its controls.
 
 ## Context and isolation
 

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.28.0 — 2026-10-10
+
+- Retire the Project Foundation skill (`aios-project-foundation`). To prepare a
+  new or existing software project for reliable engineering, use the separately
+  usable [Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation)
+  skill directly in Codex or Claude; T3 Code is not required. AIOS does not
+  install it, depend on it or copy its content. Update any explicit callers of
+  the old name. AIOS now ships 25 skills.
+- Keep Create Project for content, research, business and software workspaces,
+  with Git optional, and keep small coding work direct with Write Code. When a
+  substantial engineering foundation is needed and no such method is selected,
+  AIOS reports the gap. Create Project 4.0.0 no longer applies a bundled
+  engineering contract to software seeds; AIOS 2.6.2 and Write Code 1.1.1
+  update their routes.
+- Refer to [Factory](https://github.com/arcitai/factory) by its current name
+  and explain its relationship to AIOS: Factory provides Foundation, AgentOps
+  and ADLC methods for T3 Code and native coding agents, and neither package
+  depends on or installs the other. The sidebar is unchanged apart from its
+  version.
+
 ## 0.27.0 — 2026-10-10
 
 - Add a chat-bubble button beside Settings, in setup and on the dashboard, that
