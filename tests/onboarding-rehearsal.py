@@ -115,9 +115,10 @@ def native_check():
         require(setup and setup["enabled"] and
                 Path(setup["path"]) == ROOT / "skills/aios-setup/SKILL.md",
                 "Codex did not expose the selected Setup entry; check plugin enablement")
-        require(len(detail["skills"]) == 26 and detail["mcpServers"] == ["aios"] and not detail["hooks"],
+        expected_skills = len(list((ROOT / "skills").glob("*/SKILL.md")))
+        require(len(detail["skills"]) == expected_skills and detail["mcpServers"] == ["aios"] and not detail["hooks"],
                 "Unexpected native inventory")
-        print("PASS: Codex recognizes separate providers, Setup, 26 skills and the declared AIOS sidebar server; no hooks")
+        print(f"PASS: Codex recognizes separate providers, Setup, {expected_skills} skills and the declared AIOS sidebar server; no hooks")
     finally:
         selector.close()
         process.terminate()

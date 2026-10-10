@@ -1,5 +1,17 @@
 # Verification
 
+For AIOS 0.28.0, the [Foundation migration](project-foundation.md) retires one
+entrypoint and reconciles the current documentation, routing and native package
+metadata. The candidate passes the seven maintained Python checks, locked Node 22
+build, 83 sidebar tests and bundled smoke. Native installed discovery is a
+separate adoption check; an uninstalled package has no enabled Setup entry.
+Two fresh T3/Claude 2.1.295 probes did not observe automatic project instructions,
+with or without a one-line `CLAUDE.md` import. That pointer was not shipped as a
+fix. The pilot explicitly reads canonical `AGENTS.md`; automatic loading on that
+invocation remains unqualified. Current Claude documentation supports direct
+AGENTS loading and imports, so this is not a claim about every Claude client.
+Independent review and the delivered revision belong to the release PR.
+
 The human-review handoff candidate (2026-10-08) links Build, Review and Ship to
 one proportional presentation guide and reuses Design's existing visual comparison
 method. Source checks cover links, skill versions, layout and context footprint;

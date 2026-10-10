@@ -15,7 +15,7 @@ from package_documentation import check as validate_documentation
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_NAMES = {
     "aios", "aios-build-work", "aios-check", "aios-create-project",
-    "aios-project-foundation", "aios-maintain-context", "aios-manage-skills",
+    "aios-maintain-context", "aios-manage-skills",
     "aios-setup", "aios-context", "aios-interview", "aios-orchestrate-workers", "aios-review-work",
     "aios-risky-changes", "aios-ship-work", "aios-spec-work", "aios-triage-improvement",
     "aios-update", "aios-select-model", "human-writing", "write-code",
@@ -180,7 +180,7 @@ def validate(root=ROOT, release_tag=None):
         require("disable-model-invocation" not in fields, f"implicit invocation: {path}")
 
     primary_targets = set(link_targets(skill_root / "aios/SKILL.md"))
-    for name in ("design", "content", "human-writing", "write-code", "aios-interview", "aios-setup", "aios-project-foundation"):
+    for name in ("design", "content", "human-writing", "write-code", "aios-interview", "aios-setup"):
         require((skill_root / name / "SKILL.md").resolve() in primary_targets,
                 f"built-in method route missing: {name}")
     for caller in ("aios-build-work", "aios-review-work"):
@@ -191,12 +191,10 @@ def validate(root=ROOT, release_tag=None):
     seed_reference = skill_root / "aios-create-project/references/repository-seed.md"
     require(seed_reference.resolve() in creation_targets,
             "optional repository-seed route missing")
-    require((skill_root / "aios-project-foundation/SKILL.md").resolve() in creation_targets,
-            "conditional engineering-foundation route missing")
-    seed_targets = set(link_targets(seed_reference))
-    for target in ("SKILL.md", "references/foundation.md", "references/documents.md"):
-        require((skill_root / "aios-project-foundation" / target).resolve() in seed_targets,
-                f"shared repository-seed foundation contract missing: {target}")
+    # Engineering foundation is a separately selected external method; AIOS
+    # must not reintroduce a bundled engineering contract under any name.
+    require(not (skill_root / "aios-project-foundation").exists(),
+            "retired engineering-foundation skill shipped")
     # Spec owns contract preparation; tracking is one linked shared owner.
     # Native decisions require the independent behavioral probes, not wording tests.
     spec_targets = set(link_targets(skill_root / "aios-spec-work/SKILL.md"))

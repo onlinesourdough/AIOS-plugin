@@ -1,6 +1,6 @@
 # AIOS
 
-AIOS version: 0.27.0
+AIOS version: 0.28.0
 
 **Business first. Productivity built in.**
 
@@ -129,23 +129,19 @@ software. A folder can be sufficient; Git, GitHub and a template are optional.
 Native sidebar/project controls are conveniences rather than a required AIOS
 registration. Existing useful files and locations survive.
 
-[Project Foundation](../skills/aios-project-foundation/SKILL.md) establishes or
-repairs an MVP or legacy project's engineering foundations. It covers working
-setup/checks, maintained code/design contracts, concise
-agent instructions, architecture/design/security and operating documents,
-GitHub workflow, suitable compute and actual non-production delivery evidence.
-The optional repository-seed route shares its content contract; workspace or
-template creation alone does not prove readiness. Existing valid sources survive
-and unrelated project types
-do not acquire a hosting stack. Required PR checks remain before merge while
-complete application batches can run every three hours, skipping already verified
-revisions through a small control job. Selecting another execution system or
-automating production deployment requires its own explicit task.
+Small coding work stays direct with Write Code and the shared lifecycle.
+Workspace or template creation alone does not prove an application ready.
+AIOS 0.28.0 retired the former Project Foundation skill: engineering preparation
+of a new or existing software project uses the separately usable
+[Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation)
+skill directly in Codex or Claude; T3 Code is not required. When no such method is selected, AIOS reports the
+gap rather than improvising an engineering contract.
 
-Software & Defence Factory is an independent work environment and method, not
-an AIOS integration or dependency. AIOS can support human-guided software work
-directly. An operator may select Factory for more independent work, carrying the
-project's accepted scope and sources while preserving each environment's own
+[Factory](https://github.com/arcitai/factory) is an independent package of
+Foundation, AgentOps and ADLC methods, such as implement and review, for T3 Code
+and native coding agents. AIOS and Factory are independent packages: neither
+depends on nor installs the other. An operator may select Factory for a project,
+carrying its accepted scope and sources while preserving each environment's own
 instructions, credentials and execution controls. Human involvement does not
 itself enforce a filesystem or tool boundary.
 

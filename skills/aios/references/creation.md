@@ -11,9 +11,9 @@ uncertainty at the start prevents choosing a direction. Reuse accepted answers.
 A small self-contained task needs no project setup.
 
 Use [Manage Skills](../../aios-manage-skills/SKILL.md) for reusable methods.
-Use [Project Foundation](../../aios-project-foundation/SKILL.md) for selected
-software engineering foundations, including existing projects repaired in place.
-Continue through the [shared lifecycle](lifecycle.md) proportionately; project
+Keep small coding work direct. A substantial software engineering foundation or
+repair uses a separately selected method such as Factory Foundation; if none is
+available, report the gap. Continue through the [shared lifecycle](lifecycle.md) proportionately; project
 setup, tested application readiness and authorized delivery are separate results.
 
 Preserve existing work, identity and caller instructions. A template, remote or

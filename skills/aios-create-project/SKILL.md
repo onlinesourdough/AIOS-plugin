@@ -2,7 +2,7 @@
 name: aios-create-project
 description: Start a project with a useful workspace, context and simple structure; Git is optional.
 metadata:
-  version: "3.0.0"
+  version: "4.0.0"
 ---
 
 # AIOS:create-project
@@ -40,10 +40,13 @@ Use the relevant methods for the real work: [Design](../design/SKILL.md),
 available specialist skills. Use [Manage Skills](../aios-manage-skills/SKILL.md)
 when the intended result is a reusable method rather than this project's work.
 
-Select [Project Foundation](../aios-project-foundation/SKILL.md) when the accepted
-software work needs engineering foundations, including an existing project that
-needs repair. Folder creation or a template receipt proves workspace setup;
-it does not prove an application, deployment or execution environment ready.
+Keep small software work direct with [Write code](../write-code/SKILL.md). AIOS
+no longer ships an engineering-foundation method. When accepted work needs a
+substantial engineering foundation or repair, use a separately selected method
+such as Factory Foundation if it is available; otherwise report that gap rather
+than inventing a readiness contract. Folder creation or a template receipt proves
+workspace setup; it does not prove an application, deployment or execution
+environment ready.
 Use the shared [Spec](../aios-spec-work/SKILL.md), [Build](../aios-build-work/SKILL.md)
 and [Review](../aios-review-work/SKILL.md) proportionately for the agreed result.
 

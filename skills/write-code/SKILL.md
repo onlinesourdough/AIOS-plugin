@@ -2,7 +2,7 @@
 name: write-code
 description: Write or change code of any size, including scripts, shell snippets, SQL, tests and automation; apply proportionate quality and verification, also when reviewing code.
 metadata:
-  version: "1.1.0"
+  version: "1.1.1"
 ---
 
 # AIOS:write-code
@@ -49,9 +49,10 @@ execution or external-write authority.
 
 For extraction, inspect affected callers, move a bounded part, verify one caller
 then the others before removing old code. Preserve caller-specific permissions,
-transactions and retry policies. Setup/delivery gaps use
-[Project Foundation](../aios-project-foundation/SKILL.md); changed sensitive or
-protected boundaries use the existing [security contract](../aios/references/security.md).
+transactions and retry policies. A substantial setup/delivery foundation gap
+uses a separately selected method such as Factory Foundation, or is reported;
+changed sensitive or protected boundaries use the existing
+[security contract](../aios/references/security.md).
 
 ## Evidence suited to the change
 

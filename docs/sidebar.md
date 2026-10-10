@@ -1,4 +1,4 @@
-# Codex sidebar — 0.27.0
+# Codex sidebar — 0.28.0
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and

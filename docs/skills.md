@@ -1,6 +1,6 @@
 # AIOS skills
 
-AIOS ships 26 native skills. Their titles and Codex display names use
+AIOS ships 25 native skills. Their titles and Codex display names use
 `AIOS:skill-name`: uppercase `AIOS`, a colon without spaces, and lowercase
 hyphenated names. The display label omits a redundant leading `aios-` from the
 canonical name. Automatic selection uses each skill description; explicit
@@ -27,7 +27,6 @@ carries an independent quoted `metadata.version`; see
 | [AIOS:build-work](../skills/aios-build-work/SKILL.md) | Implement and verify accepted work through in-scope fixes and Review |
 | [AIOS:check](../skills/aios-check/SKILL.md) | Inspect installation, owner format, and discovery |
 | [AIOS:create-project](../skills/aios-create-project/SKILL.md) | Establish a useful project workspace, context and simple structure; Git is optional |
-| [AIOS:project-foundation](../skills/aios-project-foundation/SKILL.md) | Establish and maintain software engineering, code/design, infrastructure and delivery foundations |
 | [AIOS:maintain-context](../skills/aios-maintain-context/SKILL.md) | Maintain owner facts, routes, connections, and explicit continuity Sync |
 | [AIOS:manage-skills](../skills/aios-manage-skills/SKILL.md) | Manage personal and installed skill lifecycles |
 | [AIOS:setup](../skills/aios-setup/SKILL.md) | Set up or move an owner home and native bridge |
@@ -71,8 +70,7 @@ introduce a second lifecycle or require unit tests for every UI change. See the
 [implementation and verification record](write-code.md).
 
 Create Project establishes a workspace for the actual work; Git and a repository
-template are optional. Project Foundation addresses software engineering readiness
-for new or existing projects. Manage Skills owns reusable specialist
+template are optional. Manage Skills owns reusable specialist
 methods. Independently maintained solutions keep their local ownership and
 ordinary project lifecycle. No mandatory AIOS registration is created.
 Update owns native package recovery and selected specialist maintenance;
@@ -80,3 +78,14 @@ Maintain Context owns facts, and Check observes state. The
 [legacy behavior map](../skills/aios-setup/references/legacy-parity.md) records
 older method routes. Domain preservation is documented in the
 [design](design-preservation.md) and [content](content-preservation.md) maps.
+
+## Retired: Project Foundation (0.28.0)
+
+`aios-project-foundation` is no longer shipped. For engineering preparation of
+a new or existing software project, use the separately usable
+[Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation)
+skill directly in Codex or Claude; T3 Code is not required. AIOS has no runtime
+dependency on it, does not install it and contains none of its content. Small
+coding work stays with Write Code; without a selected foundation method, AIOS
+reports the gap. Explicit callers of the old name must be updated. The
+[Project Foundation note](project-foundation.md) keeps its history.
