@@ -8,6 +8,7 @@ import { sourceLabel } from './source-label.mjs';
 const app = new App({ name: 'aios', version: __AIOS_VERSION__ }, { availableDisplayModes: ['fullscreen'] });
 const $ = id => document.getElementById(id);
 const connectUrl = 'https://chatgpt.com/apps/notion/asdk_app_69c18c28f1188191bf5b8445c4ab0a2e';
+const repositoryUrl = 'https://github.com/onlinesourdough/AIOS-plugin';
 const slotLabels = { docs: 'Docs', personalSkills: 'Personal', teamSkills: 'Team', memory: 'Personal', teamMemory: 'Team' };
 const stepRoles = [[], ['docs'], ['personalSkills', 'teamSkills'], ['memory', 'teamMemory']];
 const connectable = ['not_connected', 'disabled', 'unavailable'];
@@ -228,14 +229,12 @@ function apply(result) {
   else if (status.sources.state === 'unavailable') feedback('Saved source links need attention. They have been left unchanged.', true);
   return true;
 }
-async function openUrl(url) {
-  try { const result = await app.openLink({ url }); return !result?.isError; } catch { return false; }
-}
 async function open(target) {
   const route = classifyTarget(target);
   if (!route) return;
   if (route.kind === 'path') { feedback(route.target); return; }
-  if (!await openUrl(route.target)) feedback('Could not open the link. ' + route.target, true);
+  try { const result = await app.openLink({ url: route.target }); if (result?.isError) throw new Error(); }
+  catch { feedback('Could not open the link. ' + route.target, true); }
 }
 async function refresh() {
   if (refreshing || saving) return;
@@ -334,7 +333,6 @@ async function continueStep() {
 function openSettings(role) {
   if (!status || saving || refreshing || settingsOpen || onboarding || status.context.state !== 'configured') return;
   fillDraft(); settingsOpen = true; discardPrompt = false;
-  closeHelp(); // One modal at a time; Help keeps its draft text.
   feedback(status.sources.state === 'unavailable' ? 'Saved source links need attention. They have been left unchanged.' : '', status.sources.state === 'unavailable');
   $('drawer').showModal(); render();
   if (role && status.sources.state !== 'unavailable') {
@@ -379,47 +377,6 @@ async function switchContext(value, title) {
 }
 function reload() { fillDraft(); feedback(''); render(); }
 
-// Help and feedback. Draft text lives only in this open panel: it is never
-// stored, logged or sent to AIOS tools. Opening the draft passes the typed title
-// and text to GitHub in its URL; the issue becomes public only if submitted there.
-const repository = 'https://github.com/onlinesourdough/AIOS-plugin';
-const maxDraftUrl = 7500;
-let openingDraft = false;
-function issueStatus(text, error = false) { $('issue-status').textContent = text; $('issue-status').dataset.error = String(error); }
-function issueError(text) {
-  $('issue-error').textContent = text; $('issue-error').hidden = !text;
-  if (text) $('issue-body').setAttribute('aria-invalid', 'true'); else $('issue-body').removeAttribute('aria-invalid');
-}
-// Only the person's own text; the cap applies to the final encoded URL.
-function draftUrl(title, body) {
-  const encode = text => encodeURIComponent(text.toWellFormed());
-  return `${repository}/issues/new?${title ? `title=${encode(title)}&` : ''}body=${encode(body)}`;
-}
-function openHelp() {
-  if (saving || refreshing || $('help-drawer').open) return;
-  issueStatus(''); issueError('');
-  $('help-drawer').showModal(); $('help-title').focus();
-}
-function closeHelp() { if ($('help-drawer').open) $('help-drawer').close(); }
-async function openHelpLink(url) {
-  issueStatus('');
-  if (!await openUrl(url)) issueStatus('Couldn’t open the link. Try again.', true);
-}
-async function openDraft() {
-  if (openingDraft) return;
-  const title = $('issue-title').value.trim(), body = $('issue-body').value.trim();
-  issueStatus('');
-  if (!body) { issueError('Enter your feedback.'); $('issue-body').focus(); return; }
-  const url = draftUrl(title, body);
-  if (url.length > maxDraftUrl) { issueError('Too long for a GitHub draft. Shorten the text and try again.'); $('issue-body').focus(); return; }
-  issueError(''); openingDraft = true; $('issue-open').disabled = true;
-  try {
-    if (await openUrl(url)) issueStatus('Draft opened on GitHub. Review and submit it there.');
-    else issueStatus('Couldn’t open GitHub. Your text is kept. Try again.', true);
-  } finally { openingDraft = false; $('issue-open').disabled = false; }
-}
-function clearDraft() { $('issue-title').value = ''; $('issue-body').value = ''; issueError(''); issueStatus(''); $('issue-body').focus(); }
-
 app.ontoolresult = result => {
   if (result?._meta?.['aios/pages'] || ['pages', 'icons'].includes(result?._meta?.['aios/kind'])) return;
   try { apply(result); if (result?._meta?.['aios/view'] === 'settings') openSettings(); }
@@ -462,23 +419,11 @@ $('drawer').addEventListener('keydown', event => {
 });
 $('drawer').addEventListener('cancel', event => { event.preventDefault(); if (!discardPrompt) requestClose(); });
 $('drawer').addEventListener('close', closeSettings);
-$('help').addEventListener('click', openHelp);
-$('help-close').addEventListener('click', closeHelp);
-$('help-guide').addEventListener('click', () => openHelpLink(`${repository}#readme`));
-$('help-releases').addEventListener('click', () => openHelpLink(`${repository}/releases`));
-$('issue-open').addEventListener('click', openDraft);
-$('issue-clear').addEventListener('click', clearDraft);
-for (const id of ['issue-title', 'issue-body']) $(id).addEventListener('input', () => { issueError(''); issueStatus(''); });
-// Escape closes Help and keeps the draft text; focus returns to its button.
-$('help-drawer').addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeHelp(); } });
-$('help-drawer').addEventListener('cancel', event => { event.preventDefault(); closeHelp(); });
-// A press and click both on the transparent backdrop close Help like Escape;
-// a text selection dragged outside the popover does not.
-let backdropPress = false;
-$('help-drawer').addEventListener('pointerdown', event => { backdropPress = event.target === $('help-drawer'); });
-$('help-drawer').addEventListener('click', event => { if (backdropPress && event.target === $('help-drawer')) closeHelp(); backdropPress = false; });
-// The close event can arrive after Settings opened; keep focus in Settings then.
-$('help-drawer').addEventListener('close', () => { if (!settingsOpen) $('help').focus(); });
+$('help').addEventListener('click', () => {
+  // A retry clears only this button's earlier failure; other warnings stay.
+  if (message.text === `Could not open the link. ${repositoryUrl}`) feedback('');
+  return open(repositoryUrl);
+});
 try {
   await app.connect(undefined, { timeout: 12000 }); theme(app.getHostContext());
   if (!status) await refresh();

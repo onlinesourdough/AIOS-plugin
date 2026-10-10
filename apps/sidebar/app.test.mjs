@@ -576,121 +576,38 @@ test('choosing a page with an icon saves only the source title and target', asyn
   assert.deepEqual(write.args.links, { docs: { title: 'Docs', target: other } });
 });
 
-const issues = 'https://github.com/onlinesourdough/AIOS-plugin/issues/new';
-const opened = 'Draft opened on GitHub. Review and submit it there.';
-async function draft(u, title, body) { u.get('issue-title').value = title; u.get('issue-body').value = body; await u.click('issue-open'); }
+const repository = 'https://github.com/onlinesourdough/AIOS-plugin';
 
-test('Help is reachable in setup and on the dashboard, beside Settings, and waits for running requests', async () => {
+test('the GitHub button is in setup and on the dashboard and opens only the AIOS repository', async () => {
   const u = await ui();
   assert.equal(u.shown('setup'), true); assert.equal(u.shown('help'), true); assert.equal(u.shown('settings'), false);
-  assert.equal(u.get('help').getAttribute('aria-label'), 'Help improve AIOS');
+  assert.equal(u.get('help').getAttribute('aria-label'), 'Open AIOS on GitHub');
   await u.click('help');
-  assert.equal(u.get('help-drawer').open, true); assert.equal(u.focused(), 'help-title');
-  assert.equal(u.text('help-title'), 'Help improve AIOS');
-  assert.equal(u.get('issue-body').getAttribute('placeholder'), 'Share a bug, an idea, or something that worked well.');
-  assert.equal(u.get('help-drawer').descendants().some(node => node.tagName === 'H3'), false);
-  assert.match(u.text('issue-note'), /GitHub draft.*public when you submit.*private information.*isn’t saved/);
-  await u.click('help-close');
-  assert.equal(u.get('help-drawer').open, false); assert.equal(u.focused(), 'help');
+  assert.deepEqual(u.links, [repository]); assert.deepEqual(u.calls, []);
   const d = await ui(configured(), saved({}));
   assert.equal(d.shown('dashboard'), true); assert.equal(d.shown('help'), true); assert.equal(d.shown('settings'), true);
   d.delay(); const refreshing = d.click('refresh');
   assert.equal(d.get('help').disabled, true);
-  await d.click('help'); assert.equal(d.get('help-drawer').open, false);
   d.release(); await refreshing;
   assert.equal(d.get('help').disabled, false);
-  await d.click('help'); await d.click('help-guide'); await d.click('help-releases');
-  assert.deepEqual(d.links, ['https://github.com/onlinesourdough/AIOS-plugin#readme', 'https://github.com/onlinesourdough/AIOS-plugin/releases']);
-  assert.deepEqual(d.names(), ['aios_status']);
+  await d.click('help'); assert.deepEqual(d.links, [repository]);
+  const page = d.get('drawer').parentNode.descendants();
+  assert.equal(d.get('help-drawer'), null);
+  assert.deepEqual(page.filter(node => node.tagName === 'DIALOG').map(node => node.id), ['drawer']);
+  assert.equal(page.some(node => node.tagName === 'TEXTAREA'), false);
 });
 
-test('the GitHub draft carries only the typed text and omits an empty title', async () => {
-  const u = await ui(configured(), saved({ docs: { title: 'Private docs', target: 'https://example.com/private' } }));
-  await u.click('help');
-  assert.equal(u.get('issue-title').getAttribute('maxlength'), '80');
-  await draft(u, '   ', '  Pickers & search: 50% slower?\nThanks  ');
-  assert.deepEqual(u.links, [`${issues}?body=Pickers%20%26%20search%3A%2050%25%20slower%3F%0AThanks`]);
-  assert.equal(u.text('issue-status'), opened); assert.doesNotMatch(u.text('issue-status'), /\bsent\b/i);
-  await draft(u, 'Icons #2', 'Hi');
-  assert.equal(u.links[1], `${issues}?title=Icons%20%232&body=Hi`);
-  assert.deepEqual([...new URL(u.links[1]).searchParams.keys()], ['title', 'body']);
-  assert.deepEqual(u.calls, []);
-});
-
-test('Unicode counts at its encoded length and an over-long draft opens nothing', async () => {
-  const u = await ui(configured(), saved({}));
-  await u.click('help');
-  assert.equal(u.get('issue-body').getAttribute('maxlength'), '2000');
-  await draft(u, '', '😀'.repeat(700)); // 1,400 UTF-16 units; 8,400 once encoded.
-  await draft(u, '', 'é'.repeat(1250)); // 1,250 characters; 7,500 once encoded.
-  assert.deepEqual(u.links, []);
-  assert.equal(u.shown('issue-error'), true); assert.match(u.text('issue-error'), /Shorten the text/);
-  assert.equal(u.get('issue-body').getAttribute('aria-invalid'), 'true'); assert.equal(u.focused(), 'issue-body');
-  assert.equal(u.get('issue-body').value, 'é'.repeat(1250));
-  await u.get('issue-body').dispatch('input');
-  assert.equal(u.shown('issue-error'), false); assert.equal(u.get('issue-body').getAttribute('aria-invalid'), null);
-  await draft(u, '', 'é'.repeat(1200) + '😀');
-  assert.equal(u.links.length, 1); assert.ok(u.links[0].length <= 7500);
-  assert.equal(new URL(u.links[0]).searchParams.get('body'), 'é'.repeat(1200) + '😀');
-});
-
-test('empty feedback shows an inline error on the field and moves focus there', async () => {
-  const u = await ui();
-  await u.click('help'); await draft(u, 'Only a title', '  \n ');
-  assert.deepEqual(u.links, []);
-  assert.equal(u.text('issue-error'), 'Enter your feedback.');
-  assert.equal(u.get('issue-body').getAttribute('aria-invalid'), 'true');
-  assert.match(u.get('issue-body').getAttribute('aria-describedby'), /\bissue-error\b/);
-  assert.equal(u.focused(), 'issue-body'); assert.equal(u.text('issue-status'), '');
-});
-
-test('a failed GitHub open keeps the text and its status; the same button retries', async () => {
+test('a failed GitHub open shows a recoverable error with the link and a second click retries', async () => {
   for (const failure of ['throw', 'error']) {
     const u = await ui(configured(), saved({}));
-    await u.click('help'); u.failLinks(failure); await draft(u, 'Idea', 'Make Docs easier to find');
-    assert.equal(u.text('issue-status'), 'Couldn’t open GitHub. Your text is kept. Try again.');
-    assert.equal(u.get('issue-status').dataset.error, 'true');
-    assert.equal(u.get('issue-title').value, 'Idea'); assert.equal(u.get('issue-body').value, 'Make Docs easier to find');
-    assert.equal(u.get('issue-open').disabled, false);
-    u.failLinks(false); await u.click('issue-open');
-    assert.equal(u.links.length, 2); assert.equal(u.links[0], u.links[1]);
-    assert.equal(u.text('issue-status'), opened); assert.equal(u.get('issue-status').dataset.error, 'false');
+    u.failLinks(failure); await u.click('help');
+    assert.equal(u.shown('feedback'), true); assert.equal(u.get('feedback').dataset.error, 'true');
+    assert.equal(u.text('feedback-text'), `Could not open the link. ${repository}`);
+    assert.equal(u.get('help').disabled, false);
+    u.failLinks(false); await u.click('help');
+    assert.deepEqual(u.links, [repository, repository]); assert.deepEqual(u.calls, []);
+    assert.equal(u.shown('feedback'), false); assert.equal(u.text('feedback-text'), '');
   }
-});
-
-test('closing and reopening Help keeps the draft text; only Clear empties it', async () => {
-  const u = await ui(configured(), saved({}));
-  await u.click('help'); u.get('issue-title').value = 'Title'; u.get('issue-body').value = 'Draft text';
-  await u.key('help-drawer', 'Escape');
-  assert.equal(u.get('help-drawer').open, false); assert.equal(u.focused(), 'help');
-  await u.click('help');
-  assert.equal(u.focused(), 'help-title');
-  assert.equal(u.get('issue-title').value, 'Title'); assert.equal(u.get('issue-body').value, 'Draft text');
-  await u.click('help-close'); await u.click('help');
-  assert.equal(u.get('issue-body').value, 'Draft text');
-  await u.get('issue-body').dispatch('pointerdown'); await u.get('issue-body').dispatch('click');
-  assert.equal(u.get('help-drawer').open, true);
-  await u.get('help-drawer').dispatch('pointerdown'); await u.get('help-drawer').dispatch('click');
-  assert.equal(u.get('help-drawer').open, false); assert.equal(u.focused(), 'help');
-  await u.click('help');
-  assert.equal(u.get('issue-title').value, 'Title'); assert.equal(u.get('issue-body').value, 'Draft text');
-  await u.click('issue-clear');
-  assert.equal(u.get('issue-title').value, ''); assert.equal(u.get('issue-body').value, '');
-  assert.equal(u.focused(), 'issue-body'); assert.deepEqual(u.links, []); assert.deepEqual(u.calls, []);
-});
-
-test('the native settings entrypoint closes Help first, keeps its draft and focuses Settings', async () => {
-  const u = await ui(configured(), saved({}));
-  await u.click('help'); u.get('issue-body').value = 'Keep this draft';
-  await u.notify({ _meta: { 'aios/status': u.status, 'aios/view': 'settings' } });
-  assert.equal(u.get('help-drawer').open, false); assert.equal(u.get('drawer').open, true);
-  assert.equal(u.focused(), 'drawer-title');
-  await u.addLink('settings-memory-picker', 'https://example.com/memory'); await u.click('drawer-close');
-  assert.equal(u.shown('foot-discard'), true);
-  await u.click('discard');
-  assert.equal(u.get('drawer').open, false); assert.equal(u.focused(), 'settings'); assert.equal(u.calls.length, 0);
-  await u.click('help');
-  assert.equal(u.get('help-drawer').open, true); assert.equal(u.get('issue-body').value, 'Keep this draft');
 });
 
 test('Settings keeps Optional for assistive technology and None still clears an optional source', async () => {

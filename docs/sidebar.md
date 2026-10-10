@@ -35,19 +35,14 @@ are not individually fetched. Unsupported custom/uploaded icons and failed
 icon reads retain a usable text label; no arbitrary external image host is loaded.
 Icon failure does not affect the connection badge or saved source choices.
 
-A chat-bubble button beside Settings opens a compact Help improve AIOS popover
-in setup and on the dashboard. Escape, Close or a click outside closes it and
-keeps the text. Quiet links below its actions open the user guide and release
-notes. Feedback opens a GitHub
-issue draft whose URL carries only the typed title and text, so opening it
-passes that text to GitHub; the issue becomes public only when the person
-submits it there. Feedback is limited to 2,000 characters, and drafts over about
-7,500 encoded URL characters must be shortened first. The text stays in the open panel until Clear,
-including after a failed open, and is never saved, logged or passed to AIOS tools.
+A chat-bubble button beside Settings, in setup and on the dashboard, opens the
+AIOS GitHub repository through the host link route. A failed open shows a
+message with the link; clicking again retries. There is no feedback form, draft,
+email or sending from the panel.
 Settings groups Docs under Context and notes that a context switch applies
 immediately while source changes apply with Save. It omits the repeated visible
-Optional labels; None still clears a slot. Opening Settings from Codex closes
-Help first and keeps its text.
+Optional labels; None still clears a slot. Spacing rather than divider lines
+separates the Settings header and actions.
 
 The lower-left footer shows only onlinesourdough in Geist Pixel Square. The font is
 embedded in the packaged HTML with its SIL Open Font License in the notices;
@@ -99,7 +94,12 @@ runtime/sidebar. Resource: ui://aios/home-v5. Tools:
 - aios_sources: explicit model read of the context and navigation with revisions.
 - aios_save_sources: app/model navigation replacement, scoped to current context.
 
-The short pointer lives in CODEX_HOME/AGENTS.md. Pointer saves keep unrelated
+The short pointer lives in CODEX_HOME/AGENTS.md. Installing AIOS alone does not
+choose a context. Saving the primary Context during setup, or confirming a
+Context switch in Settings, automatically writes its managed AIOS block there,
+keeping unrelated instructions; normal setup needs no manual copy. A fresh chat
+verifies that Codex discovers the instructions; Notion connection and page
+access still need their own check. Pointer saves keep unrelated
 bytes and custom rules, back up prior bytes, and reject ambiguous blocks,
 symlinks, oversized files and detected edits. Unchanged saves make no write.
 
@@ -125,9 +125,9 @@ Restoring a context pointer loads an existing map before allowing replacement.
 Run the locked build, Node tests and bundled stdio smoke, package checks and
 repository rehearsals. Browser proof covers initial setup, revisiting sections,
 source pickers, optional slots, settings Save/discard, failed saves, retry,
-keyboard/focus, light/dark and 320px. Help proof covers reaching the popover in
-setup and dashboard, draft URL contents and encoded length, empty and failed
-opens with retry, Escape/reopen retention and Clear. Synthetic host results are distinct from
+keyboard/focus, light/dark and 320px. GitHub button proof covers its
+presence in setup and dashboard, the exact repository link, and a failed open
+with a visible retryable message. Synthetic host results are distinct from
 native installed-runtime adoption and do not prove new-account OAuth.
 
 Page-picker proof includes a real read-only Notion listing and AIOS search via

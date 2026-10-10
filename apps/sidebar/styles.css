@@ -20,7 +20,7 @@ main { max-width: 600px; margin: 0 auto; padding: 48px 36px 40px; }
 /* Page title on the left, icon controls on the right. */
 .page-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 32px; margin-bottom: 28px; }
 h1 { margin: 0; font-size: 24px; font-weight: 600; line-height: 1.2; letter-spacing: -.4px; }
-h1:focus, .drawer-head h2:focus, .popover-head h2:focus { outline: none; }
+h1:focus, .drawer-head h2:focus { outline: none; }
 .header-actions { display: flex; align-items: center; gap: 8px; }
 .badge { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 500; color: var(--aios-success); background: color-mix(in srgb, var(--aios-success) 12%, transparent); }
 .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
@@ -106,10 +106,10 @@ footer { display: flex; align-items: baseline; justify-content: space-between; g
    not divider lines, separates its header, sections and actions; the left edge
    stays to set it apart from the panel behind it. */
 .drawer { position: fixed; inset: 0 0 0 auto; display: flex; flex-direction: column; width: 380px; max-width: 100%; height: 100%; max-height: 100%; margin: 0; padding: 0; border: 0; border-left: 1px solid var(--aios-line); background: var(--aios-surface); color: var(--aios-text); }
-.drawer:not([open]), .popover:not([open]) { display: none; }
-.drawer::backdrop, .popover::backdrop { background: transparent; }
+.drawer:not([open]) { display: none; }
+.drawer::backdrop { background: transparent; }
 .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 8px 24px; }
-.drawer-head h2, .popover-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.drawer-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
 .drawer-body { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 24px 24px; }
 .drawer-body section { margin-top: 28px; }
 .drawer-body section:first-child { margin-top: 12px; }
@@ -125,25 +125,9 @@ footer { display: flex; align-items: baseline; justify-content: space-between; g
 #foot-discard { flex-wrap: wrap; }
 #foot-discard .foot-question { flex-basis: 100%; }
 
-/* Help: a compact popover below the header actions, aligned with the panel's right edge. */
-.popover { position: fixed; inset: 88px max(36px, calc((100vw - 600px) / 2 + 36px)) auto auto; display: flex; flex-direction: column;
-  width: 360px; max-width: calc(100vw - 24px); max-height: calc(100vh - 104px); margin: 0; padding: 0;
-  border: 1px solid var(--aios-line); border-radius: 14px; background: var(--aios-surface); color: var(--aios-text); box-shadow: 0 12px 32px rgb(0 0 0 / .12); }
-.popover-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 12px 4px 20px; }
-.popover-body { flex: 1; min-height: 0; overflow-y: auto; padding: 8px 20px 16px; }
-textarea.form-control { height: auto; min-height: 112px; padding: 8px 10px; font: inherit; line-height: 1.5; resize: vertical; }
-.field-quiet .field-label { font-size: 12px; font-weight: 400; color: var(--aios-muted); }
-.issue-status:empty { margin: 0; }
-.issue-status[data-error="true"] { color: var(--aios-danger); }
-.help-links { display: flex; align-items: center; gap: 6px; margin: 12px 0 0; font-size: 12px; color: var(--aios-muted); }
-.link-button { padding: 0; border: 0; border-radius: 4px; background: none; color: inherit; font: inherit; text-decoration: underline; text-decoration-color: var(--aios-line-strong); text-underline-offset: 3px; cursor: pointer; }
-.link-button:hover { color: var(--aios-text); }
-.link-button:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
-
 @media (max-width: 640px) { .drawer { width: 100%; border-left: 0; } }
 @media (max-width: 440px) {
   main { padding: 28px 20px 32px; }
-  .popover { inset: 68px 12px auto 12px; width: auto; max-width: none; max-height: calc(100vh - 80px); }
   h1 { font-size: 22px; }
   .step-panel { padding-left: 16px; }
   .summary { max-width: 45%; }
