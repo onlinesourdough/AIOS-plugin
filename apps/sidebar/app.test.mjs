@@ -645,3 +645,31 @@ test('closing and reopening Help keeps the draft text; only Clear empties it', a
   assert.equal(u.get('issue-title').value, ''); assert.equal(u.get('issue-body').value, '');
   assert.equal(u.focused(), 'issue-body'); assert.deepEqual(u.links, []); assert.deepEqual(u.calls, []);
 });
+
+test('the native settings entrypoint closes Help first, keeps its draft and focuses Settings', async () => {
+  const u = await ui(configured(), saved({}));
+  await u.click('help'); u.get('issue-body').value = 'Keep this draft';
+  await u.notify({ _meta: { 'aios/status': u.status, 'aios/view': 'settings' } });
+  assert.equal(u.get('help-drawer').open, false); assert.equal(u.get('drawer').open, true);
+  assert.equal(u.focused(), 'drawer-title');
+  await u.addLink('settings-memory-picker', 'https://example.com/memory'); await u.click('drawer-close');
+  assert.equal(u.shown('foot-discard'), true);
+  await u.click('discard');
+  assert.equal(u.get('drawer').open, false); assert.equal(u.focused(), 'settings'); assert.equal(u.calls.length, 0);
+  await u.click('help');
+  assert.equal(u.get('help-drawer').open, true); assert.equal(u.get('issue-body').value, 'Keep this draft');
+});
+
+test('Settings keeps Optional for assistive technology and None still clears an optional source', async () => {
+  const docs = { title: 'Docs', target: 'https://example.com/docs' }, team = { title: 'Team decisions', target: 'https://example.com/team-memory' };
+  const u = await ui(configured(), saved({ docs, teamMemory: team }));
+  await u.click('settings');
+  for (const role of ['docs', 'personalSkills', 'teamSkills', 'memory', 'teamMemory'])
+    assert.equal(u.get(`settings-${role}`).children[0].children[0].children.at(-1).className, 'optional');
+  await u.click('settings-teamMemory-picker');
+  const none = u.options('settings-teamMemory-picker').find(option => option.textContent === 'None');
+  assert.ok(none); await none.dispatch('click');
+  assert.equal(u.text('settings-teamMemory-picker'), 'None');
+  await u.click('drawer-save');
+  assert.deepEqual(u.calls[0].args.links, { docs });
+});

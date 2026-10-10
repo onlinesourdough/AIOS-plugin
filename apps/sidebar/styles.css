@@ -115,8 +115,9 @@ footer { display: flex; align-items: baseline; justify-content: space-between; g
 .drawer-body section { margin-top: 20px; }
 .drawer-body h3 { margin: 0 0 8px; font-size: 13px; font-weight: 600; }
 .drawer-body h3 + .hint { margin: 0 0 8px; }
-/* The Context heading names the picker; keep its label for assistive technology only. */
-#settings-context > .field > .field-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Settings headings name the Context picker, and None marks optional slots; keep
+   that label and the repeated Optional annotations for assistive technology only. */
+#settings-context > .field > .field-label, #drawer .field > .field-label > .optional { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .help-links .row { width: calc(100% + 24px); margin: 0 -12px; }
 textarea.form-control { height: auto; min-height: 120px; padding: 6px 10px; font: inherit; line-height: 1.5; resize: vertical; }
 .issue-status:empty { margin: 0; }

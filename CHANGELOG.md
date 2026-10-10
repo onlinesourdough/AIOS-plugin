@@ -11,6 +11,8 @@
   text. The text is kept after a failed open or closing the drawer until Clear.
 - Group Docs under a Context heading in Settings and note that a context switch
   applies immediately while Docs, Skills and Memory changes apply with Save.
+  Settings no longer repeats visible Optional labels; None still clears a slot.
+- Opening Settings from Codex closes Help first and keeps its feedback text.
 
 ## 0.26.2 — 2026-10-09
 

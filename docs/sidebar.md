@@ -41,7 +41,9 @@ submits it there. Feedback is limited to 2,000 characters, and drafts over about
 7,500 encoded URL characters must be shortened first. The text stays in the open panel until Clear,
 including after a failed open, and is never saved, logged or passed to AIOS tools.
 Settings groups Docs under Context and notes that a context switch applies
-immediately while source changes apply with Save.
+immediately while source changes apply with Save. It omits the repeated visible
+Optional labels; None still clears a slot. Opening Settings from Codex closes
+Help first and keeps its text.
 
 The lower-left footer shows only onlinesourdough in Geist Pixel Square. The font is
 embedded in the packaged HTML with its SIL Open Font License in the notices;

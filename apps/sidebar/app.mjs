@@ -336,6 +336,7 @@ async function continueStep() {
 function openSettings(role) {
   if (!status || saving || refreshing || settingsOpen || onboarding || status.context.state !== 'configured') return;
   fillDraft(); settingsOpen = true; discardPrompt = false;
+  closeHelp(); // One modal at a time; Help keeps its draft text.
   feedback(status.sources.state === 'unavailable' ? 'Saved source links need attention. They have been left unchanged.' : '', status.sources.state === 'unavailable');
   $('drawer').showModal(); render();
   if (role && status.sources.state !== 'unavailable') {
@@ -473,7 +474,8 @@ for (const id of ['issue-title', 'issue-body']) $(id).addEventListener('input', 
 // Escape closes Help and keeps the draft text; focus returns to its button.
 $('help-drawer').addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeHelp(); } });
 $('help-drawer').addEventListener('cancel', event => { event.preventDefault(); closeHelp(); });
-$('help-drawer').addEventListener('close', () => $('help').focus());
+// The close event can arrive after Settings opened; keep focus in Settings then.
+$('help-drawer').addEventListener('close', () => { if (!settingsOpen) $('help').focus(); });
 try {
   await app.connect(undefined, { timeout: 12000 }); theme(app.getHostContext());
   if (!status) await refresh();
