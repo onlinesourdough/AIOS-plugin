@@ -96,6 +96,7 @@ h1:focus, .drawer-head h2:focus { outline: none; }
 
 .feedback { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin-top: 24px; padding: 4px 4px 4px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; overflow-wrap: anywhere; }
 .feedback[data-error="true"] { color: var(--aios-danger); }
+#repo-error { margin-top: 24px; overflow-wrap: anywhere; }
 footer { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 40px; font-size: 11px; color: var(--aios-muted); }
 .wordmark { font: 400 16px/1.2 "Geist Pixel", monospace; color: var(--aios-text); }
 .picker-value, .option-title, .row-title, .row-meta { display: flex; align-items: center; gap: 8px; }

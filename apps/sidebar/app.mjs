@@ -419,10 +419,13 @@ $('drawer').addEventListener('keydown', event => {
 });
 $('drawer').addEventListener('cancel', event => { event.preventDefault(); if (!discardPrompt) requestClose(); });
 $('drawer').addEventListener('close', closeSettings);
-$('help').addEventListener('click', () => {
-  // A retry clears only this button's earlier failure; other warnings stay.
-  if (message.text === `Could not open the link. ${repositoryUrl}`) feedback('');
-  return open(repositoryUrl);
+// The GitHub button reports only in its own line, apart from setup/source
+// feedback and Load latest, so neither a failure nor a retry can hide them.
+$('help').addEventListener('click', async () => {
+  const error = $('repo-error');
+  error.hidden = true; error.textContent = '';
+  try { const result = await app.openLink({ url: repositoryUrl }); if (result?.isError) throw new Error(); }
+  catch { error.textContent = `Could not open GitHub. ${repositoryUrl}`; error.hidden = false; }
 });
 try {
   await app.connect(undefined, { timeout: 12000 }); theme(app.getHostContext());

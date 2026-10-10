@@ -597,16 +597,48 @@ test('the GitHub button is in setup and on the dashboard and opens only the AIOS
   assert.equal(page.some(node => node.tagName === 'TEXTAREA'), false);
 });
 
-test('a failed GitHub open shows a recoverable error with the link and a second click retries', async () => {
+test('a failed GitHub open shows its own retryable error with the link', async () => {
   for (const failure of ['throw', 'error']) {
     const u = await ui(configured(), saved({}));
     u.failLinks(failure); await u.click('help');
-    assert.equal(u.shown('feedback'), true); assert.equal(u.get('feedback').dataset.error, 'true');
-    assert.equal(u.text('feedback-text'), `Could not open the link. ${repository}`);
-    assert.equal(u.get('help').disabled, false);
+    assert.equal(u.shown('repo-error'), true); assert.equal(u.text('repo-error'), `Could not open GitHub. ${repository}`);
+    assert.equal(u.shown('feedback'), false); assert.equal(u.get('help').disabled, false);
     u.failLinks(false); await u.click('help');
     assert.deepEqual(u.links, [repository, repository]); assert.deepEqual(u.calls, []);
-    assert.equal(u.shown('feedback'), false); assert.equal(u.text('feedback-text'), '');
+    assert.equal(u.shown('repo-error'), false); assert.equal(u.text('repo-error'), ''); assert.equal(u.shown('feedback'), false);
+  }
+});
+
+test('GitHub failures and retries keep a stale draft with Load latest, unavailable sources and a same-link source failure', async () => {
+  const scenarios = {
+    async staleDraft() {
+      const u = await ui(); await u.input(target); await u.submit();
+      await u.click('step-2'); await u.addLink('setup-personalSkills-picker', 'https://example.com/skills');
+      u.status.sources = { state: 'saved', revision: 'e'.repeat(64), title: 'Changed elsewhere', links: {} };
+      await u.click('refresh');
+      return [u, 'Setup changed elsewhere. Your edits are kept; load the latest setup to continue.', true];
+    },
+    async unavailableSources() {
+      const u = await ui(configured(), { state: 'unavailable', revision: 'c'.repeat(64), title: '', links: {} });
+      return [u, 'Saved source links need attention. They have been left unchanged.', false];
+    },
+    async sameLinkSource() {
+      const u = await ui(configured(), saved({ docs: { title: 'AIOS repository', target: repository } }));
+      u.failLinks('throw'); await u.click('open-docs'); u.failLinks(false);
+      return [u, `Could not open the link. ${repository}`, false];
+    },
+  };
+  for (const failure of ['throw', 'error']) for (const [name, setup] of Object.entries(scenarios)) {
+    const [u, warning, reload] = await setup();
+    const kept = () => {
+      assert.equal(u.shown('feedback'), true, name); assert.equal(u.text('feedback-text'), warning, name);
+      assert.equal(u.get('feedback').dataset.error, 'true', name); assert.equal(u.shown('reload-draft'), reload, name);
+    };
+    kept();
+    u.failLinks(failure); await u.click('help');
+    assert.equal(u.text('repo-error'), `Could not open GitHub. ${repository}`, name); kept();
+    u.failLinks(false); await u.click('help');
+    assert.equal(u.links.at(-1), repository, name); assert.equal(u.shown('repo-error'), false, name); kept();
   }
 });
 
