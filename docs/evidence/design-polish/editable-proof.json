@@ -1,0 +1,32 @@
+{
+  "format": "ZIP containing editable HTML with inline CSS/JS, local SVG and direction/reference files",
+  "archive": "service-export.zip",
+  "archive_sha256": "4eb3ed51119d23f2c810fcdd179a5e4b6168995a846af39d9c805a5f47618041",
+  "manual_input_sha256": "1bfb37f24de496797b72e6384620b79af8f4c4337a76edbb05c0a337d616bfdb",
+  "manual_edit": "Visits by appointment. \u2192 Site visit by appointment; no walk-in advice.",
+  "manual_edit_actor": "Writer inserted an intervening source edit for this rehearsal; not a separate human session",
+  "source_owner": "Synthetic project; canonical editable source is service-after.html",
+  "export_owner": "Derivative handoff copy; no live synchronization",
+  "reopened_files_equal_source": true,
+  "files": {
+    "service-after.html": "9ac4af369037fb0aef7f9b19ac4d44c3c4492dce83cc3fdc9682e0f8e97eda6c",
+    "landscape.svg": "02ec665102f4e26ce3c9164b3454702b275a0e25089828d0e26d13cd1819f080",
+    "DESIGN.md": "ac6ba50c22062c8f80db8e6776cdcb3fa28b0e1fdba4144a4365066eb8090fc5",
+    "reference.html": "84c38317ce3565a09a517dba7acca024f95a12902c805017e0a4367a1499553a",
+    "dense.html": "a8f8f9468f260b7533070161e5acf446c902859a5e394ae048478989e1783866"
+  },
+  "browser_reopen": {
+    "tool": "T3 native preview",
+    "source": "fresh extraction of service-export.zip",
+    "viewport_css": [
+      1120,
+      800
+    ],
+    "theme": "light",
+    "manual_change_preserved": true,
+    "image_loaded_intrinsic_width": 1200,
+    "empty_submission": "error visible, focus email",
+    "valid_submission": "error hidden; Example complete. Nothing was sent or saved.",
+    "horizontal_overflow": false
+  }
+}

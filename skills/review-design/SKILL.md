@@ -2,7 +2,7 @@
 name: review-design
 description: Review a visual direction and selected companions against their brief without editing, or audit selected accumulated design evidence.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # AIOS:review-design
@@ -21,6 +21,11 @@ Apply only the checks needed for the selected outcome:
   Hierarchy, density, alignment, whitespace, typography, color and imagery
   support its job. Treat generic grids, pills, gradients, sidebars, symmetry and
   filler as judgment signals, not universal aesthetic bans.
+  For requested polish or observed density/rhythm problems, use Design's
+  [reference-led pass](../design/references/design-solution.md#reference-led-polish):
+  compare preserve/borrow/change decisions with the full rendered sequence and
+  current before/after proof. Check that reduced repetition preserves necessary
+  labels, context and actions; a dense surface need not become sparse.
 - **States and accessibility:** relevant states are useful and explicit.
   Inspect semantic structure, headings, labels, contrast, keyboard access,
   visible focus, skip navigation, alt text and reduced motion. Errors need
@@ -29,7 +34,9 @@ Apply only the checks needed for the selected outcome:
 - **Sources and consistency:** respect [source precedence and selection](../design/references/source-selection.md).
   References inform principles without copying a brand or redistributing media.
   Rights, revision, role, visual signals and limitations remain inspectable.
-  Brief, canonical direction and selected companions agree. Optional format
+  Brief, canonical direction and selected companions agree; existing tokens,
+  components and code remain implementation truth, linked rather than duplicated.
+  Optional format
   lint/export is evidence only when actually run; new source adoption needs
   rendered-task proof.
   For reference-led work, compare the inspected source, its accepted adaptation
@@ -50,8 +57,11 @@ Apply only the checks needed for the selected outcome:
 
 For direction-only work, review the instructions and disclose receiving-surface
 validation as a limitation. For a selected preview/native source, inspect its
-actual rendering and relevant interaction; a hash or screenshot alone does not
-prove editable save/reopen or accessibility behavior.
+actual rendering and relevant interaction. For editable delivery, verify the
+actual edit, manual-change preservation, save/reopen and selected export, with
+format/path/ownership and useful implementation mapping when requested. Check
+the selected route's observed capability and explicit fallback limits; a hash,
+manifest or screenshot alone proves neither these operations nor accessibility.
 
 Bind the result to the exact brief, DESIGN version/hash and selected companion
 hashes, with reviewer identity, observed checks, proof locators and limitations.

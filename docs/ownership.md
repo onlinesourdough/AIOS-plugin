@@ -21,7 +21,7 @@
 | Codex sidebar source and bundled runtime | `apps/sidebar` and reproducible `runtime/sidebar` in this repository; Codex owns launch, account access and UI placement |
 | Projects and optional specialists | Their own working files, deliverables, dependencies, proof and recovery; Git and native project controls are selected when useful, without mandatory AIOS registration |
 | Software engineering foundation (setup, checks, CI/delivery, engineering documents) | A separately selected method such as [Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation); the project owns the resulting files. AIOS neither ships, installs nor depends on it |
-| Design and content methods and helpers | Built-in domain skills; project files remain owned by the project |
+| Design and content methods and helpers | Built-in domain skills; project files remain owned by the project. Design owns semantic direction and the selected companion; existing tokens/components/code own implementation truth. Review Design checks actual selected proof; Human Writing and Write Code retain prose and implementation responsibilities |
 | Selected upstream System installation/code updates | AIOS Update [System maintenance](../skills/aios-update/references/systems.md) routes authorized work; each System owns compatibility and recovery |
 | Complex explanations | Included `clarify`; native visualization tools own their presentation contracts |
 | Historical Global Skills and Skills Atlas | Their public archived repositories; only Clarify is adopted in this package |

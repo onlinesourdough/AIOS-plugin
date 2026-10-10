@@ -1,0 +1,357 @@
+{
+  "date": "2026-10-10",
+  "tool": "T3 collaborative preview",
+  "scope": "Synthetic rendered method rehearsal; not customer baseline or model activation",
+  "inspection_viewport_height": 800,
+  "capture_method": "Keep width fixed; expand viewport to document height and scroll to top for full-page PNG. No viewport-height-dependent CSS. PNG dimensions are tool output, not CSS viewport dimensions.",
+  "observations": [
+    {
+      "page": "before",
+      "width": 1120,
+      "theme": "light",
+      "state": "closed-idle",
+      "metrics": {
+        "width": 1120,
+        "height": 2127,
+        "overflow": false,
+        "open": [
+          false,
+          false,
+          false
+        ],
+        "errorVisible": false,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy notebefore using a live service."
+      },
+      "source": "service-before.html",
+      "source_sha256": "c5f3f1edadebb805f3fb65c0c4fe8c07dadaf9155ea70f4a8c3cae4196cda7bc",
+      "screenshot": "before-1120-light.png",
+      "capture_dimensions_px": [
+        1280,
+        2431
+      ]
+    },
+    {
+      "page": "before",
+      "width": 1120,
+      "theme": "dark",
+      "state": "open-error",
+      "metrics": {
+        "width": 1120,
+        "height": 2196,
+        "overflow": false,
+        "open": [
+          true,
+          true,
+          true
+        ],
+        "errorVisible": true,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy notebefore using a live service."
+      },
+      "source": "service-before.html",
+      "source_sha256": "c5f3f1edadebb805f3fb65c0c4fe8c07dadaf9155ea70f4a8c3cae4196cda7bc",
+      "screenshot": "before-1120-dark.png",
+      "capture_dimensions_px": [
+        1280,
+        2510
+      ]
+    },
+    {
+      "page": "before",
+      "width": 320,
+      "theme": "light",
+      "state": "closed-idle",
+      "metrics": {
+        "width": 320,
+        "height": 3277,
+        "overflow": false,
+        "open": [
+          false,
+          false,
+          false
+        ],
+        "errorVisible": false,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy notebefore using a live service."
+      },
+      "source": "service-before.html",
+      "source_sha256": "c5f3f1edadebb805f3fb65c0c4fe8c07dadaf9155ea70f4a8c3cae4196cda7bc",
+      "screenshot": "before-320-light.png",
+      "capture_dimensions_px": [
+        640,
+        6554
+      ]
+    },
+    {
+      "page": "before",
+      "width": 320,
+      "theme": "dark",
+      "state": "open-error",
+      "metrics": {
+        "width": 320,
+        "height": 3652,
+        "overflow": false,
+        "open": [
+          true,
+          true,
+          true
+        ],
+        "errorVisible": true,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy notebefore using a live service."
+      },
+      "source": "service-before.html",
+      "source_sha256": "c5f3f1edadebb805f3fb65c0c4fe8c07dadaf9155ea70f4a8c3cae4196cda7bc",
+      "screenshot": "before-320-dark.png",
+      "capture_dimensions_px": [
+        640,
+        7304
+      ]
+    },
+    {
+      "page": "after",
+      "width": 1120,
+      "theme": "light",
+      "state": "closed-idle",
+      "metrics": {
+        "width": 1120,
+        "height": 2120,
+        "overflow": false,
+        "open": [
+          false,
+          false,
+          false
+        ],
+        "errorVisible": false,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy note before using a live service.",
+        "manualChange": "Site visit by appointment; no walk-in advice."
+      },
+      "source": "service-after.html",
+      "source_sha256": "9ac4af369037fb0aef7f9b19ac4d44c3c4492dce83cc3fdc9682e0f8e97eda6c",
+      "screenshot": "after-1120-light.png",
+      "capture_dimensions_px": [
+        1280,
+        2423
+      ]
+    },
+    {
+      "page": "after",
+      "width": 1120,
+      "theme": "dark",
+      "state": "open-error",
+      "metrics": {
+        "width": 1120,
+        "height": 2173,
+        "overflow": false,
+        "open": [
+          true,
+          true,
+          true
+        ],
+        "errorVisible": true,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy note before using a live service.",
+        "manualChange": "Site visit by appointment; no walk-in advice."
+      },
+      "source": "service-after.html",
+      "source_sha256": "9ac4af369037fb0aef7f9b19ac4d44c3c4492dce83cc3fdc9682e0f8e97eda6c",
+      "screenshot": "after-1120-dark.png",
+      "capture_dimensions_px": [
+        1280,
+        2483
+      ]
+    },
+    {
+      "page": "after",
+      "width": 320,
+      "theme": "light",
+      "state": "closed-idle",
+      "metrics": {
+        "width": 320,
+        "height": 3126,
+        "overflow": false,
+        "open": [
+          false,
+          false,
+          false
+        ],
+        "errorVisible": false,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy note before using a live service.",
+        "manualChange": "Site visit by appointment; no walk-in advice."
+      },
+      "source": "service-after.html",
+      "source_sha256": "9ac4af369037fb0aef7f9b19ac4d44c3c4492dce83cc3fdc9682e0f8e97eda6c",
+      "screenshot": "after-320-light.png",
+      "capture_dimensions_px": [
+        640,
+        6252
+      ]
+    },
+    {
+      "page": "after",
+      "width": 320,
+      "theme": "dark",
+      "state": "open-error",
+      "metrics": {
+        "width": 320,
+        "height": 3500,
+        "overflow": false,
+        "open": [
+          true,
+          true,
+          true
+        ],
+        "errorVisible": true,
+        "imageLoaded": true,
+        "privacyText": "This rehearsal sends nothing. Read the privacy note before using a live service.",
+        "manualChange": "Site visit by appointment; no walk-in advice."
+      },
+      "source": "service-after.html",
+      "source_sha256": "9ac4af369037fb0aef7f9b19ac4d44c3c4492dce83cc3fdc9682e0f8e97eda6c",
+      "screenshot": "after-320-dark.png",
+      "capture_dimensions_px": [
+        640,
+        7000
+      ]
+    },
+    {
+      "page": "dense",
+      "width": 1120,
+      "theme": "light",
+      "state": "unchanged",
+      "metrics": {
+        "width": 1120,
+        "height": 800,
+        "overflow": false,
+        "labels": [
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency",
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency"
+        ],
+        "statuses": [
+          "Ready \u2014 access confirmed",
+          "Hold \u2014 access not confirmed"
+        ]
+      },
+      "source": "dense.html",
+      "source_sha256": "a8f8f9468f260b7533070161e5acf446c902859a5e394ae048478989e1783866",
+      "screenshot": "dense-1120-light.png",
+      "capture_dimensions_px": [
+        1280,
+        914
+      ]
+    },
+    {
+      "page": "dense",
+      "width": 1120,
+      "theme": "dark",
+      "state": "unchanged",
+      "metrics": {
+        "width": 1120,
+        "height": 800,
+        "overflow": false,
+        "labels": [
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency",
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency"
+        ],
+        "statuses": [
+          "Ready \u2014 access confirmed",
+          "Hold \u2014 access not confirmed"
+        ]
+      },
+      "source": "dense.html",
+      "source_sha256": "a8f8f9468f260b7533070161e5acf446c902859a5e394ae048478989e1783866",
+      "screenshot": "dense-1120-dark.png",
+      "capture_dimensions_px": [
+        1280,
+        914
+      ]
+    },
+    {
+      "page": "dense",
+      "width": 320,
+      "theme": "light",
+      "state": "unchanged",
+      "metrics": {
+        "width": 320,
+        "height": 1797,
+        "overflow": false,
+        "labels": [
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency",
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency"
+        ],
+        "statuses": [
+          "Ready \u2014 access confirmed",
+          "Hold \u2014 access not confirmed"
+        ]
+      },
+      "source": "dense.html",
+      "source_sha256": "a8f8f9468f260b7533070161e5acf446c902859a5e394ae048478989e1783866",
+      "screenshot": "dense-320-light.png",
+      "capture_dimensions_px": [
+        640,
+        3594
+      ]
+    },
+    {
+      "page": "dense",
+      "width": 320,
+      "theme": "dark",
+      "state": "unchanged",
+      "metrics": {
+        "width": 320,
+        "height": 1797,
+        "overflow": false,
+        "labels": [
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency",
+          "Work window",
+          "Crew",
+          "Equipment",
+          "Access",
+          "Dependency"
+        ],
+        "statuses": [
+          "Ready \u2014 access confirmed",
+          "Hold \u2014 access not confirmed"
+        ]
+      },
+      "source": "dense.html",
+      "source_sha256": "a8f8f9468f260b7533070161e5acf446c902859a5e394ae048478989e1783866",
+      "screenshot": "dense-320-dark.png",
+      "capture_dimensions_px": [
+        640,
+        3594
+      ]
+    }
+  ]
+}

@@ -55,7 +55,11 @@ The conditional [Taste source guide](../skills/design/references/taste-sources.m
 links to upstream design/style/image skills and Taste Code's reference catalog.
 It adds no installed package or catalog copy. Record the used revision, adapt
 selected traits to the task and compare them with the rendered output. The
-OpenPencil companion remains available through its existing workbench route.
+OpenPencil companion remains optional through its existing workbench route.
+Design and Review Design 1.2.1 clarify [available companion selection and a
+lightweight reference-led polish pass](../skills/design/references/design-solution.md).
+Direction-only work needs no editor; selected editable delivery needs actual
+edit preservation, save/reopen and export proof.
 
 Plugin namespaces come from the harness, for example `aios:design`; canonical
 skill names remain portable. Personal methods keep their owner's chosen name

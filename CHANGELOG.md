@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.28.1 — 2026-10-10
+
+- Correct Design's forced OpenPencil companion wording: select a sufficient
+  available route for the task, including project-local HTML/source. Keep
+  working optional workbench routes and report missing capabilities explicitly.
+  Semantic direction stays in `DESIGN.md`; existing tokens/components/code own
+  implementation truth. Editable delivery needs observed edit preservation,
+  save/reopen and export proof, plus implementation mapping when requested.
+- Clarify the existing reference-led polish pass and its review: preserve
+  identity/behavior, borrow selected composition traits, retain necessary text
+  and inspect the full rendered page and relevant states. Design and Review
+  Design advance to 1.2.1; no new skill, editor dependency or runtime behavior.
+- Retain a bounded synthetic service-page rehearsal and dense counterexample
+  in the [design evidence](docs/evidence/design-polish/README.md). These do not
+  establish customer improvement, model activation or editor compatibility.
+
 ## 0.28.0 — 2026-10-10
 
 - Retire the Project Foundation skill (`aios-project-foundation`). To prepare a

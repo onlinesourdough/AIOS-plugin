@@ -1,0 +1,83 @@
+{
+  "date": "2026-10-10",
+  "base": "a3d90150aeb5b37bdbf4a48787686fa52c0ad6d5",
+  "node": "22.23.3",
+  "npm": "10.9.9",
+  "native_onboarding": false,
+  "scope": "source/fixture checks; native installed discovery and independent review are separate",
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/onboarding-rehearsal.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "OK"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/layout-rehearsal.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "PASS: rejects missing parent exclusions and tracked nested work"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/continuity-rehearsal.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "PASS: target rebinding, safe re-registration and stale-history checks preserve later Sync"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/skill-version-rehearsal.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "OK"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/context-footprint.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "NOTE: owner/task context and target-repository instructions are excluded as documented in the manifest"
+    },
+    {
+      "command": "npm ci --prefix apps/sidebar --ignore-scripts --no-fund --no-audit --cache <task-local-cache>",
+      "exit_code": 0,
+      "result": "100 locked packages restored; scoped approval after sandbox DNS failure"
+    },
+    {
+      "command": "npm run build --prefix apps/sidebar",
+      "exit_code": 0,
+      "result": "Built AIOS 0.28.1 sidebar"
+    },
+    {
+      "command": "npm test --prefix apps/sidebar",
+      "exit_code": 0,
+      "result": "83 tests passed; bundled stdio/global-entrypoint/fullscreen/isolated-first-run smoke PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests/design -p 'test_*.py' -v",
+      "exit_code": 0,
+      "result": "18 tests passed"
+    },
+    {
+      "command": "Compare every runtime/sidebar file with base bytes after replacing 0.28.0 with 0.28.1",
+      "exit_code": 0,
+      "result": "All three files equal; no runtime behavior change"
+    },
+    {
+      "command": "git diff base -- skills/openpencil-workbench skills/diffusion-studio skills/design/scripts skills/review-design/scripts tests",
+      "exit_code": 0,
+      "result": "Empty for every selected path"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/validate.py --baseline a3d90150aeb5b37bdbf4a48787686fa52c0ad6d5 --release-tag v0.28.1",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "PASS: rejects split sources, install hooks, misplaced helpers, inherited instructions, and duplicate ownership"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/documentation-rehearsal.py",
+      "exit_code": 0,
+      "result": "PASS",
+      "observed_summary": "OK"
+    }
+  ],
+  "pending": []
+}

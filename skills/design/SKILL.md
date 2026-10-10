@@ -2,7 +2,7 @@
 name: design
 description: Create or revise a portable visual direction and selected previews or assets for a website, app, dashboard, report, slide, or content surface.
 metadata:
-  version: "1.2.0"
+  version: "1.2.1"
 ---
 
 # AIOS:design
@@ -22,8 +22,10 @@ by the optional snapshot helper.
 
 Choose one visual idea that serves that job. `DESIGN.md` owns the semantic
 direction: hierarchy, typography, color, spacing, composition, states, responsive
-behavior, imagery, motion, and concrete do/don't guidance. Previews, assets,
-tokens and editable sources are selected companions, never competing truth.
+behavior, imagery, motion, and concrete do/don't guidance. Existing project
+tokens, components and code own implementation truth; link and reconcile them
+with the direction instead of copying a competing token source. Previews,
+assets and editable sources are selected companions.
 
 Load only what the task needs:
 
