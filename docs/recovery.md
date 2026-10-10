@@ -55,6 +55,12 @@ without that fallback needs a narrow owner clarification.
 
 ## Design and content integration
 
+Before companion edits, preserve the actual working source and intervening
+manual changes. A failed save/reopen or export retains that source and failed
+candidate; do not switch editors or regenerate over it silently. Reconcile
+`DESIGN.md` with the project's implementation sources, then refresh affected
+rendered proof. Package rollback does not roll back project design files.
+
 New work uses the bundled domain skills. Before retiring a legacy ADS or ACS
 checkout, inventory its tracked, ignored and untracked files. Preserve actual
 work and accepted artifacts; Git history only preserves committed source.

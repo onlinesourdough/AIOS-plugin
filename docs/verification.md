@@ -1,5 +1,14 @@
 # Verification
 
+For the AIOS 0.28.1 design-method candidate, the [synthetic polish rehearsal](evidence/design-polish/README.md)
+retains comparable full-scroll service-page views at 1120px/320px in light/dark,
+disclosure and form-error states, a dense counterexample, and actual editable
+HTML save/reopen, intervening-change preservation and export/reopen observations.
+Its check record separates source validation, the unchanged design helper suite
+and locked Node 22 sidebar verification from rendered proof. This is writer
+evidence, not independent acceptance, model activation, external-editor
+compatibility, customer conversion or installed 0.28.1 qualification.
+
 For AIOS 0.28.0, the [Foundation migration](project-foundation.md) retires one
 entrypoint and reconciles the current documentation, routing and native package
 metadata. The candidate passes the seven maintained Python checks, locked Node 22
@@ -11,6 +20,17 @@ fix. The pilot explicitly reads canonical `AGENTS.md`; automatic loading on that
 invocation remains unqualified. Current Claude documentation supports direct
 AGENTS loading and imports, so this is not a claim about every Claude client.
 Independent review and the delivered revision belong to the release PR.
+
+On 2026-10-10, the coordinator reported a separate Claude Code 2.1.295 isolated
+native lifecycle trial using released public-source snapshots and a fresh private
+configuration directory: install 0.27.0, refresh/update to 0.28.0, read native
+details, uninstall and remove the marketplace all exited 0. Native list/cache
+inventory changed from 26 to 25 skills with Foundation absent; final plugin list
+was empty and the shared settings hash was unchanged. No authentication was
+copied and no model call or purchase was made. This coordinator-observed result
+qualifies that isolated lifecycle through 0.28.0 only, not 0.28.1, model activation,
+AGENTS autoload or account-global adoption; it does not replace the earlier
+instruction-loading observations above.
 
 The human-review handoff candidate (2026-10-08) links Build, Review and Ship to
 one proportional presentation guide and reuses Design's existing visual comparison

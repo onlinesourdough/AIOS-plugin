@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Alder Field — synthetic baseline</title>
+<style>
+:root { color-scheme: light dark; --paper:#f5f2e9; --ink:#193a2c; --panel:#fffdf6; --line:#9aab9c; --soft:#e3eadf; --error:#972b21; }
+@media(prefers-color-scheme:dark) { :root { --paper:#16271f; --ink:#e9eee0; --panel:#20372b; --line:#738c77; --soft:#304a38; --error:#ffc0b8; } }
+* { box-sizing:border-box; } body { margin:0; background:var(--paper); color:var(--ink); font:17px/1.55 Georgia,serif; }
+a { color:inherit; text-underline-offset:.2em; } a:hover { text-decoration-thickness:2px; }
+:focus-visible { outline:3px solid var(--ink); outline-offset:4px; }
+.skip { position:absolute; left:20px; top:-100px; padding:12px; background:var(--panel); } .skip:focus { top:10px; }
+header,main,footer .footer-copy { max-width:1080px; margin:auto; padding:24px; }
+header { display:flex; justify-content:space-between; align-items:center; gap:20px; border-bottom:1px solid var(--line); }
+nav { display:flex; flex-wrap:wrap; gap:18px; } .brand { font-weight:bold; font-size:24px; }
+small,.kicker,button,label,.notice { font-family:system-ui,sans-serif; } small { display:block; font-size:14px; }
+h1,h2,h3,p { margin:0 0 16px; } h1 { font-size:clamp(40px,5.5vw,66px); line-height:1.08; max-width:760px; font-weight:normal; } h2 { font-size:34px; line-height:1.18; font-weight:normal; } h3 { font-size:25px; line-height:1.2; }
+.kicker { letter-spacing:.1em; text-transform:uppercase; font-size:12px; margin-bottom:12px; }
+.notice { font-size:13px; padding-top:14px; } section { margin:40px 0; } .hero { padding:32px 0 8px; } .hero>p { max-width:660px; }
+.button,button { display:inline-block; border:1px solid var(--ink); padding:11px 18px; background:var(--ink); color:var(--paper); font:600 16px/1.4 system-ui,sans-serif; text-decoration:none; cursor:pointer; }
+.offers { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; align-items:stretch; }
+.offer { padding:24px; background:var(--panel); border:1px solid var(--line); display:flex; flex-direction:column; }
+.offer .button { margin-top:auto; } .offer p { max-width:55ch; } .offer ul { padding-left:20px; margin:0 0 20px; }
+.contact { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+form, .answers { padding:24px; border:1px solid var(--line); background:var(--panel); }
+label { display:block; font-size:15px; font-weight:600; margin:16px 0 6px; } input,textarea { width:100%; padding:12px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font:inherit; } textarea { min-height:100px; }
+.privacy { margin:4px 0; font:12px/1.15 system-ui,sans-serif; } .error { color:var(--error); font:15px/1.5 system-ui,sans-serif; margin:8px 0; } [hidden] { display:none!important; }
+details { border-top:1px solid var(--line); padding:16px 0; } summary { font-weight:bold; cursor:pointer; } details p { margin:12px 0 0; }
+footer { position:relative; min-height:260px; background:#12392d; color:#fffdf6; isolation:isolate; } footer img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:-2; } footer:after { content:''; position:absolute; inset:0; background:#082219b8; z-index:-1; } footer .footer-copy { padding-top:55px; padding-bottom:55px; } footer p { max-width:50ch; }
+@media(max-width:640px) { header { align-items:flex-start; flex-direction:column; gap:12px; } header,main,footer .footer-copy { padding-left:20px; padding-right:20px; } .offers,.contact { grid-template-columns:1fr; } h2 { font-size:30px; } .offer,form,.answers { padding:20px; } }
+</style>
+
+<a class="skip" href="#main">Skip to content</a>
+<header><a class="brand" href="#main">Alder Field</a><nav aria-label="Main"><a href="#offers">Services</a><a href="#contact">Enquire</a></nav></header>
+<main id="main">
+<p class="notice">Synthetic service-page rehearsal. No real business or customer data.</p>
+<section class="hero"><p class="kicker">Gardens with room to grow</p><h1>Make room for a garden that grows with you.</h1><p>Practical garden planning, from one difficult corner to a whole-season planting plan.</p><p>Gardens with room to grow.</p><a class="button" href="#contact">Plan a conversation</a></section>
+<section id="offers"><p class="kicker">01 / Our services</p><h2>Choose the help your garden needs</h2><p>Our services help your garden grow.</p>
+<div class="offers">
+<article class="offer"><p class="kicker">01 / A fresh start</p><h3>Garden conversation</h3><p>A 45-minute call to untangle one question and agree your next step.</p><p><strong>£65</strong> · Remote</p><a class="button" href="#contact">Ask about a call</a></article>
+<article class="offer"><p class="kicker">02 / A fresh start</p><h3>Border sketch</h3><p>A planting sketch for one border, with a seasonal shortlist and a care note.</p><p><strong>£180</strong> · One border</p><a class="button" href="#contact">Ask about a sketch</a></article>
+<article class="offer plan"><p class="kicker">03 / A fresh start</p><h3>A whole-garden plan</h3><p>For gardens that need a joined-up approach to paths, places to sit and planting across the seasons.</p><ul><li>A site conversation and measured brief</li><li>A layout with planting priorities</li><li>A phased plan you can work through over time</li></ul><p><strong>From £620</strong> · Survey and construction excluded.</p><p id="visit-note">Visits by appointment.</p><a class="button" href="#contact">Discuss a plan</a></article>
+</div></section>
+<section id="contact"><p class="kicker">02 / Get in touch</p><h2>Tell us about your garden</h2><p>Get in touch to tell us about your garden.</p>
+<div class="contact"><form novalidate><h3>Start a conversation</h3><label for="email">Email address</label><input id="email" name="email" type="email" required autocomplete="email" aria-describedby="privacy email-error"><p id="email-error" class="error" role="alert" hidden>Enter an email address, such as name@example.com. Your message has not been sent.</p><label for="message">What would you like help with?</label><textarea id="message" name="message"></textarea><p id="privacy" class="privacy">This rehearsal sends nothing. Read the <a href="#privacy-detail">privacy note</a>before using a live service.</p><button type="submit">Check enquiry</button><p id="result" role="status" hidden>Example complete. Nothing was sent or saved.</p></form>
+<div class="answers"><h3>Before you enquire</h3><details><summary>Can I start with a small space?</summary><p>Yes. A call can focus on a balcony or one corner. A whole-garden plan is optional.</p></details><details><summary>What does a plan include?</summary><p>A layout, planting priorities and a phased plan. Survey and construction costs are separate.</p></details><details id="privacy-detail"><summary>How does this example use my details?</summary><p>It does not send or store them. Use fictional details here. A live service would need its own accurate privacy information.</p></details></div></div></section>
+</main>
+<footer><img src="landscape.svg" alt="" width="1200" height="360"><div class="footer-copy"><h2>Alder Field</h2><p>Room to grow, season by season.</p><a href="#contact">Talk about your garden</a><small>Original synthetic landscape · example only</small></div></footer>
+<script>
+const form = document.querySelector('form');
+const email = document.querySelector('#email');
+const error = document.querySelector('#email-error');
+const result = document.querySelector('#result');
+form.addEventListener('submit', event => {
+  event.preventDefault();
+  const invalid = !email.validity.valid;
+  error.hidden = !invalid;
+  email.setAttribute('aria-invalid', String(invalid));
+  result.hidden = invalid;
+  if (invalid) email.focus();
+});
+</script></html>

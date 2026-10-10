@@ -25,9 +25,50 @@ the accepted functional scope.
 Translate selected reference traits into inspectable choices, such as text/media
 proportions and deliberate mobile content order. State justified differences
 caused by real copy, brand, accessibility or interaction needs. Images guide
-decisions; canonical `DESIGN.md` owns the accepted adaptation. For an editable
-companion, retain the selected OpenPencil workflow. External style or image
-references neither replace that editor nor prove editable or working output.
+decisions; canonical `DESIGN.md` owns the accepted adaptation. Select a sufficient
+available companion for the actual task: project-local editable HTML/source can
+be portable, or use an installed editor through its supported native workflow.
+Keep a working selected route, including [OpenPencil](../../openpencil-workbench/SKILL.md),
+unless a concrete task need justifies changing it. Availability in one host does
+not establish installation or support in another. Missing required tooling is
+an explicit limitation; offer a useful portable fallback without silently
+installing or substituting for a required native format.
+
+When editable output is selected, make an actual edit, preserve an intervening
+manual change, save and reopen the file, and inspect the requested export.
+Record the format, path, source/derivative ownership and observed limits. For an
+implementation handoff, identify how the companion maps to existing components,
+tokens and behavior, including unresolved differences. A screenshot or manifest
+alone proves none of these operations. Reuse [portable work](portable-work.md)
+only when its preview or snapshot helpers are needed.
+
+## Reference-led polish
+
+Use this lightweight pass for requested polish/simplification or observed
+density/rhythm problems. Reuse the brief, direction and
+[before/after comparison](before-after.md); no separate report is required.
+
+- **Preserve, borrow, change:** name accepted identity and behavior to retain,
+  the inspected reference's useful grouping, proportions, spacing or mobile
+  order, and the requested changes. Borrow only those traits; a useful layout
+  does not authorize importing its palette, navigation style or mascot.
+- **Give text layers a job:** remove, merge or disclose repetition across
+  kickers, headings, paragraphs and CTAs. Keep necessary field labels, privacy
+  guidance, errors, qualifications and access to actions. Dense operational
+  information may need to remain visible; sparse styling is not the goal.
+- **Compose the full sequence:** let real importance and unequal content shape
+  neighboring offers and sections. Distinguish between-section rhythm from
+  within-group spacing. Balance columns through layout, without filler copy,
+  forced equal heights or stretched controls; check natural narrow ordering.
+- **Finish in the rendered surface:** inspect the full scroll at comparable
+  desktop and narrow widths, relevant open/closed disclosures and states, and
+  each supported theme. Check line breaks, inline-link spacing, form notes and
+  actual image loading, including the footer. Retain accepted imagery/motion
+  only where it serves the job; add neither merely for polish. For implemented
+  UI inspect the built output with [Write code](../../write-code/SKILL.md);
+  direction-only work stays proportional and records unverified rendering.
+
+## States and selected proof
 
 Relevant interaction states include hover, active, visible focus, loading,
 empty, error, success, permission and offline. Errors belong near their control

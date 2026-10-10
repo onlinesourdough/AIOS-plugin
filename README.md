@@ -88,7 +88,9 @@ implementation-ready assets:
 [implementation](skills/aios-build-work/SKILL.md) when requested.**
 
 The project's `DESIGN.md` holds the visual direction. Its `design/` folder can
-hold browser previews, assets and editable companions. Review checks the actual
+hold browser previews, assets and editable companions. Existing tokens, components
+and code remain implementation truth, linked from the direction. Select a
+sufficient available companion; direction-only work needs no editor. Review checks the actual
 selected result against the brief, including relevant responsive and interaction
 states. An accepted direction can be used by implementation or content production.
 
@@ -451,7 +453,8 @@ selects only the local topic needed for a question. These references are not
 loaded into every session. AIOS has no documentation or skill runtime on the
 Resources domain. Selective reading saves context whether the file is local or
 remote; hosting alone does not reduce the tokens of content actually read.
-Future standards-based discovery and updates are tracked in [issue #12](https://github.com/onlinesourdough/AIOS-Plugin/issues/12).
+Remote skill distribution was considered in [issue #12](https://github.com/onlinesourdough/AIOS-Plugin/issues/12)
+and closed as not planned; it is not an active roadmap commitment.
 
 Read about the [25 skills](docs/skills.md), [architecture](docs/architecture.md),
 [verification](docs/verification.md), [recovery](docs/recovery.md) and
