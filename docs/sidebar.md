@@ -1,8 +1,10 @@
-# Codex sidebar — 0.26.2
+# Codex sidebar — 0.27.0
 
-The Meetings-inspired layout uses a compact header, one Context card and simple
-Personal/Team rows for Skills and Memory. Missing destinations stay visible with
-Add. Source actions open their links; no repeated external-arrow icons or
+The Meetings-inspired layout uses a compact header and three matching sections
+of simple rows: Context with Primary and Docs, then Personal/Team for Skills and
+Memory. Primary opens the selected context page, shown with its own icon and
+title; Docs is supporting documentation, not a second authority. Missing
+destinations stay visible with Add. Source actions open their links; no repeated external-arrow icons or
 full-width divider bands. Local paths display their location.
 
 New setups show all four numbered sections from the beginning: Notion, Context,
@@ -32,6 +34,15 @@ panel can start the temporary transport for this read, even without a page searc
 are not individually fetched. Unsupported custom/uploaded icons and failed
 icon reads retain a usable text label; no arbitrary external image host is loaded.
 Icon failure does not affect the connection badge or saved source choices.
+
+A chat-bubble button beside Settings, in setup and on the dashboard, opens the
+AIOS GitHub repository through the host link route. A failed open shows a
+message with the link; clicking again retries. There is no feedback form, draft,
+email or sending from the panel.
+Settings groups Docs under Context and notes that a context switch applies
+immediately while source changes apply with Save. It omits the repeated visible
+Optional labels; None still clears a slot. Spacing rather than divider lines
+separates the Settings header and actions.
 
 The lower-left footer shows only onlinesourdough in Geist Pixel Square. The font is
 embedded in the packaged HTML with its SIL Open Font License in the notices;
@@ -83,7 +94,12 @@ runtime/sidebar. Resource: ui://aios/home-v5. Tools:
 - aios_sources: explicit model read of the context and navigation with revisions.
 - aios_save_sources: app/model navigation replacement, scoped to current context.
 
-The short pointer lives in CODEX_HOME/AGENTS.md. Pointer saves keep unrelated
+The short pointer lives in CODEX_HOME/AGENTS.md. Installing AIOS alone does not
+choose a context. Saving the primary Context during setup, or confirming a
+Context switch in Settings, automatically writes its managed AIOS block there,
+keeping unrelated instructions; normal setup needs no manual copy. A fresh chat
+verifies that Codex discovers the instructions; Notion connection and page
+access still need their own check. Pointer saves keep unrelated
 bytes and custom rules, back up prior bytes, and reject ambiguous blocks,
 symlinks, oversized files and detected edits. Unchanged saves make no write.
 
@@ -109,7 +125,9 @@ Restoring a context pointer loads an existing map before allowing replacement.
 Run the locked build, Node tests and bundled stdio smoke, package checks and
 repository rehearsals. Browser proof covers initial setup, revisiting sections,
 source pickers, optional slots, settings Save/discard, failed saves, retry,
-keyboard/focus, light/dark and 320px. Synthetic host results are distinct from
+keyboard/focus, light/dark and 320px. GitHub button proof covers its
+presence in setup and dashboard, the exact repository link, and a failed open
+with a visible retryable message. Synthetic host results are distinct from
 native installed-runtime adoption and do not prove new-account OAuth.
 
 Page-picker proof includes a real read-only Notion listing and AIOS search via

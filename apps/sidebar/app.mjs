@@ -3,11 +3,12 @@ import { classifyTarget, connectionCopy } from './ui-model.mjs';
 import { sourceRoles, roleLabels, readStatus, draftFrom, isDirty, isCurrent, setLink, linksPayload, linkFromInput, shortTarget } from './setup-state.mjs';
 import { createPicker } from './picker.mjs';
 import { pageIcon, notionPageId } from './page-icons.mjs';
-import { sourceLabel, sourceTitle } from './source-label.mjs';
+import { sourceLabel } from './source-label.mjs';
 
 const app = new App({ name: 'aios', version: __AIOS_VERSION__ }, { availableDisplayModes: ['fullscreen'] });
 const $ = id => document.getElementById(id);
 const connectUrl = 'https://chatgpt.com/apps/notion/asdk_app_69c18c28f1188191bf5b8445c4ab0a2e';
+const repositoryUrl = 'https://github.com/onlinesourdough/AIOS-plugin';
 const slotLabels = { docs: 'Docs', personalSkills: 'Personal', teamSkills: 'Team', memory: 'Personal', teamMemory: 'Team' };
 const stepRoles = [[], ['docs'], ['personalSkills', 'teamSkills'], ['memory', 'teamMemory']];
 const connectable = ['not_connected', 'disabled', 'unavailable'];
@@ -111,6 +112,7 @@ const sourcesReady = () => status.context.state === 'configured' && draft.contex
 
 function render() {
   $('retry-load').hidden = Boolean(status) || refreshing;
+  $('help').disabled = saving || refreshing;
   if (!status) { $('loading').hidden = !refreshing; return; }
   const dashboard = status.context.state === 'configured' && !onboarding;
   const locked = saving || refreshing;
@@ -178,18 +180,16 @@ function renderSetup(locked) {
   setupContextPicker.render({ value: displayed(selected), choices: [], browse: canBrowse(), disabled: locked });
   for (const role of sourceRoles) setupPickers[role].render({ value: displayed(draft.links[role]), choices: [displayed(draft.saved[role])], browse: canBrowse() && !other, disabled: locked || !ready });
 }
+// Primary is the context page itself; the row label never renames that page.
 function renderDashboard(locked) {
-  sourceLabel($('context-name'), displayed({ title: status.sources.title || 'Context', target: status.context.target }));
+  const context = status.sources.title || 'Context';
+  sourceLabel($('context-meta'), displayed({ title: context, target: status.context.target }));
   $('open-context').title = status.context.target;
   $('open-context').disabled = locked;
+  $('open-context').setAttribute('aria-label', `Open Context: ${context}`);
   for (const role of sourceRoles) {
     const link = status.sources.links[role], row = $(`open-${role}`);
-    const value = displayed(link);
-    if (role === 'docs') {
-      sourceLabel($('docs-name'), { title: 'Docs', icon: value?.icon });
-      const title = sourceTitle(value);
-      sourceLabel($('docs-meta'), { title: link ? (title === 'Docs' ? notionPageId(link.target) ? '' : shortTarget(link.target) : title) : 'Add' });
-    } else sourceLabel($(`${role}-meta`), link ? { ...value, title: link.title === roleLabels[role] && !notionPageId(link.target) ? shortTarget(link.target) : link.title } : { title: 'Add' });
+    sourceLabel($(`${role}-meta`), link ? { ...displayed(link), title: link.title === roleLabels[role] && !notionPageId(link.target) ? shortTarget(link.target) : link.title } : { title: 'Add' });
     row.title = link?.target || '';
     row.dataset.empty = String(!link);
     row.disabled = locked || status.sources.state === 'unavailable';
@@ -419,6 +419,14 @@ $('drawer').addEventListener('keydown', event => {
 });
 $('drawer').addEventListener('cancel', event => { event.preventDefault(); if (!discardPrompt) requestClose(); });
 $('drawer').addEventListener('close', closeSettings);
+// The GitHub button reports only in its own line, apart from setup/source
+// feedback and Load latest, so neither a failure nor a retry can hide them.
+$('help').addEventListener('click', async () => {
+  const error = $('repo-error');
+  error.hidden = true; error.textContent = '';
+  try { const result = await app.openLink({ url: repositoryUrl }); if (result?.isError) throw new Error(); }
+  catch { error.textContent = `Could not open GitHub. ${repositoryUrl}`; error.hidden = false; }
+});
 try {
   await app.connect(undefined, { timeout: 12000 }); theme(app.getHostContext());
   if (!status) await refresh();

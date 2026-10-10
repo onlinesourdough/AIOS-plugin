@@ -1,5 +1,5 @@
 // A minimal DOM for app.test.mjs: element tree, ids, bubbling events, focus and
-// dialogs. It parses only tags and attributes from index.html, not text.
+// dialogs. It parses tags, attributes and trimmed non-blank text from index.html.
 const voidTags = new Set(['meta', 'input', 'br', 'img', 'hr', 'link']);
 
 export function createDocument(html) {
@@ -50,7 +50,10 @@ export function createDocument(html) {
     removeEventListener(type, handler) { listeners[type]?.delete(handler); },
   };
   const root = new Element('#document'), stack = [root];
-  for (const [, closing, tag, rest] of html.matchAll(/<(\/?)(\w+)([^>]*)>/g)) {
+  let end = 0;
+  for (const { 0: match, 1: closing, 2: tag, 3: rest, index } of html.matchAll(/<(\/?)(\w+)([^>]*)>/g)) {
+    const text = html.slice(end, index).trim(); end = index + match.length;
+    if (text) stack.at(-1).append(text);
     if (closing) { const index = stack.findLastIndex(node => node.tagName === tag.toUpperCase()); if (index > 0) stack.length = index; continue; }
     const element = new Element(tag);
     for (const [, name, value = ''] of rest.matchAll(/([\w-]+)(?:="([^"]*)")?/g)) {

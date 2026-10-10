@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.27.0 — 2026-10-10
+
+- Add a chat-bubble button beside Settings, in setup and on the dashboard, that
+  opens the AIOS GitHub repository. A failed open shows a retryable message.
+- Group Docs under a Context heading in Settings and note that a context switch
+  applies immediately while Docs, Skills and Memory changes apply with Save.
+  Settings no longer repeats visible Optional labels; None still clears a slot.
+- Show the dashboard Context as a section like Skills and Memory, with Primary
+  and Docs rows that display each destination's own icon and title.
+- Give the dashboard and Settings slightly more room and separate the Settings
+  header and actions with spacing instead of divider lines.
+
 ## 0.26.2 — 2026-10-09
 
 - Keep Notion connection, page and icon reads working after Codex refreshes an

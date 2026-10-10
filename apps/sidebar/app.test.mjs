@@ -16,7 +16,7 @@ const saved = (links, title = 'Our AIOS') => ({ state: 'saved', revision: 'c'.re
 const plain = value => JSON.parse(JSON.stringify(value));
 
 async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sources = { state: 'missing', revision: 'c'.repeat(64), title: '', links: {} }, options = {}) {
-  let time = 100000, host, fail = Boolean(options.initialFailure), delay, release, revision = 0;
+  let time = 100000, host, fail = Boolean(options.initialFailure), delay, release, revision = 0, linkFailure = false;
   const calls = [], links = [], document = createDocument(template);
   const status = { features: { notionPages: Boolean(options.pages), notionIcons: Boolean(options.icons) }, notion: { state: options.notion || 'connected' }, context, sources, checkedAt: new Date(time).toISOString() };
   const snapshot = () => ({ _meta: { 'aios/status': structuredClone({ ...status, checkedAt: new Date(time).toISOString() }) } });
@@ -30,7 +30,11 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
       if (options.view) result._meta['aios/view'] = options.view;
       this.ontoolresult(result);
     }
-    async openLink(args) { links.push(args.url); return {}; }
+    async openLink(args) {
+      links.push(args.url);
+      if (linkFailure === 'throw') throw new Error('Link blocked');
+      return linkFailure === 'error' ? { isError: true } : {};
+    }
     // Mirrors the server contract: revision and context checks, whole-map replacement.
     async callServerTool({ name, arguments: args }) {
       calls.push({ name, args: plain(args) }); if (delay) await delay;
@@ -59,7 +63,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
   const u = {
     get, calls, links, status, names: () => calls.map(call => call.name), focused: () => document.activeElement?.id,
     text: id => get(id).textContent, shown: id => !get(id).hidden,
-    notify: value => host.ontoolresult(value), fail: value => { fail = value; },
+    notify: value => host.ontoolresult(value), fail: value => { fail = value; }, failLinks: value => { linkFailure = value; },
     delay() { delay = new Promise(resolve => { release = resolve; }); }, release() { release(); delay = undefined; },
     click: id => get(id).dispatch('click'),
     key: (id, key) => get(id).dispatch('keydown', { key }),
@@ -127,7 +131,7 @@ test('jumping between steps keeps the source draft and one Continue saves every 
 test('an existing context opens the dashboard with Personal and Team slots and a quiet Add', async () => {
   const u = await ui(configured(), saved({ personalSkills: { title: 'Writing skills', target: 'https://example.com/skills' }, memory: { title: 'Memory', target: 'https://example.com/memory' } }));
   assert.equal(u.text('heading'), 'AIOS'); assert.equal(u.shown('badge'), true); assert.equal(u.shown('setup'), false);
-  assert.equal(u.text('context-name'), 'Our AIOS');
+  assert.equal(u.text('context-meta'), 'Our AIOS');
   assert.deepEqual(['personalSkills', 'teamSkills', 'memory', 'teamMemory'].map(role => u.text(`${role}-meta`)), ['Writing skills', 'Add', 'example.com/memory', 'Add']);
   await u.click('open-personalSkills'); assert.deepEqual(u.links, ['https://example.com/skills']);
   await u.click('open-teamMemory');
@@ -382,7 +386,7 @@ test('connected onboarding selects real page metadata and keeps its title withou
   await u.click('setup-docs-picker'); await settled();
   await u.options('setup-docs-picker').find(item=>item.textContent.startsWith('Company docs')).dispatch('click');
   await u.submit(); await u.submit(); await u.submit();
-  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('context-name'), 'Studio AIOS');
+  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('context-meta'), 'Studio AIOS');
   assert.equal(u.text('docs-meta'), 'Company docs');
   assert.equal(u.calls.some(call => /chat|turn|message/.test(call.name)), false);
 });
@@ -507,8 +511,8 @@ test('saved destinations receive their real icons without rewriting navigation o
   const original = saved({ docs: { title: 'Docs', target: other }, memory: { title: '🧠 Memory', target: target + '?memory' } });
   const u = await ui(configured(), original, { pages: async () => ({ pages: [] }), icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: value === other ? 'https://www.notion.so/icons/copy_lightgray.svg' : '🧠' })) }) });
   await settled();
-  assert.equal(u.get('docs-name').children[0].tagName, 'IMG');
-  assert.equal(u.get('docs-name').children[0].src, 'https://www.notion.so/icons/copy_lightgray.svg');
+  assert.equal(u.get('docs-meta').children[0].tagName, 'IMG');
+  assert.equal(u.get('docs-meta').children[0].src, 'https://www.notion.so/icons/copy_lightgray.svg');
   assert.equal((u.text('memory-meta').match(/🧠/g) || []).length, 1);
   assert.deepEqual(u.names(), ['aios_notion_icons']);
   assert.deepEqual(plain(u.status.sources), original);
@@ -526,19 +530,41 @@ test('failed or late icon metadata cannot break setup, change connection state, 
   assert.equal(u.shown('dashboard'), true); assert.equal(u.shown('badge'), true);
   finish({ icons: [{ target: 'https://app.notion.com/p/00000000000000000000000000000003', icon: '💀' }] });
   await settled();
-  assert.equal(u.text('docs-name'), 'Docs');
-  assert.equal(u.get('docs-name').children.some(node => node.tagName === 'IMG'), false);
+  assert.equal(u.text('docs-meta'), 'Docs');
+  assert.equal(u.get('docs-meta').children.some(node => node.tagName === 'IMG'), false);
   await u.click('settings'); assert.equal(u.get('drawer-save').disabled, true);
 });
 
 test('Docs uses one icon, wraps its long name for truncation and keeps manual destination hints', async () => {
   const u = await ui(configured(), saved({ docs: { title: '📄 Company documentation', target: other } }), { pages: async () => ({ pages: [] }), icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: '📄' })) }) });
   await settled();
-  assert.equal((u.text('docs-name').match(/📄/g) || []).length, 1);
-  assert.equal(u.text('docs-meta'), 'Company documentation');
-  assert.equal(u.get('docs-meta').children[0].className, 'source-title');
+  assert.equal((u.text('docs-meta').match(/📄/g) || []).length, 1);
+  assert.equal(u.get('docs-meta').children[1].className, 'source-title');
+  assert.equal(u.get('docs-meta').children[1].textContent, 'Company documentation');
   const manual = await ui(configured(), saved({ docs: { title: 'Docs', target: 'https://example.com/docs' } }));
   assert.equal(manual.text('docs-meta'), 'example.com/docs');
+});
+
+test('the dashboard Context section shows Primary and Docs rows with their real destination labels', async () => {
+  const u = await ui(configured(), saved({ docs: { title: 'Company docs', target: other } }, 'Studio AIOS'), { pages: async () => ({ pages: [] }),
+    icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: value === other ? 'https://www.notion.so/icons/copy_lightgray.svg' : '👾' })) }) });
+  await settled();
+  assert.equal(u.text('context-title'), 'Context'); assert.equal(u.get('context-title').parentNode.getAttribute('aria-labelledby'), 'context-title');
+  assert.equal(u.get('open-context').children[0].textContent, 'Primary'); assert.equal(u.get('open-docs').children[0].textContent, 'Docs');
+  assert.equal(u.get('open-docs').children[0].descendants().some(node => node.className === 'source-icon'), false);
+  const [contextIcon, contextTitle] = u.get('context-meta').children, [docsIcon, docsTitle] = u.get('docs-meta').children;
+  assert.equal(contextIcon.textContent, '👾'); assert.equal(contextTitle.textContent, 'Studio AIOS');
+  assert.equal(docsIcon.src, 'https://www.notion.so/icons/copy_lightgray.svg'); assert.equal(docsTitle.textContent, 'Company docs');
+  assert.equal(u.get('open-context').getAttribute('aria-label'), 'Open Context: Studio AIOS');
+  assert.equal(u.get('open-docs').getAttribute('aria-label'), 'Open Docs: Company docs');
+  assert.doesNotMatch(u.text('dashboard'), /Start here/);
+  await u.click('open-context'); await u.click('open-docs');
+  assert.deepEqual(u.links, [target, other]);
+  assert.equal(u.status.sources.title, 'Studio AIOS'); assert.deepEqual(u.names(), ['aios_notion_icons']);
+  const empty = await ui(configured(), saved({}));
+  assert.equal(empty.text('docs-meta'), 'Add'); assert.equal(empty.get('open-docs').getAttribute('aria-label'), 'Add Docs');
+  await empty.click('open-docs');
+  assert.equal(empty.get('drawer').open, true); assert.deepEqual(empty.links, []);
 });
 
 test('choosing a page with an icon saves only the source title and target', async () => {
@@ -548,4 +574,84 @@ test('choosing a page with an icon saves only the source title and target', asyn
   await u.click('drawer-save');
   const write = u.calls.find(call => call.name === 'aios_save_sources');
   assert.deepEqual(write.args.links, { docs: { title: 'Docs', target: other } });
+});
+
+const repository = 'https://github.com/onlinesourdough/AIOS-plugin';
+
+test('the GitHub button is in setup and on the dashboard and opens only the AIOS repository', async () => {
+  const u = await ui();
+  assert.equal(u.shown('setup'), true); assert.equal(u.shown('help'), true); assert.equal(u.shown('settings'), false);
+  assert.equal(u.get('help').getAttribute('aria-label'), 'Open AIOS on GitHub');
+  await u.click('help');
+  assert.deepEqual(u.links, [repository]); assert.deepEqual(u.calls, []);
+  const d = await ui(configured(), saved({}));
+  assert.equal(d.shown('dashboard'), true); assert.equal(d.shown('help'), true); assert.equal(d.shown('settings'), true);
+  d.delay(); const refreshing = d.click('refresh');
+  assert.equal(d.get('help').disabled, true);
+  d.release(); await refreshing;
+  assert.equal(d.get('help').disabled, false);
+  await d.click('help'); assert.deepEqual(d.links, [repository]);
+  const page = d.get('drawer').parentNode.descendants();
+  assert.equal(d.get('help-drawer'), null);
+  assert.deepEqual(page.filter(node => node.tagName === 'DIALOG').map(node => node.id), ['drawer']);
+  assert.equal(page.some(node => node.tagName === 'TEXTAREA'), false);
+});
+
+test('a failed GitHub open shows its own retryable error with the link', async () => {
+  for (const failure of ['throw', 'error']) {
+    const u = await ui(configured(), saved({}));
+    u.failLinks(failure); await u.click('help');
+    assert.equal(u.shown('repo-error'), true); assert.equal(u.text('repo-error'), `Could not open GitHub. ${repository}`);
+    assert.equal(u.shown('feedback'), false); assert.equal(u.get('help').disabled, false);
+    u.failLinks(false); await u.click('help');
+    assert.deepEqual(u.links, [repository, repository]); assert.deepEqual(u.calls, []);
+    assert.equal(u.shown('repo-error'), false); assert.equal(u.text('repo-error'), ''); assert.equal(u.shown('feedback'), false);
+  }
+});
+
+test('GitHub failures and retries keep a stale draft with Load latest, unavailable sources and a same-link source failure', async () => {
+  const scenarios = {
+    async staleDraft() {
+      const u = await ui(); await u.input(target); await u.submit();
+      await u.click('step-2'); await u.addLink('setup-personalSkills-picker', 'https://example.com/skills');
+      u.status.sources = { state: 'saved', revision: 'e'.repeat(64), title: 'Changed elsewhere', links: {} };
+      await u.click('refresh');
+      return [u, 'Setup changed elsewhere. Your edits are kept; load the latest setup to continue.', true];
+    },
+    async unavailableSources() {
+      const u = await ui(configured(), { state: 'unavailable', revision: 'c'.repeat(64), title: '', links: {} });
+      return [u, 'Saved source links need attention. They have been left unchanged.', false];
+    },
+    async sameLinkSource() {
+      const u = await ui(configured(), saved({ docs: { title: 'AIOS repository', target: repository } }));
+      u.failLinks('throw'); await u.click('open-docs'); u.failLinks(false);
+      return [u, `Could not open the link. ${repository}`, false];
+    },
+  };
+  for (const failure of ['throw', 'error']) for (const [name, setup] of Object.entries(scenarios)) {
+    const [u, warning, reload] = await setup();
+    const kept = () => {
+      assert.equal(u.shown('feedback'), true, name); assert.equal(u.text('feedback-text'), warning, name);
+      assert.equal(u.get('feedback').dataset.error, 'true', name); assert.equal(u.shown('reload-draft'), reload, name);
+    };
+    kept();
+    u.failLinks(failure); await u.click('help');
+    assert.equal(u.text('repo-error'), `Could not open GitHub. ${repository}`, name); kept();
+    u.failLinks(false); await u.click('help');
+    assert.equal(u.links.at(-1), repository, name); assert.equal(u.shown('repo-error'), false, name); kept();
+  }
+});
+
+test('Settings keeps Optional for assistive technology and None still clears an optional source', async () => {
+  const docs = { title: 'Docs', target: 'https://example.com/docs' }, team = { title: 'Team decisions', target: 'https://example.com/team-memory' };
+  const u = await ui(configured(), saved({ docs, teamMemory: team }));
+  await u.click('settings');
+  for (const role of ['docs', 'personalSkills', 'teamSkills', 'memory', 'teamMemory'])
+    assert.equal(u.get(`settings-${role}`).children[0].children[0].children.at(-1).className, 'optional');
+  await u.click('settings-teamMemory-picker');
+  const none = u.options('settings-teamMemory-picker').find(option => option.textContent === 'None');
+  assert.ok(none); await none.dispatch('click');
+  assert.equal(u.text('settings-teamMemory-picker'), 'None');
+  await u.click('drawer-save');
+  assert.deepEqual(u.calls[0].args.links, { docs });
 });
