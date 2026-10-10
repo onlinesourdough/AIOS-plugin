@@ -7,7 +7,7 @@
     <h1 id="heading" tabindex="-1">Get started</h1>
     <div class="header-actions">
       <span id="badge" class="badge" hidden>Connected</span>
-      <button id="help" class="btn btn-ghost icon cursor-interaction" type="button" aria-label="Help and feedback" title="Help and feedback"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M7.9 8a2.1 2.1 0 1 1 3 1.9c-.6.3-.9.8-.9 1.4v.4"/><circle cx="10" cy="14" r=".5" fill="currentColor"/></svg></button>
+      <button id="help" class="btn btn-ghost icon cursor-interaction" type="button" aria-label="Help improve AIOS" title="Help improve AIOS"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 3.5h11A1.5 1.5 0 0 1 17 5v7.5a1.5 1.5 0 0 1-1.5 1.5H9.5L6 17v-3H4.5A1.5 1.5 0 0 1 3 12.5V5a1.5 1.5 0 0 1 1.5-1.5Z"/></svg></button>
       <button id="settings" class="btn btn-ghost icon cursor-interaction" type="button" aria-label="Settings" title="Settings" hidden><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m8 2-.5 2-2 1-2-.5-1.5 3 1.5 1.5v2L2 12.5l1.5 3 2-.5 2 1 .5 2h4l.5-2 2-1 2 .5 1.5-3-1.5-1.5v-2L18 7.5l-1.5-3-2 .5-2-1-.5-2Z"/><circle cx="10" cy="10" r="2.7"/></svg></button>
     </div>
   </header>
@@ -60,10 +60,10 @@
 
   <div id="dashboard" hidden>
     <div id="notice" class="notice" hidden><span id="notice-text"></span><button id="notice-connect" class="btn btn-ghost cursor-interaction" type="button" hidden>Connect</button></div>
-    <div class="aios-card rows">
-      <button id="open-context" class="row row-lead cursor-interaction" type="button"><span id="context-name" class="row-title"></span><span id="context-note" class="row-meta">Start here</span></button>
-      <button id="open-docs" class="row cursor-interaction" type="button"><span id="docs-name" class="row-title">Docs</span><span id="docs-meta" class="row-meta"></span></button>
-    </div>
+    <section aria-labelledby="context-title"><h2 id="context-title">Context</h2>
+      <button id="open-context" class="row cursor-interaction" type="button"><span class="row-title">Primary</span><span id="context-meta" class="row-meta"></span></button>
+      <button id="open-docs" class="row cursor-interaction" type="button"><span class="row-title">Docs</span><span id="docs-meta" class="row-meta"></span></button>
+    </section>
     <section aria-labelledby="skills-title"><h2 id="skills-title">Skills</h2>
       <button id="open-personalSkills" class="row cursor-interaction" type="button"><span class="row-title">Personal</span><span id="personalSkills-meta" class="row-meta"></span></button>
       <button id="open-teamSkills" class="row cursor-interaction" type="button"><span class="row-title">Team</span><span id="teamSkills-meta" class="row-meta"></span></button>
@@ -97,20 +97,15 @@
   </div>
 </dialog>
 
-<dialog id="help-drawer" class="drawer" aria-labelledby="help-title">
-  <div class="drawer-head"><h2 id="help-title" tabindex="-1">Help and feedback</h2><button id="help-close" class="btn btn-ghost icon cursor-interaction" type="button" aria-label="Close help and feedback" title="Close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 3 8 8M11 3l-8 8"/></svg></button></div>
-  <div class="drawer-body">
-    <section class="help-links"><h3>Help</h3>
-      <button id="help-guide" class="row cursor-interaction" type="button"><span class="row-title">User guide</span><span class="row-meta">README</span></button>
-      <button id="help-releases" class="row cursor-interaction" type="button"><span class="row-title">What’s new</span><span class="row-meta">Releases</span></button>
-    </section>
-    <section><h3>Feedback</h3>
-      <div class="field"><label class="field-label" for="issue-title">Title<span class="optional">Optional</span></label><input id="issue-title" class="form-control" type="text" maxlength="80" autocomplete="off"></div>
-      <div class="field"><label class="field-label" for="issue-body">Feedback</label><textarea id="issue-body" class="form-control" rows="6" maxlength="2000" aria-required="true" aria-describedby="issue-error issue-note"></textarea><p id="issue-error" class="editor-error" hidden></p></div>
-      <p id="issue-note" class="hint">Your text opens in a GitHub draft. It becomes public when you submit. Leave out private information. Draft text isn’t saved here.</p>
-      <p id="issue-status" class="hint issue-status" role="status" aria-live="polite"></p>
-      <div class="step-actions"><button id="issue-clear" class="btn btn-ghost cursor-interaction" type="button">Clear</button><button id="issue-open" class="btn btn-primary cursor-interaction" type="button">Open GitHub draft</button></div>
-    </section>
+<dialog id="help-drawer" class="popover" aria-labelledby="help-title">
+  <div class="popover-head"><h2 id="help-title" tabindex="-1">Help improve AIOS</h2><button id="help-close" class="btn btn-ghost icon cursor-interaction" type="button" aria-label="Close feedback" title="Close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m3 3 8 8M11 3l-8 8"/></svg></button></div>
+  <div class="popover-body">
+    <div class="field"><label class="field-label" for="issue-body">Feedback</label><textarea id="issue-body" class="form-control" rows="5" maxlength="2000" aria-required="true" aria-describedby="issue-error issue-note" placeholder="Share a bug, an idea, or something that worked well."></textarea><p id="issue-error" class="editor-error" hidden></p></div>
+    <div class="field field-quiet"><label class="field-label" for="issue-title">Title<span class="optional">Optional</span></label><input id="issue-title" class="form-control" type="text" maxlength="80" autocomplete="off"></div>
+    <p id="issue-note" class="hint">Your text opens in a GitHub draft. It becomes public when you submit. Leave out private information. Draft text isn’t saved here.</p>
+    <p id="issue-status" class="hint issue-status" role="status" aria-live="polite"></p>
+    <div class="step-actions"><button id="issue-clear" class="btn btn-ghost cursor-interaction" type="button">Clear</button><button id="issue-open" class="btn btn-primary cursor-interaction" type="button">Open GitHub draft</button></div>
+    <p class="help-links"><button id="help-guide" class="link-button cursor-interaction" type="button">User guide</button><span aria-hidden="true">·</span><button id="help-releases" class="link-button cursor-interaction" type="button">What’s new</button></p>
   </div>
 </dialog>
 <script type="module">/*APP_JS*/</script>

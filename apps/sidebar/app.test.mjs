@@ -131,7 +131,7 @@ test('jumping between steps keeps the source draft and one Continue saves every 
 test('an existing context opens the dashboard with Personal and Team slots and a quiet Add', async () => {
   const u = await ui(configured(), saved({ personalSkills: { title: 'Writing skills', target: 'https://example.com/skills' }, memory: { title: 'Memory', target: 'https://example.com/memory' } }));
   assert.equal(u.text('heading'), 'AIOS'); assert.equal(u.shown('badge'), true); assert.equal(u.shown('setup'), false);
-  assert.equal(u.text('context-name'), 'Our AIOS');
+  assert.equal(u.text('context-meta'), 'Our AIOS');
   assert.deepEqual(['personalSkills', 'teamSkills', 'memory', 'teamMemory'].map(role => u.text(`${role}-meta`)), ['Writing skills', 'Add', 'example.com/memory', 'Add']);
   await u.click('open-personalSkills'); assert.deepEqual(u.links, ['https://example.com/skills']);
   await u.click('open-teamMemory');
@@ -386,7 +386,7 @@ test('connected onboarding selects real page metadata and keeps its title withou
   await u.click('setup-docs-picker'); await settled();
   await u.options('setup-docs-picker').find(item=>item.textContent.startsWith('Company docs')).dispatch('click');
   await u.submit(); await u.submit(); await u.submit();
-  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('context-name'), 'Studio AIOS');
+  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('context-meta'), 'Studio AIOS');
   assert.equal(u.text('docs-meta'), 'Company docs');
   assert.equal(u.calls.some(call => /chat|turn|message/.test(call.name)), false);
 });
@@ -511,8 +511,8 @@ test('saved destinations receive their real icons without rewriting navigation o
   const original = saved({ docs: { title: 'Docs', target: other }, memory: { title: '🧠 Memory', target: target + '?memory' } });
   const u = await ui(configured(), original, { pages: async () => ({ pages: [] }), icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: value === other ? 'https://www.notion.so/icons/copy_lightgray.svg' : '🧠' })) }) });
   await settled();
-  assert.equal(u.get('docs-name').children[0].tagName, 'IMG');
-  assert.equal(u.get('docs-name').children[0].src, 'https://www.notion.so/icons/copy_lightgray.svg');
+  assert.equal(u.get('docs-meta').children[0].tagName, 'IMG');
+  assert.equal(u.get('docs-meta').children[0].src, 'https://www.notion.so/icons/copy_lightgray.svg');
   assert.equal((u.text('memory-meta').match(/🧠/g) || []).length, 1);
   assert.deepEqual(u.names(), ['aios_notion_icons']);
   assert.deepEqual(plain(u.status.sources), original);
@@ -530,19 +530,41 @@ test('failed or late icon metadata cannot break setup, change connection state, 
   assert.equal(u.shown('dashboard'), true); assert.equal(u.shown('badge'), true);
   finish({ icons: [{ target: 'https://app.notion.com/p/00000000000000000000000000000003', icon: '💀' }] });
   await settled();
-  assert.equal(u.text('docs-name'), 'Docs');
-  assert.equal(u.get('docs-name').children.some(node => node.tagName === 'IMG'), false);
+  assert.equal(u.text('docs-meta'), 'Docs');
+  assert.equal(u.get('docs-meta').children.some(node => node.tagName === 'IMG'), false);
   await u.click('settings'); assert.equal(u.get('drawer-save').disabled, true);
 });
 
 test('Docs uses one icon, wraps its long name for truncation and keeps manual destination hints', async () => {
   const u = await ui(configured(), saved({ docs: { title: '📄 Company documentation', target: other } }), { pages: async () => ({ pages: [] }), icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: '📄' })) }) });
   await settled();
-  assert.equal((u.text('docs-name').match(/📄/g) || []).length, 1);
-  assert.equal(u.text('docs-meta'), 'Company documentation');
-  assert.equal(u.get('docs-meta').children[0].className, 'source-title');
+  assert.equal((u.text('docs-meta').match(/📄/g) || []).length, 1);
+  assert.equal(u.get('docs-meta').children[1].className, 'source-title');
+  assert.equal(u.get('docs-meta').children[1].textContent, 'Company documentation');
   const manual = await ui(configured(), saved({ docs: { title: 'Docs', target: 'https://example.com/docs' } }));
   assert.equal(manual.text('docs-meta'), 'example.com/docs');
+});
+
+test('the dashboard Context section shows Primary and Docs rows with their real destination labels', async () => {
+  const u = await ui(configured(), saved({ docs: { title: 'Company docs', target: other } }, 'Studio AIOS'), { pages: async () => ({ pages: [] }),
+    icons: async targets => ({ icons: targets.map(value => ({ target: value, icon: value === other ? 'https://www.notion.so/icons/copy_lightgray.svg' : '👾' })) }) });
+  await settled();
+  assert.equal(u.text('context-title'), 'Context'); assert.equal(u.get('context-title').parentNode.getAttribute('aria-labelledby'), 'context-title');
+  assert.equal(u.get('open-context').children[0].textContent, 'Primary'); assert.equal(u.get('open-docs').children[0].textContent, 'Docs');
+  assert.equal(u.get('open-docs').children[0].descendants().some(node => node.className === 'source-icon'), false);
+  const [contextIcon, contextTitle] = u.get('context-meta').children, [docsIcon, docsTitle] = u.get('docs-meta').children;
+  assert.equal(contextIcon.textContent, '👾'); assert.equal(contextTitle.textContent, 'Studio AIOS');
+  assert.equal(docsIcon.src, 'https://www.notion.so/icons/copy_lightgray.svg'); assert.equal(docsTitle.textContent, 'Company docs');
+  assert.equal(u.get('open-context').getAttribute('aria-label'), 'Open Context: Studio AIOS');
+  assert.equal(u.get('open-docs').getAttribute('aria-label'), 'Open Docs: Company docs');
+  assert.doesNotMatch(u.text('dashboard'), /Start here/);
+  await u.click('open-context'); await u.click('open-docs');
+  assert.deepEqual(u.links, [target, other]);
+  assert.equal(u.status.sources.title, 'Studio AIOS'); assert.deepEqual(u.names(), ['aios_notion_icons']);
+  const empty = await ui(configured(), saved({}));
+  assert.equal(empty.text('docs-meta'), 'Add'); assert.equal(empty.get('open-docs').getAttribute('aria-label'), 'Add Docs');
+  await empty.click('open-docs');
+  assert.equal(empty.get('drawer').open, true); assert.deepEqual(empty.links, []);
 });
 
 test('choosing a page with an icon saves only the source title and target', async () => {
@@ -561,8 +583,13 @@ async function draft(u, title, body) { u.get('issue-title').value = title; u.get
 test('Help is reachable in setup and on the dashboard, beside Settings, and waits for running requests', async () => {
   const u = await ui();
   assert.equal(u.shown('setup'), true); assert.equal(u.shown('help'), true); assert.equal(u.shown('settings'), false);
+  assert.equal(u.get('help').getAttribute('aria-label'), 'Help improve AIOS');
   await u.click('help');
   assert.equal(u.get('help-drawer').open, true); assert.equal(u.focused(), 'help-title');
+  assert.equal(u.text('help-title'), 'Help improve AIOS');
+  assert.equal(u.get('issue-body').getAttribute('placeholder'), 'Share a bug, an idea, or something that worked well.');
+  assert.equal(u.get('help-drawer').descendants().some(node => node.tagName === 'H3'), false);
+  assert.match(u.text('issue-note'), /GitHub draft.*public when you submit.*private information.*isn’t saved/);
   await u.click('help-close');
   assert.equal(u.get('help-drawer').open, false); assert.equal(u.focused(), 'help');
   const d = await ui(configured(), saved({}));
@@ -641,6 +668,12 @@ test('closing and reopening Help keeps the draft text; only Clear empties it', a
   assert.equal(u.get('issue-title').value, 'Title'); assert.equal(u.get('issue-body').value, 'Draft text');
   await u.click('help-close'); await u.click('help');
   assert.equal(u.get('issue-body').value, 'Draft text');
+  await u.get('issue-body').dispatch('pointerdown'); await u.get('issue-body').dispatch('click');
+  assert.equal(u.get('help-drawer').open, true);
+  await u.get('help-drawer').dispatch('pointerdown'); await u.get('help-drawer').dispatch('click');
+  assert.equal(u.get('help-drawer').open, false); assert.equal(u.focused(), 'help');
+  await u.click('help');
+  assert.equal(u.get('issue-title').value, 'Title'); assert.equal(u.get('issue-body').value, 'Draft text');
   await u.click('issue-clear');
   assert.equal(u.get('issue-title').value, ''); assert.equal(u.get('issue-body').value, '');
   assert.equal(u.focused(), 'issue-body'); assert.deepEqual(u.links, []); assert.deepEqual(u.calls, []);

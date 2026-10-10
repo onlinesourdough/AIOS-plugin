@@ -3,7 +3,7 @@ import { classifyTarget, connectionCopy } from './ui-model.mjs';
 import { sourceRoles, roleLabels, readStatus, draftFrom, isDirty, isCurrent, setLink, linksPayload, linkFromInput, shortTarget } from './setup-state.mjs';
 import { createPicker } from './picker.mjs';
 import { pageIcon, notionPageId } from './page-icons.mjs';
-import { sourceLabel, sourceTitle } from './source-label.mjs';
+import { sourceLabel } from './source-label.mjs';
 
 const app = new App({ name: 'aios', version: __AIOS_VERSION__ }, { availableDisplayModes: ['fullscreen'] });
 const $ = id => document.getElementById(id);
@@ -179,18 +179,16 @@ function renderSetup(locked) {
   setupContextPicker.render({ value: displayed(selected), choices: [], browse: canBrowse(), disabled: locked });
   for (const role of sourceRoles) setupPickers[role].render({ value: displayed(draft.links[role]), choices: [displayed(draft.saved[role])], browse: canBrowse() && !other, disabled: locked || !ready });
 }
+// Primary is the context page itself; the row label never renames that page.
 function renderDashboard(locked) {
-  sourceLabel($('context-name'), displayed({ title: status.sources.title || 'Context', target: status.context.target }));
+  const context = status.sources.title || 'Context';
+  sourceLabel($('context-meta'), displayed({ title: context, target: status.context.target }));
   $('open-context').title = status.context.target;
   $('open-context').disabled = locked;
+  $('open-context').setAttribute('aria-label', `Open Context: ${context}`);
   for (const role of sourceRoles) {
     const link = status.sources.links[role], row = $(`open-${role}`);
-    const value = displayed(link);
-    if (role === 'docs') {
-      sourceLabel($('docs-name'), { title: 'Docs', icon: value?.icon });
-      const title = sourceTitle(value);
-      sourceLabel($('docs-meta'), { title: link ? (title === 'Docs' ? notionPageId(link.target) ? '' : shortTarget(link.target) : title) : 'Add' });
-    } else sourceLabel($(`${role}-meta`), link ? { ...value, title: link.title === roleLabels[role] && !notionPageId(link.target) ? shortTarget(link.target) : link.title } : { title: 'Add' });
+    sourceLabel($(`${role}-meta`), link ? { ...displayed(link), title: link.title === roleLabels[role] && !notionPageId(link.target) ? shortTarget(link.target) : link.title } : { title: 'Add' });
     row.title = link?.target || '';
     row.dataset.empty = String(!link);
     row.disabled = locked || status.sources.state === 'unavailable';
@@ -474,6 +472,11 @@ for (const id of ['issue-title', 'issue-body']) $(id).addEventListener('input', 
 // Escape closes Help and keeps the draft text; focus returns to its button.
 $('help-drawer').addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); closeHelp(); } });
 $('help-drawer').addEventListener('cancel', event => { event.preventDefault(); closeHelp(); });
+// A press and click both on the transparent backdrop close Help like Escape;
+// a text selection dragged outside the popover does not.
+let backdropPress = false;
+$('help-drawer').addEventListener('pointerdown', event => { backdropPress = event.target === $('help-drawer'); });
+$('help-drawer').addEventListener('click', event => { if (backdropPress && event.target === $('help-drawer')) closeHelp(); backdropPress = false; });
 // The close event can arrive after Settings opened; keep focus in Settings then.
 $('help-drawer').addEventListener('close', () => { if (!settingsOpen) $('help').focus(); });
 try {

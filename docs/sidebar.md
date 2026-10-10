@@ -1,8 +1,10 @@
 # Codex sidebar — 0.27.0
 
-The Meetings-inspired layout uses a compact header, one Context card and simple
-Personal/Team rows for Skills and Memory. Missing destinations stay visible with
-Add. Source actions open their links; no repeated external-arrow icons or
+The Meetings-inspired layout uses a compact header and three matching sections
+of simple rows: Context with Primary and Docs, then Personal/Team for Skills and
+Memory. Primary opens the selected context page, shown with its own icon and
+title; Docs is supporting documentation, not a second authority. Missing
+destinations stay visible with Add. Source actions open their links; no repeated external-arrow icons or
 full-width divider bands. Local paths display their location.
 
 New setups show all four numbered sections from the beginning: Notion, Context,
@@ -33,8 +35,10 @@ are not individually fetched. Unsupported custom/uploaded icons and failed
 icon reads retain a usable text label; no arbitrary external image host is loaded.
 Icon failure does not affect the connection badge or saved source choices.
 
-A `?` button beside Settings opens Help and feedback in setup and on the
-dashboard. It links the user guide and release notes. Feedback opens a GitHub
+A chat-bubble button beside Settings opens a compact Help improve AIOS popover
+in setup and on the dashboard. Escape, Close or a click outside closes it and
+keeps the text. Quiet links below its actions open the user guide and release
+notes. Feedback opens a GitHub
 issue draft whose URL carries only the typed title and text, so opening it
 passes that text to GitHub; the issue becomes public only when the person
 submits it there. Feedback is limited to 2,000 characters, and drafts over about
@@ -121,7 +125,7 @@ Restoring a context pointer loads an existing map before allowing replacement.
 Run the locked build, Node tests and bundled stdio smoke, package checks and
 repository rehearsals. Browser proof covers initial setup, revisiting sections,
 source pickers, optional slots, settings Save/discard, failed saves, retry,
-keyboard/focus, light/dark and 320px. Help proof covers reaching the drawer in
+keyboard/focus, light/dark and 320px. Help proof covers reaching the popover in
 setup and dashboard, draft URL contents and encoded length, empty and failed
 opens with retry, Escape/reopen retention and Clear. Synthetic host results are distinct from
 native installed-runtime adoption and do not prove new-account OAuth.
