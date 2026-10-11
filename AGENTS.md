@@ -32,7 +32,10 @@ Keep one writer per overlapping change and verify the selected checkout first.
   `gemini-extension.json`), `package.json` and `docs/aios.md` keep one
   consistent identity and version. See [distribution](docs/distribution.md).
 - `.agents/skills/` is the [repository specialist shelf](.agents/skills/README.md).
-- `tests/` and the remaining `docs/` are author material, not product payload.
+- `tests/` and the remaining `docs/` are author material, excluded from the npm
+  `files` selection and the validator-staged product payload. Repository-root
+  installations (such as the Claude marketplace `./` source) may still include
+  them, along with other root files like `AGENTS.md` and `SECURITY.md`.
 
 ## Checks
 
