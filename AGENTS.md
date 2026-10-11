@@ -1,67 +1,81 @@
 # AIOS
 
+Revision: 2026-10-11
+
 Build and operate the smallest independent Project that creates this outcome:
 
 > Build a maintainable native agent skill package with focused optional helpers with portable owner context, lifecycle routing, safe onboarding and recovery, validated for independent lead Review before authorized release.
 
-## Shared lifecycle
+## Working method
 
-Use the installed AIOS plugin (0.4.0 or later) for shared procedures:
-`aios-spec-work`, `aios-build-work`, `aios-review-work` and `aios-ship-work`.
-Spec owns conditional technology selection; Review owns generic repository
-health audits. Resolve these skills through the harness, not copied files or
-hardcoded cache paths. This repository owns its requirements, specialist
-methods, checks, release facts and recovery. Keep those facts here and load
-only the phase and local context needed for the change.
+This file is the complete repository contract. Any contributor or harness can
+follow it; no plugin, skill library or orchestration tool is required to
+develop this repository. Contributors may use their own harness methods. The
+owner's Factory project uses Factory as one optional method; it is not
+required. Using the installed AIOS plugin or its skills to exercise the
+product is optional product testing, never a precondition for authoring.
 
-Work in the current task by default, including when opened directly from the
-sidebar. Use `aios-orchestrate-workers` only for requested or concretely
-beneficial delegation, or existing-worker recovery. Verify each selected root
-and preserve one writer for overlapping changes. Repository work does not
-preload personal AIOS context. Plugin availability is an authoring capability,
-not a dependency of the product at runtime; if unavailable, report the method
-gap and perform only work adequately covered by the local contract. Do not
-recreate generic skills locally.
+Read [README.md](README.md) for product context when needed, then only the
+local sources relevant to the change. Keep scope proportional: for a small
+mechanical edit, make the change, inspect the diff and run the affected checks.
+Resolve material scope, ownership, boundaries or proof before substantive work,
+asking one question only when a missing owner decision changes the outcome.
+Keep one writer per overlapping change and verify the selected checkout first.
 
-## Start
+## Sources
 
-This repository owns its independent lifecycle. Read [README.md](README.md)
-for product context when needed, then only the local sources relevant to the
-change. Use Spec when material scope, ownership, boundaries or proof are unresolved.
-For a small mechanical edit, make the scoped change, inspect the diff and run
-the affected check; no full lifecycle record or evaluation suite is required.
+- `skills/` holds the shipped product skills. Edit them as product code and
+  maintain each skill's metadata [SemVer](docs/skill-versioning.md).
+- `apps/sidebar` is the Codex sidebar source. `runtime/sidebar` is its
+  reproducible build; never edit it by hand.
+- Native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`,
+  `gemini-extension.json`), `package.json` and `docs/aios.md` keep one
+  consistent identity and version. See [distribution](docs/distribution.md).
+- `.agents/skills/` is the [repository specialist shelf](.agents/skills/README.md).
+- `tests/` and the remaining `docs/` are author material, excluded from the npm
+  `files` selection and the validator-staged product payload. Repository-root
+  installations (such as the Claude marketplace `./` source) may still include
+  them, along with other root files like `AGENTS.md` and `SECURITY.md`.
 
-Ask one question only when a missing owner decision materially changes the
-Project; preserve resolved context and record technical inferences locally.
-Return the outcome in the user's language and requested depth. Use the
-shared Spec with local requirements or AIOS business route for material decisions; keep
-routine work proportional and leave proof, data authority, and recovery to its
-local lifecycle.
+## Checks
 
-See the [local skill index](.agents/skills/README.md) for the flat layout,
-ownership boundary, and specialist-gap route.
+Sidebar, with Node.js 22 or later:
 
-Reuse one accepted contract and evidence record across Spec, Build, Review,
-revisions and authorized Ship. Use the available native plan for live progress;
-do not create a duplicate task list or require a new record at each phase.
-User instructions take precedence over method preferences within actual tool
-and system constraints. Carry existing scoped authorization forward and explain
-any real blocker with its source and affected action.
-The Project repository is canonical after creation.
+```sh
+npm ci --prefix apps/sidebar --ignore-scripts
+npm run build --prefix apps/sidebar
+git diff --exit-code -- runtime/sidebar
+npm test --prefix apps/sidebar
+```
 
-## Before completion
+The build must leave no `runtime/sidebar` diff. Package and documentation:
 
-Continue through implementation, relevant verification and review within the
-task's authority; a phase transition is not a reason to stop. Fix in-scope
-findings and repeat affected checks. Substantive work retains Spec/Build/Review
-and authorized Ship. Independent lead Review, when required by the contract,
-is an acceptance gate, not a new owner permission request. Hold external actions
-outside existing authority. Keep affected documentation and verification
-current; never reuse acceptance from before a relevant mutation.
+```sh
+python3 tests/validate.py
+python3 tests/documentation-rehearsal.py
+python3 tests/onboarding-rehearsal.py
+python3 tests/layout-rehearsal.py
+python3 tests/continuity-rehearsal.py
+python3 tests/skill-version-rehearsal.py
+python3 tests/context-footprint.py
+```
+
+These match [Package and release CI](.github/workflows/release.yml). Run
+`git diff --check` and the checks affected by the change; record actual
+results in [verification](docs/verification.md) when they establish a claim.
+
+## Review and release
+
+Fix in-scope findings and repeat affected checks. Before any authorized
+release, obtain an independent review of the exact candidate; a relevant change
+invalidates that acceptance. CI runs on pull requests, `main` and tags; releases
+are published only from `v*` tags on `main`, following
+[distribution](docs/distribution.md). Hold external actions outside existing
+authority, and carry existing scoped authorization forward.
 
 ## Ownership and recovery
 
 Record durable responsibility in [docs/ownership.md](docs/ownership.md), keep
 the relevant checks in [docs/verification.md](docs/verification.md), and maintain
-the recovery path in [docs/recovery.md](docs/recovery.md). Keep secrets and
-private data out of source, logs, exports, and client builds.
+the recovery path in [docs/recovery.md](docs/recovery.md). Keep personal
+context, secrets and private data out of source, logs, exports and client builds.

@@ -154,7 +154,7 @@ def validate(root=ROOT, release_tag=None):
     skill_files = sorted(skill_root.glob("*/SKILL.md"))
     require({path.parent.name for path in skill_files} == SKILL_NAMES, "skill inventory")
 
-    # Product development consumes the shared skills too. No local aliases,
+    # Repository authoring does not duplicate the shipped skills. No local aliases,
     # wrappers or copied bodies may silently become a second discovery source.
     local_skills = list((root / ".agents/skills").rglob("SKILL.md"))
     for local in local_skills:

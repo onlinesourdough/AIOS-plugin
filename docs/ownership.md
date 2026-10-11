@@ -1,11 +1,13 @@
 # Ownership
 
+Revision: 2026-10-11
+
 | Responsibility | Owner and canonical truth |
 | --- | --- |
 | Product instructions, declarations, and neutral assets | AIOS maintainer in this repository |
 | Implementation and local verification | Current repository task or deliberately selected worker |
 | Human review presentation | Build's [review handoff](../skills/aios-build-work/references/review-handoff.md); Review checks claims and Ship verifies the destination. Domain proof remains with its existing owner |
-| Requirement tracking SOP | `skills/aios/references/lifecycle.md` for all phases and repository tasks; local records hold evidence, not a copied procedure |
+| Requirement tracking SOP offered to users | `skills/aios/references/lifecycle.md` for all phases of the shipped AIOS lifecycle; developing this repository follows the root `AGENTS.md` contract with any harness method |
 | Task deliverable, continuation and whole-task handoff | Shared AIOS lifecycle; Spec clarifies the contract and Select Model supplies model/reasoning evidence |
 | Exploratory interview and shared question procedure | Interview owns activation, adaptive questioning, waiting and resumption; Setup and Spec reuse accepted answers |
 | Context home contract and provider selection | Context owns the common contract; concrete provider procedures adapt it to the selected home |
@@ -27,6 +29,7 @@
 | Historical Global Skills and Skills Atlas | Their public archived repositories; only Clarify is adopted in this package |
 | Optional autonomous-use guardrails | Native harness controls and reviewed maintained implementations selected for an explicit request; the former Global implementation remains archived |
 
-The product repository is not an owner-data home. Repository specialist methods stay local; generic lifecycle
-methods are shared plugin skills. Delegated workers return proposed shared
+The product repository is not an owner-data home. Repository specialist methods stay local; generic
+development methods come from each contributor's own harness, not from a copy of
+the shipped skills. Delegated workers return proposed shared
 learning to their caller instead of writing client memory.

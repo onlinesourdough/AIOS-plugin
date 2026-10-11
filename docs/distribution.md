@@ -1,5 +1,7 @@
 # Review and release AIOS
 
+Revision: 2026-10-11
+
 The release unit is this repository root: the native manifests, `.app.json`, `package.json`, `gemini-extension.json`, `assets/`, `LICENSE`,
 `README.md`, the single `skills/` source, `runtime/sidebar` and `docs/aios.md`. The overview
 is package documentation, read only when needed. Other documentation, tests and
@@ -25,7 +27,7 @@ This repository carries no local generic lifecycle skills.
 
 ## Git delivery
 
-Use shared `aios-ship-work` and its Git release reference. Re-attest
+Use any harness method that meets this procedure. Re-attest
 the physical root, branch, clean state, credential-free remote, reviewed commit,
 tree, and parent. Fresh-fetch the exact target branch and stop on drift.
 
