@@ -1,5 +1,15 @@
 # Verification
 
+On 2026-10-13, the issue #56 icon candidate (still 0.29.0) replaced the plugin icon and
+the sidebar server icon with one context-hub mark. The locked sidebar build changed only
+the icon expression in `runtime/sidebar/server.cjs`, and a rebuild was byte-identical. Node
+26.8.1 ran the 83 sidebar tests and the bundled smoke, which decodes both themed
+`serverInfo` icons and still opens the tool and resource. Dependencies were a hash-verified
+copy of the main checkout's locked install, not a fresh `npm ci`. The
+[browser comparison](evidence/icon-56/README.md) uses the actual emitted payloads and PNGs
+and is not a native Codex capture. An installed, reloaded Codex showing the new icon and
+still opening AIOS remains unverified.
+
 For the AIOS 0.29.0 design-skill retirement, `validate.py --baseline a14f285` (22 versioned
 skills), the seven release Python checks, `skill-version-rehearsal` and the content graph tests
 pass. Entry-routing, intent-trial and model-selection runs only prepared fixtures, not native-behavior

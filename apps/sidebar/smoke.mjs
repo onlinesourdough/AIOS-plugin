@@ -21,7 +21,19 @@ try {
     assert.deepEqual(tools.find(tool => tool.name === name)._meta.ui.visibility, ['app']);
     assert.equal(tools.find(tool => tool.name === name).annotations.openWorldHint, true);
   }
-  assert.ok(client.getServerVersion().icons[0].src.startsWith('data:image/svg+xml;base64,'));
+  // Data-URI icons render as standalone images, so each theme needs its own ink.
+  const icons = client.getServerVersion().icons;
+  assert.deepEqual(icons.map(icon => icon.theme), ['light', 'dark']);
+  const svgs = icons.map(icon => {
+    assert.equal(icon.mimeType, 'image/svg+xml');
+    assert.deepEqual(icon.sizes, ['20x20']);
+    assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
+    const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
+    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
+    assert.equal(svg.includes('currentColor'), false);
+    return svg;
+  });
+  assert.notEqual(svgs[0], svgs[1]);
   const view = await client.readResource({ uri: 'ui://aios/home-v5' });
   assert.equal(view.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.deepEqual(view.contents[0]._meta['openai/ui'], { preferredDisplayMode: 'fullscreen', availableDisplayModes: ['fullscreen'] });
