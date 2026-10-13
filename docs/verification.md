@@ -1,15 +1,10 @@
 # Verification
 
-For the AIOS 0.29.0 design-skill retirement candidate (2026-10-13, writer
-evidence against `a14f285`), `validate.py --baseline a14f285` reported 22
-versioned skills and passed, with the six other release-workflow Python checks,
-the content graph tests and the offline entry-routing, intent-trial and
-model-selection fixture preparation. The validator ran on a copy of the tracked
-files because the writer sandbox mounts an untracked `.mcp.json`. Native Claude,
-Pi and Gemini rehearsals were not run (CLIs unavailable). The locked sidebar
-rebuild and `npm test` were not run by the writer (npm unavailable), so the
-committed `runtime/sidebar` still carries 0.28.1 until that rebuild. This is not
-independent acceptance, installed discovery or model-behavior proof.
+For the AIOS 0.29.0 design-skill retirement, `validate.py --baseline a14f285` (22 versioned
+skills), the seven release Python checks, `skill-version-rehearsal` and the content graph tests
+pass. Entry-routing, intent-trial and model-selection runs only prepared fixtures, not native-behavior
+proof; native Claude, Pi and Gemini rehearsals were not run (CLIs unavailable). The locked sidebar
+rebuild, `npm test` and installed discovery are verified separately in the release readback.
 
 For the AIOS 0.28.1 design-method candidate, the [synthetic polish rehearsal](evidence/design-polish/README.md)
 retains comparable full-scroll service-page views at 1120px/320px in light/dark,
