@@ -1,6 +1,6 @@
 # AIOS
 
-AIOS version: 0.28.1
+AIOS version: 0.29.0
 
 **Business first. Productivity built in.**
 
@@ -77,16 +77,18 @@ source, that is an evidence gap—not a reason to invent an answer from memory.
 
 ## Native harnesses and access
 
-Design, content, clear writing and code quality are included methods. Write code
+Content, clear writing and code quality are included methods. Visual design
+uses an installed design method if the host provides one; otherwise the
+assistant does the work directly or reports the missing method. Write code
 applies to application code, scripts and automation, with verification suited
 to the change. The native app owns
 projects and sessions; AIOS adds no second project register. Spaces hold relevant
 business context, while optional specialist Systems keep their own upkeep.
 Design and content working material stays in the project.
 
-Visual revisions can use [before/after comparisons](../skills/design/references/before-after.md)
-with an identified baseline, comparable views and a brief explanation of the
-change. Review Design evaluates the result. Human Writing includes concrete
+For a visible UI change, Build's [review handoff](../skills/aios-build-work/references/review-handoff.md)
+compares a real baseline and candidate capture of the same state, viewport and
+data. Human Writing includes concrete
 editing examples while preserving the author's meaning, evidence and voice.
 Write Code helps distinguish useful sharing from superficially similar code
 and keeps refactoring scoped to the affected behavior.
@@ -110,13 +112,12 @@ and continuity. Setup replaces the former `aios-onboard` entrypoint.
 Thinking aloud can start with Interview restating the goal and underlying problem
 before asking only what changes the next action. Spec can resolve a material
 solution choice through a [small local trial](../skills/aios-spec-work/references/local-trials.md).
-Design owns visual variants; a runnable interaction or sample workflow can
+Visual variants use an available canvas or preview; a runnable interaction or sample workflow can
 resolve other choices. These steps are conditional and reuse accepted answers;
 ordinary work gains no mandatory interview, prototype or parallel agents.
 
 The shared delivery path is Spec → Build → Review → authorized Ship. Spec
-reuses interview decisions. Design → Review Design supplies visual direction
-and selected companions. Content uses Human Writing, production as needed and
+reuses interview decisions. Content uses Human Writing, production as needed and
 its own final review; ordinary video can use the optional Diffusion Studio.
 These methods connect only where the accepted result needs them. Project setup,
 context maintenance, skill management and package updates retain their focused
@@ -145,29 +146,24 @@ carrying its accepted scope and sources while preserving each environment's own
 instructions, credentials and execution controls. Human involvement does not
 itself enforce a filesystem or tool boundary.
 
-The **Agentic Content System** and **Agentic Design System** combine these
-domain skill chains with the project's context, working files and selected
-tools. They are built into AIOS; independently maintained specialist Systems
-can add their own dependencies and upkeep. Diffusion Studio is the optional
-video workbench, and OpenPencil is the optional design workbench. AIOS supplies
-their operating methods; the external applications are separately installed.
+The **Agentic Content System** combines these domain skill chains with the
+project's context, working files and selected tools. It is built into AIOS;
+independently maintained specialist Systems can add their own dependencies and
+upkeep. Diffusion Studio is the optional video workbench. AIOS supplies its
+operating method; the external application is separately installed. AIOS 0.29.0
+no longer ships design skills; existing project `DESIGN.md` and `design/` files
+are unchanged.
 
-In Codex, the built-in browser can show local design/application previews and
-the supported OpenPencil canvas. Diffusion Studio exposes a read-only companion;
+In Codex, the built-in browser can show local design/application previews.
+Diffusion Studio exposes a read-only companion;
 editing and export use its external desktop host. The current companion lacks
 media-element support, so final video review uses the actual export. Browser
 surfaces supplement the project files and native tools that perform the work.
 
-## Design sources and skill names
-
-Design can consult selected upstream Taste skills and composition references
-through its [source guide](../skills/design/references/taste-sources.md). AIOS
-keeps the brief, reference adaptation and rendered review; external examples
-and catalogs remain with their publishers. References are optional and their
-used revisions are recorded. OpenPencil remains an optional editable companion.
+## Skill names
 
 All skill titles and Codex display names use `AIOS:skill-name`, such as
-`AIOS:design` and `AIOS:build-work`. Each skill declares its canonical name;
+`AIOS:content` and `AIOS:build-work`. Each skill declares its canonical name;
 the harness owns its native namespace. Personal methods keep their own names
 and ownership. Renames update the body, callers and native registration together.
 

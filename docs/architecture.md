@@ -1,7 +1,7 @@
 # Architecture
 
-AIOS combines portable owner context with Agent Skills for planning, design,
-content and reviewed delivery. Native manifests load one root `skills/`
+AIOS combines portable owner context with Agent Skills for planning, content
+and reviewed delivery. Native manifests load one root `skills/`
 directory. Focused helpers belong to their skills and run only for a selected
 task; AIOS has no model runner, background service or permission system.
 
@@ -13,33 +13,33 @@ task; AIOS has no model runner, background service or permission system.
 | Skills | Reusable methods, standards and judgment, with references and small helpers as needed |
 | Project workspace | Local requirements, working files, outputs, proof and recovery; Git is selected when useful |
 | Optional System | A separately maintained specialist with its own dependencies or operational needs |
-| Native manifests | Package identity and discovery over the same 25 skills |
+| Native manifests | Package identity and discovery over the same 22 skills |
 | Codex sidebar | A host-managed local MCP App for numbered source setup and a dashboard; stores private navigation names/links, with no company-content copy or chat handoff |
 
 ## Work and methods
 
 Continue in the current task and workspace. The shared lifecycle resolves the
 outcome, then applies Spec, Build, Review and authorized Ship proportionately.
-Design and content chain their own specialist steps into this lifecycle. There
-is no chain configuration language, mandatory department model or fixed sequence
-between design and content. Short writing uses human-writing directly.
+Content chains its own specialist steps into this lifecycle; visual design uses
+an installed design method if the host provides one, otherwise direct work or a
+reported missing method. There is no chain configuration language, mandatory
+department model or fixed sequence between design and content. Short writing uses human-writing directly.
 
-The README presents these connected domain workflows as the **Agentic Content
-System** and **Agentic Design System**. Each combines context, skills, project
-artifacts and selected tools. These built-in systems use this plugin's methods;
-they do not require separate installations of the former ACS or ADS repositories.
-Diffusion Studio and OpenPencil are optional external workbenches. Their native
-interfaces own production, with browser surfaces where supported: OpenPencil's
-canvas, local design/application previews, and Diffusion's limited read-only
-companion. The current Diffusion companion does not support media elements.
+The README presents the connected content workflow as the **Agentic Content
+System**. It combines context, skills, project artifacts and selected tools,
+using this plugin's methods without a separate installation of the former ACS
+repository. The design skills were retired in 0.29.0. Diffusion Studio is an
+optional external workbench. Its native interface owns production, with browser
+surfaces where supported: local design/application previews and Diffusion's
+limited read-only companion. The current Diffusion companion does not support media elements.
 
 Use project-local `design/` and `content/` for working material and create them
 when needed. Product files belong where the project consumes them. Skill
 packages contain reusable methods and neutral assets, never customer work.
 Domain skills own briefs, evidence, review and handoff details; the core router
 only selects a method. See the [skill index](skills.md),
-[design preservation map](design-preservation.md) and
-[content preservation map](content-preservation.md).
+[content preservation map](content-preservation.md) and the historical
+[design preservation map](design-preservation.md) for the skills retired in 0.29.0.
 
 An optional System is useful for a bounded specialist with independent upkeep,
 such as Power BI and its Windows Desktop workflow. Its repository owns its

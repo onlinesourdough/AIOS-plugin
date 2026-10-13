@@ -2,7 +2,7 @@
 name: aios-create-project
 description: Start a project with a useful workspace, context and simple structure; Git is optional.
 metadata:
-  version: "4.0.0"
+  version: "4.1.0"
 ---
 
 # AIOS:create-project
@@ -35,9 +35,10 @@ are never reseeded or given fresh Git history.
 
 ## Continue the project
 
-Use the relevant methods for the real work: [Design](../design/SKILL.md),
-[Content](../content/SKILL.md), [Human Writing](../human-writing/SKILL.md) or other
-available specialist skills. Use [Manage Skills](../aios-manage-skills/SKILL.md)
+Use the relevant methods for the real work: [Content](../content/SKILL.md),
+[Human Writing](../human-writing/SKILL.md) or other available specialist skills.
+For visual design, use an installed design method if the host provides one;
+otherwise do the work directly or report the missing method. Use [Manage Skills](../aios-manage-skills/SKILL.md)
 when the intended result is a reusable method rather than this project's work.
 
 Keep small software work direct with [Write code](../write-code/SKILL.md). AIOS

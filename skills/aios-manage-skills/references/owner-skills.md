@@ -42,7 +42,7 @@ even when they share vocabulary. Personal facts remain in routed context,
 not embedded in the reusable method.
 
 Native plugin namespaces and personal skill names are separate. A harness may
-show the plugin's `design` as `aios:design`; keep its canonical name and source.
+show the plugin's `content` as `aios:content`; keep its canonical name and source.
 Personal methods keep the owner's chosen identity; belonging to an AIOS owner
 home does not make them AIOS package skills or require an `aios-` prefix. Keep
 folder and declared name aligned. Do not rename unrelated third-party skills.

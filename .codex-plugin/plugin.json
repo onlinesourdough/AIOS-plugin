@@ -1,7 +1,7 @@
 {
   "name": "aios",
-  "version": "0.28.1",
-  "description": "Portable context and skills for planning, design, content and reviewed delivery.",
+  "version": "0.29.0",
+  "description": "Portable context and skills for planning, content and reviewed delivery.",
   "author": {
     "name": "onlinesourdough"
   },
@@ -16,7 +16,7 @@
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
     "shortDescription": "Your AI operating system",
-    "longDescription": "Open AIOS from the Codex sidebar. Connect the separate official Notion plugin, follow the source setup steps and open Context, Docs, Skills and Memory from your dashboard. Established alternative providers remain supported. Twenty-five shared skills help with writing, code, design and reviewed delivery.",
+    "longDescription": "Open AIOS from the Codex sidebar. Connect the separate official Notion plugin, follow the source setup steps and open Context, Docs, Skills and Memory from your dashboard. Established alternative providers remain supported. Twenty-two shared skills help with writing, code, content and reviewed delivery.",
     "developerName": "onlinesourdough",
     "category": "Productivity",
     "capabilities": [

@@ -2,7 +2,7 @@
 name: aios-check
 description: Verify AIOS installation, owner format and native skill discovery without changes.
 metadata:
-  version: "2.2.0"
+  version: "2.2.1"
 ---
 
 # AIOS:check

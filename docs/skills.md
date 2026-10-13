@@ -1,6 +1,6 @@
 # AIOS skills
 
-AIOS ships 25 native skills. Their titles and Codex display names use
+AIOS ships 22 native skills. Their titles and Codex display names use
 `AIOS:skill-name`: uppercase `AIOS`, a colon without spaces, and lowercase
 hyphenated names. The display label omits a redundant leading `aios-` from the
 canonical name. Automatic selection uses each skill description; explicit
@@ -14,9 +14,6 @@ carries an independent quoted `metadata.version`; see
 | Skill | Responsibility |
 | --- | --- |
 | [AIOS:clarify](../skills/clarify/SKILL.md) | Explain complex topics and decisions with concrete examples and visuals when they help understanding |
-| [AIOS:design](../skills/design/SKILL.md) | Develop a brief into an implementation-ready design, using discovery or exploration when needed |
-| [AIOS:review-design](../skills/review-design/SKILL.md) | Review exact design evidence and prepare a stable handoff |
-| [AIOS:openpencil-workbench](../skills/openpencil-workbench/SKILL.md) | Use optional OpenPencil tooling with project-local work |
 | [AIOS:content](../skills/content/SKILL.md) | Produce and review content with sources, lineage and reuse evidence when needed |
 | [AIOS:diffusion-studio](../skills/diffusion-studio/SKILL.md) | Use optional Diffusion Studio for video production |
 | [AIOS:human-writing](../skills/human-writing/SKILL.md) | Default prose drafting and editing that preserves facts, uncertainty and the user’s voice |
@@ -39,7 +36,7 @@ carries an independent quoted `metadata.version`; see
 | [AIOS:triage-improvement](../skills/aios-triage-improvement/SKILL.md) | Route a concrete underlying improvement signal |
 | [AIOS:update](../skills/aios-update/SKILL.md) | Update selected optional specialists or adopt/roll back AIOS |
 
-Design and content preserve their domain standards through focused references
+Content preserves its domain standards through focused references
 and helpers. The assistant chains relevant skills using the current task and
 its accepted result; no workflow engine or fixed chain schema is required.
 Working material stays in the project. Optional tool setup is loaded only for
@@ -51,17 +48,15 @@ procedure; Setup owns home and harness readiness. Spec reuses interview answers
 and owns the execution contract. Neither installation nor a new project alone
 requires an interview.
 
-The conditional [Taste source guide](../skills/design/references/taste-sources.md)
-links to upstream design/style/image skills and Taste Code's reference catalog.
-It adds no installed package or catalog copy. Record the used revision, adapt
-selected traits to the task and compare them with the rendered output. The
-OpenPencil companion remains optional through its existing workbench route.
-Design and Review Design 1.2.1 clarify [available companion selection and a
-lightweight reference-led polish pass](../skills/design/references/design-solution.md).
-Direction-only work needs no editor; selected editable delivery needs actual
-edit preservation, save/reopen and export proof.
+AIOS 0.29.0 no longer ships Design, Review Design or OpenPencil Workbench.
+For visual work, use an installed design method if the host provides one;
+otherwise do the work directly or report the missing method. Existing projects
+keep their `DESIGN.md` and `design/` files. Build's
+[review handoff](../skills/aios-build-work/references/review-handoff.md) keeps
+the before/after rule: compare a real baseline and candidate capture of the
+same state, viewport and data.
 
-Plugin namespaces come from the harness, for example `aios:design`; canonical
+Plugin namespaces come from the harness, for example `aios:content`; canonical
 skill names remain portable. Personal methods keep their owner's chosen name
 and use the existing Manage Skills rename/discovery procedure; no AIOS prefix
 is required. They remain separate from the distributed package. Shared Review
@@ -81,7 +76,8 @@ Update owns native package recovery and selected specialist maintenance;
 Maintain Context owns facts, and Check observes state. The
 [legacy behavior map](../skills/aios-setup/references/legacy-parity.md) records
 older method routes. Domain preservation is documented in the
-[design](design-preservation.md) and [content](content-preservation.md) maps.
+[content](content-preservation.md) map; the [design map](design-preservation.md)
+is historical for the design skills retired in 0.29.0.
 
 ## Retired: Project Foundation (0.28.0)
 

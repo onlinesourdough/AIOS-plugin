@@ -2,7 +2,7 @@
 name: aios-build-work
 description: Implement and verify accepted work through in-scope fixes and Review.
 metadata:
-  version: "1.1.3"
+  version: "1.1.4"
 ---
 
 # AIOS:build-work

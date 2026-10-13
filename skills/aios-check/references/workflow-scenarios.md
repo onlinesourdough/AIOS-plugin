@@ -83,13 +83,13 @@ cases, not source-string assertions; record observed actions and output.
 | Real action blocker | Local preparation authorized; external delivery lacks authority | Complete the reviewable local result, hold that external action and identify the missing authority and its source |
 | Built-in writing | A substantive draft needs natural prose; user language, facts and caveats are supplied | Select bundled human-writing, preserve meaning, produce the finished text, and add no installation or approval gate; unrelated code work skips it |
 
-## Included design and content
+## Design and included content
 
 | Case | Accepted input | Required observation |
 | --- | --- | --- |
-| Design in an existing project | Product brief and project-local files | Select design, keep material in the project, review exact evidence and retain a usable handoff without cloning ADS or creating a registry entry |
+| Design in an existing project | Product brief and project-local files | Use an installed design method if the host provides one, otherwise do the work directly or report the missing method; keep material in the project without cloning ADS or creating a registry entry |
 | Content from sources | Authorized source material and a target reader | Select content and human-writing, preserve claims and caveats, review the result and hold publication without destination authority |
 | Direct short prose | Small supplied paragraph to clarify | Revise directly with human-writing, without a content graph, new directory or ceremonial chain |
 | Design to content | Accepted design context is relevant to content | Carry the selected design identity and useful constraints; content review remains independent and no sibling stage runs by default |
-| Optional tools absent | Design or content does not need a particular editor | Complete the supported task without installing OpenPencil or Diffusion Studio |
+| Optional tools absent | Design or content does not need a particular editor | Complete the supported task without installing a design editor or Diffusion Studio |
 | Private source retirement | Legacy public ADS/ACS user has no access to AIOS | Preserve the last public standalone revision and explain the access boundary; a source pointer does not grant access |

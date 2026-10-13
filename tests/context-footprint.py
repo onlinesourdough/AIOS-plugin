@@ -18,7 +18,6 @@ JOB_PREFIXES = {
     "clarify": "Explain ",
     "human-writing": "Draft ",
     "write-code": "Write ",
-    "design": "", "review-design": "", "openpencil-workbench": "",
     "content": "", "diffusion-studio": "",
     "aios": "Apply ",
     "aios-build-work": "Implement ",
@@ -294,7 +293,7 @@ def main():
     print("NOTE: portable/whole-task transfer adds that reference, not worker orchestration; no matched legacy transfer path is claimed")
     review_handoff = ROOT / "skills/aios-build-work/references/review-handoff.md"
     print(f"conditional_human_review_handoff_extra_bytes={review_handoff.stat().st_size}")
-    print("NOTE: substantive human handoff adds this reference; visual capture can add the existing Design comparison guide and difficult explanation can add Clarify. The worker-build benchmark stops before handoff; no matched legacy or runtime saving is claimed")
+    print("NOTE: substantive human handoff adds this reference; visual capture uses its inline baseline/candidate rule and difficult explanation can add Clarify. The worker-build benchmark stops before handoff; no matched legacy or runtime saving is claimed")
     notion = sum((ROOT / path).stat().st_size for path in (
         "skills/aios/SKILL.md",
         "skills/aios-context/SKILL.md",

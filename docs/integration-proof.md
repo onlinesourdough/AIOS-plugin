@@ -1,5 +1,8 @@
 # Design and content integration: 0.9.0
 
+> Historical record. AIOS 0.29.0 removed the design, review-design and
+> openpencil-workbench skills; see the [changelog](../CHANGELOG.md).
+
 AIOS includes design, review-design, openpencil-workbench, content and
 diffusion-studio alongside its existing 17 skills. The
 [design preservation map](design-preservation.md) and

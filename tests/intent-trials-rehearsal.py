@@ -13,7 +13,6 @@ SOURCES = (
     "skills/aios-interview/SKILL.md",
     "skills/aios-spec-work/SKILL.md",
     "skills/aios-spec-work/references/local-trials.md",
-    "skills/design/references/source-selection.md",
 )
 FIELDS = {"id": "string", "interview": "boolean", "trial": "boolean",
           "question": "boolean", "next_action": "string", "reply": "string"}
@@ -43,7 +42,7 @@ Do not execute cases, call tools, read other files or write anything. Context
 describes each case's tools, not your own. Return one decision per case.
 interview means exploratory conversation before work; a focused mid-task question
 alone is not an interview. trial means a local sample or concrete comparison is
-the useful next route, including Design exploration. question means a missing
+the useful next route, including visual-direction exploration. question means a missing
 answer holds the next dependent action; inviting a choice after showing variants
 does not count as asking now. Include the actual short next reply in the user's
 language and a concise next_action. Keep observed and planned evidence distinct.

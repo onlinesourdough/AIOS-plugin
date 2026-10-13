@@ -19,7 +19,7 @@ SKILL_NAMES = {
     "aios-setup", "aios-context", "aios-interview", "aios-orchestrate-workers", "aios-review-work",
     "aios-risky-changes", "aios-ship-work", "aios-spec-work", "aios-triage-improvement",
     "aios-update", "aios-select-model", "human-writing", "write-code",
-    "design", "review-design", "openpencil-workbench", "content", "diffusion-studio", "clarify",
+    "content", "diffusion-studio", "clarify",
 }
 LEGACY_ROUTE_TARGETS = {
     "aios": ("../../aios/SKILL.md", "../SKILL.md", "../../aios-check/SKILL.md",
@@ -67,7 +67,7 @@ FORBIDDEN_BOUNDARY_TEXT = {
     "skills/aios-manage-skills/SKILL.md": ("skills.sh", "npx skills"),
 }
 FORBIDDEN_SHIPPED_PATTERNS = (r"\bnpx skills\b", r"\bskills\.sh\b")
-DOMAIN_SKILLS = {"design", "review-design", "openpencil-workbench", "content", "diffusion-studio"}
+DOMAIN_SKILLS = {"content", "diffusion-studio"}
 PRODUCT_PATHS = (".codex-plugin", ".claude-plugin", ".cursor-plugin",
                  "gemini-extension.json", "skills", "assets/icon.png", "LICENSE",
                  "docs/aios.md", "runtime/sidebar")
@@ -180,7 +180,7 @@ def validate(root=ROOT, release_tag=None):
         require("disable-model-invocation" not in fields, f"implicit invocation: {path}")
 
     primary_targets = set(link_targets(skill_root / "aios/SKILL.md"))
-    for name in ("design", "content", "human-writing", "write-code", "aios-interview", "aios-setup"):
+    for name in ("content", "human-writing", "write-code", "aios-interview", "aios-setup"):
         require((skill_root / name / "SKILL.md").resolve() in primary_targets,
                 f"built-in method route missing: {name}")
     for caller in ("aios-build-work", "aios-review-work"):
@@ -503,7 +503,7 @@ def negative_controls():
     def missing_domain_route(root):
         path = root / "skills/aios/SKILL.md"
         path.write_text(path.read_text().replace(
-            "](../design/SKILL.md)", "](../human-writing/SKILL.md)"))
+            "](../content/SKILL.md)", "](../human-writing/SKILL.md)"))
 
     def compulsory_registry(root):
         (root / "skills/aios-setup/assets/owner/projects").mkdir()

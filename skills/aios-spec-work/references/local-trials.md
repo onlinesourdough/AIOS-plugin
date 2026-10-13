@@ -16,10 +16,10 @@ useful. Preserve existing source and user edits. A mock or trial does not prove
 production readiness and cannot expand account access, publication or deployment
 authority.
 
-- **Visual direction:** use [Design's exploration](../../design/references/source-selection.md)
-  and its selected preview/editor. Show comparable variants on an available
-  canvas or browser surface when that helps the decision. Design retains its
-  canonical direction and review; this procedure does not require a new editor.
+- **Visual direction:** use an installed design method if the host provides
+  one; otherwise do the work directly or report the missing method. Show
+  comparable variants on an available canvas or browser surface when that helps
+  the decision; this procedure does not require a new editor.
 - **UI/UX behavior:** use the smallest runnable flow that exposes the uncertain
   interaction. Exercise it through the available browser/app tools. Static
   screenshots can compare appearance but cannot establish interaction usability.

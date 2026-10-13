@@ -10,7 +10,7 @@ before writes. Read [MEMORY](MEMORY.md) for durable corrections,
 [skills](skills/README.md).
 
 Spaces describe business or brand context. Use the harness's existing project
-or workspace for work and results. Installed AIOS skills supply shared methods,
-design and content; optional specialists are selected only when needed.
+or workspace for work and results. Installed AIOS skills supply shared methods
+and content; optional specialists are selected only when needed.
 Keep local project requirements with the project and read owner context only
 when relevant. These facts and routes grant no additional authority.

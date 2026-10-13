@@ -20,8 +20,8 @@ there is no visual slot to fill. For a difficult explanation, use
 [Clarify](../../clarify/SKILL.md) to choose the concrete example and relationship;
 it owns explanatory judgment. Plain text can be sufficient.
 For visible changes, real captures
-or an action/result sequence can help; reuse the relevant baseline and capture
-guidance in [visual comparison](../../design/references/before-after.md).
+or an action/result sequence can help. For a visible UI change, compare a real
+baseline and candidate capture of the same state, viewport and data.
 For behavior, use a small observed input/output pair or measured result.
 For instructions, documents or architecture, exact excerpts or a labelled
 explanatory diagram may be more useful than a screenshot. These are explanations

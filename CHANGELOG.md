@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.29.0 — 2026-10-13
+
+- Remove the Design, Review Design and OpenPencil Workbench skills
+  (`design`, `review-design`, `openpencil-workbench`) and their helper tests.
+  AIOS now ships 22 skills. Update any explicit callers of the old names.
+- Migration: existing projects' `DESIGN.md` and `design/` files are untouched.
+  If you want a design method, install a separate design plugin (for example
+  OpenPaperDesign); AIOS does not install or depend on it. Without one, AIOS
+  does the visual work directly or reports the missing method.
+- The before/after rule remains: for a visible UI change, Build's review
+  handoff compares a real baseline and candidate capture of the same state,
+  viewport and data. Content and Diffusion Studio are unchanged.
+- Routing becomes host-neutral for visual work: AIOS 2.7.0, Create Project
+  4.1.0 and Spec 1.3.0 route to an installed design method if the host provides
+  one. Build 1.1.4, Check 2.2.1, Manage Skills 1.3.1, Setup 1.8.1 and Update
+  2.0.3 drop links to and claims about the removed skills; the legacy
+  design-system route is marked retired. The sidebar is unchanged apart from
+  its version.
+
 ## 0.28.1 — 2026-10-10
 
 - Correct Design's forced OpenPencil companion wording: select a sufficient
