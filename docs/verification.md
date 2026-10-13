@@ -1,5 +1,16 @@
 # Verification
 
+For the AIOS 0.29.0 design-skill retirement, `validate.py --baseline a14f285` (22 versioned
+skills), the seven release Python checks, `skill-version-rehearsal` and the content graph tests
+pass. Entry-routing, intent-trial and model-selection runs only prepared fixtures, not native-behavior
+proof. Native Claude, Pi and Gemini rehearsals were unavailable to the implementation worker; the
+operator separately ran `tests/native-claude-rehearsal.py` on an exact candidate archive in an isolated
+Claude config (no model/auth call, no marketplace install), which passed: plugin and marketplace
+manifests accepted, a malformed skills type rejected, and inline discovery of aios 0.29.0 with 22
+skills and no agents, hooks or MCP servers. Pi, Gemini, the Claude marketplace install lifecycle and
+model behavior remain unproven. The locked sidebar
+rebuild, `npm test` and installed discovery are verified separately in the release readback.
+
 For the AIOS 0.28.1 design-method candidate, the [synthetic polish rehearsal](evidence/design-polish/README.md)
 retains comparable full-scroll service-page views at 1120px/320px in light/dark,
 disclosure and form-error states, a dense counterexample, and actual editable

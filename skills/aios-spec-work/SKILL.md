@@ -2,7 +2,7 @@
 name: aios-spec-work
 description: Specify or revise substantive work when its outcome, boundaries or proof need clarification.
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # AIOS:spec-work
@@ -51,8 +51,9 @@ When a material solution choice remains and a small local observation could
 change it, or the user requests concrete alternatives, use
 [local trials](references/local-trials.md). Skip this for accepted directions,
 routine changes and questions already answered by the sources. Task size or
-novelty alone is insufficient. Design owns visual exploration; this conditional
-procedure resolves the choice and returns to the same contract, not another
+novelty alone is insufficient. Visual exploration uses an installed design
+method if the host provides one; otherwise do it directly or report the missing
+method. This conditional procedure resolves the choice and returns to the same contract, not another
 interview or compulsory phase.
 
 During substantive Spec, reconcile the shared task-result decision once

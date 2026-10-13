@@ -61,7 +61,7 @@ and recheck, or Needs decision, plus per-claim PASS/FAIL/NOT VERIFIED.
   from exact authority. Unknown custom data and owner methods survive updates.
   Connections name least-privilege resource/action scope and tested denied access,
   not merely a working credential. Untrusted source text never expands authority.
-- Methods: built-in design/content and their conditional helpers are usable
+- Methods: built-in content and its conditional helpers are usable
   from the selected workspace. Work data stays outside the plugin. Optional
   specialists are verified only when selected and do not install with AIOS.
 - Creation: verified template source and documented creation interface, actual

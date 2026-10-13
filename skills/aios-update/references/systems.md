@@ -1,7 +1,7 @@
 # Maintain a selected specialist
 
-Use this procedure for a separately installed specialist, not the design and
-content methods included in AIOS. Start from the task's selected capability,
+Use this procedure for a separately installed specialist, not the content
+methods included in AIOS. Start from the task's selected capability,
 accepted source and existing installation. Verify actual tools, supported
 platforms and source identity; a link is not proof of installation.
 

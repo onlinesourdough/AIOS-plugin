@@ -1,5 +1,8 @@
 # Optional design sources — 0.11.0
 
+> Historical record. AIOS 0.29.0 removed the design, review-design and
+> openpencil-workbench skills; see the [changelog](../CHANGELOG.md).
+
 ## Accepted outcome
 
 Strengthen reference-led design and review while keeping the upstream examples
@@ -20,7 +23,7 @@ chosen identity.
 
 ## Source observations
 
-The [conditional guide](../skills/design/references/taste-sources.md) records
+The [conditional guide](https://github.com/onlinesourdough/AIOS-Plugin/blob/a14f2857d8e229e7d3ce2c9beb15b876094e6d85/skills/design/references/taste-sources.md) records
 the exact upstream links and licenses inspected on 2026-09-18:
 
 - Taste Skill: `e79ca9ec7e071eb3a3b623c4fb752e853fc3ed58`. Its main v2 skill is

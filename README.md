@@ -5,7 +5,7 @@
 **Business first. Productivity built in.**
 
 AIOS helps your AI assistant plan work, build it, review the result and remember
-useful decisions. Install it in the app you use. The same 25 skills work from
+useful decisions. Install it in the app you use. The same 22 skills work from
 one shared source, with native packaging for Codex, Pi, Claude Code, Gemini CLI,
 Copilot CLI and Cursor.
 
@@ -51,10 +51,10 @@ and tools the agent can operate**. Skills guide the work and pass useful results
 to each other. The project holds the brief, sources, working files and reviewed
 outputs. A workbench adds a visual production environment when the task needs it.
 
-AIOS includes the Agentic Content System and Agentic Design System as connected
-methods in this plugin. You work with them in your existing Codex task and
-workspace. The agent selects the relevant steps; a small request does not need
-a full production process or an external editor.
+AIOS includes the Agentic Content System as connected methods in this plugin.
+You work with them in your existing Codex task and workspace. The agent selects
+the relevant steps; a small request does not need a full production process or
+an external editor.
 
 ### Agentic Content System
 
@@ -72,38 +72,19 @@ piece is reviewed for its own purpose. A short article can remain a simple file.
 
 [Diffusion Studio](skills/diffusion-studio/SKILL.md) is the optional video
 workbench: recorded video editing, cuts, audio, captions, overlays and export.
-Its role in the content system parallels OpenPencil's role in the design system.
 The selected video workflow uses the reviewed external application and its
 agent interface. Writing and editorial work need no Studio installation.
 AIOS includes the operating skill and helper; the editor is installed separately
 when authorized and needed. Final export inspection remains part of content review.
 
-### Agentic Design System
+### Visual design
 
-From the intended experience to a visual direction, selected previews and
-implementation-ready assets:
-
-**Brief and references → [Design](skills/design/SKILL.md) →
-[Review Design](skills/review-design/SKILL.md) →
-[implementation](skills/aios-build-work/SKILL.md) when requested.**
-
-The project's `DESIGN.md` holds the visual direction. Its `design/` folder can
-hold browser previews, assets and editable companions. Existing tokens, components
-and code remain implementation truth, linked from the direction. Select a
-sufficient available companion; direction-only work needs no editor. Review checks the actual
-selected result against the brief, including relevant responsive and interaction
-states. An accepted direction can be used by implementation or content production.
-
-For a visual revision, [before/after comparison](skills/design/references/before-after.md)
-can make the change inspectable using a genuine baseline and comparable views.
-Review checks the claimed improvement and relevant regressions. Existing tools
-capture the evidence; no new upload service or automatic PR process is required.
-
-[OpenPencil Workbench](skills/openpencil-workbench/SKILL.md) is the optional
-visual editing environment. The agent can open a project companion, work on its
-canvas, save and reopen a candidate, and inspect native exports through the
-supported workflow. A portable design direction or HTML preview also works
-without OpenPencil. Its external runtime is separate from the AIOS plugin.
+AIOS 0.29.0 no longer bundles design skills. For visual direction and assets,
+use an installed design method if your app provides one; otherwise the assistant
+does the work directly or reports the missing method. Existing projects keep
+their `DESIGN.md` and `design/` folder unchanged. For a visible UI change, Build's
+[review handoff](skills/aios-build-work/references/review-handoff.md) still
+compares a real baseline and candidate capture of the same state, viewport and data.
 
 ### Workbenches and the built-in browser
 
@@ -115,7 +96,6 @@ keeps its own editing, saving and export capabilities.
 | Surface | What happens directly in Codex's built-in browser | Where production happens |
 | --- | --- | --- |
 | Browser-ready design or application preview | Open a local preview, inspect layouts and test relevant interactions | The agent changes project files and checks the rendered result |
-| OpenPencil workbench | Open the returned local workbench URL; view and operate the canvas through the supported browser workflow | The external OpenPencil runtime edits a working copy; reviewed candidates and exports return to the project |
 | Diffusion Studio companion | Open the returned one-time local URL for human inspection of supported scene previews, with playback and scrubbing | The agent edits and exports through the external desktop host and its native interface; the browser companion is read-only |
 
 The current Diffusion Studio browser companion does not support media elements,
@@ -126,9 +106,10 @@ export or reviewed result. In another supported app, use its available browser
 surface; browser controls and downloads depend on that app's capabilities.
 
 For example, one content task can combine an article, a short video and a visual
-asset. Content owns the message and production; Design supplies the visual
-direction; the relevant workbench is selected for the needed artifact. Files
-and review stay with that project, and accepted decisions carry between skills.
+asset. Content owns the message and production; an accepted visual direction
+comes from the project or an installed design method; the relevant workbench is
+selected for the needed artifact. Files and review stay with that project, and
+accepted decisions carry between skills.
 
 ### Understanding, delivery and setup
 
@@ -154,7 +135,7 @@ When you think aloud, Interview can first restate your goal and the underlying
 problem in its own words, then resolve the few questions that change the next
 action. You can ask for just that understanding. For an unresolved solution
 choice, Spec can select a [small local trial](skills/aios-spec-work/references/local-trials.md):
-design variations on a chosen canvas/preview, a runnable UI interaction, or a
+visual variations on an available canvas/preview, a runnable UI interaction, or a
 sample workflow. Clear work proceeds directly; neither step is a fixed ritual.
 
 Setup replaces `aios-onboard` with the canonical name `aios-setup`. Update explicit
@@ -178,7 +159,7 @@ skills, not additional public skills.
 These built-in systems are assembled from skills, project artifacts and selected
 tools. Separately maintained specialist Systems, such as Power BI, can add their
 own dependencies and upkeep. Neither form requires a new AIOS runtime, project
-registry or background agent. The [skill index](docs/skills.md) lists all 25
+registry or background agent. The [skill index](docs/skills.md) lists all 22
 public entrypoints.
 
 ## Install in your app
@@ -226,8 +207,8 @@ gemini extensions install https://github.com/onlinesourdough/AIOS-Plugin
 ```
 
 Review Gemini's installation prompt, then start a fresh session. The extension
-contains the same skills and no executable extension code. Selected design and
-content tasks can use the helpers supplied with their skills.
+contains the same skills and no executable extension code. Selected content
+tasks can use the helpers supplied with their skills.
 
 ### Copilot CLI
 
@@ -328,7 +309,6 @@ After installation, try:
 - “Help me turn this idea into a clear plan.”
 - “Interview me about the agent I want to create, so we can find the right scope.”
 - “Build the agreed change and review the result.”
-- “Design this product idea and prepare it for implementation.”
 - “Turn these sources into a finished article.”
 - “Make this draft easier to understand without losing its meaning.”
 - “Set up AIOS for my work. My current focus is …”
@@ -405,7 +385,8 @@ brand or area of work. **Skills hold methods:** the process, standards and
 judgment your assistant uses. **Your app owns projects:** open the workspace
 and continue the task there. AIOS needs no second project register.
 
-Design and content are included. The assistant chains the relevant skills from
+Content is included; visual design uses an installed design method if the host
+provides one, otherwise direct work. The assistant chains the relevant skills from
 brief to reviewed result, choosing only the steps the work needs. Design
 material belongs in `design/` and content material in `content/` within the
 project, created when needed. Finished code and published assets belong where
@@ -419,9 +400,9 @@ is for an optional specialist with its own maintenance needs. Power BI is one
 example: it serves a narrower audience and its Desktop workflow needs Windows,
 so it is not bundled with AIOS.
 
-Small helpers for design review, handoff and content validation travel with the
-skills. OpenPencil and Diffusion Studio remain optional tools, installed through
-their own supported setup when a task needs them. The small Codex sidebar runtime
+Small helpers for content validation travel with the skills. Diffusion Studio
+remains an optional tool, installed through its own supported setup when a task
+needs it. The small Codex sidebar runtime
 starts and stops with the host; AIOS adds no independently running service,
 install hook or separate tools gateway. Your app keeps control of tool access.
 
@@ -456,7 +437,7 @@ remote; hosting alone does not reduce the tokens of content actually read.
 Remote skill distribution was considered in [issue #12](https://github.com/onlinesourdough/AIOS-Plugin/issues/12)
 and closed as not planned; it is not an active roadmap commitment.
 
-Read about the [25 skills](docs/skills.md), [architecture](docs/architecture.md),
+Read about the [22 skills](docs/skills.md), [architecture](docs/architecture.md),
 [verification](docs/verification.md), [recovery](docs/recovery.md) and
 [version history](CHANGELOG.md). GitHub [Releases](https://github.com/onlinesourdough/AIOS-Plugin/releases)
 lists published releases. The [release procedure](docs/distribution.md#release-and-adoption)

@@ -2,7 +2,7 @@
 name: aios-manage-skills
 description: Manage an authorized skill creation, edit, installation, update, removal or rollback.
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # AIOS:manage-skills

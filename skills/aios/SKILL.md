@@ -2,7 +2,7 @@
 name: aios
 description: Apply owner context and select relevant AIOS methods for the current task.
 metadata:
-  version: "2.6.2"
+  version: "2.7.0"
 ---
 
 # AIOS:aios
@@ -28,10 +28,12 @@ Missing context does not block unrelated work. Explicit `aios sync` uses
 [Maintain Context](../aios-maintain-context/SKILL.md) for the selected provider.
 
 For substantive work, [routing](references/routing.md) selects context, method
-and result. Use [Design](../design/SKILL.md) and [Content](../content/SKILL.md)
-through reviewed output, [Human writing](../human-writing/SKILL.md)
+and result. Use [Content](../content/SKILL.md) through reviewed output,
+[Human writing](../human-writing/SKILL.md)
 for prose, [Clarify](../clarify/SKILL.md) for complex explanations, and
 [Write code](../write-code/SKILL.md) for code, scripts and automation. These methods need no owner home.
+For visual design, use an installed design method if the host provides one;
+otherwise do the work directly or report the missing method.
 
 Shared [Spec](../aios-spec-work/SKILL.md), [Build](../aios-build-work/SKILL.md),
 [Review](../aios-review-work/SKILL.md) and authorized [Ship](../aios-ship-work/SKILL.md)

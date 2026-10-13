@@ -16,14 +16,15 @@ Record a material decision and its rationale in the source that owns the work.
   requested or when material uncertainty at the start prevents choosing a
   direction. Use its activation rules; ordinary execution continues without it.
 - [Clarify](../../clarify/SKILL.md) explains complex topics with examples and useful visuals.
-- [Design](../../design/SKILL.md) creates or evaluates visual direction and assets.
+- For visual direction and assets, use an installed design method if the host
+  provides one; otherwise do the work directly or report the missing method.
 - [Content](../../content/SKILL.md) creates, revises or repurposes editorial work.
 - [Human writing](../../human-writing/SKILL.md) makes prose clear and natural.
 - Shared [lifecycle](lifecycle.md) supplies specification, implementation, review
   and authorized delivery with the task's local requirements.
 
-Select methods for their contribution to the result. Design and content may
-work independently or pass relevant reviewed material to each other. Preserve
+Select methods for their contribution to the result. Design and content work may
+proceed independently or pass relevant reviewed material to each other. Preserve
 source identity, version and review when it matters; do not invent a cross-System
 handoff for work with the same owner. Domain review remains necessary where
 selected; deterministic validity alone does not establish quality.

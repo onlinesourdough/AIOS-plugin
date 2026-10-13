@@ -2,7 +2,7 @@
 name: aios-update
 description: Update selected optional specialists or adopt or roll back a reviewed AIOS package.
 metadata:
-  version: "2.0.2"
+  version: "2.0.3"
 ---
 
 # AIOS:update
