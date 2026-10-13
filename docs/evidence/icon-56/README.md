@@ -5,6 +5,11 @@ baseline and candidate icons at 16, 20 and 24 CSS px on proxy sidebar background
 (light and dark, unselected and selected). Open it in any browser to reproduce the
 capture. It is a browser proxy, not a native Codex screenshot.
 
+![Before and after at 16, 20 and 24 px on proxy sidebar backgrounds](comparison.png)
+
+[comparison.png](comparison.png) is that page captured by the T3 headless browser at
+720 CSS px wide and device scale 1, so the icons appear at their real size.
+
 Every icon on the page is an unmodified `<img>` of the baseline release's bytes or
 the candidate's emitted and packaged bytes:
 
