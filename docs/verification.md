@@ -1,6 +1,19 @@
 # Verification
 
-On 2026-10-16, the owner restarted Codex with #56 candidate `6d3e040` installed. The AIOS
+Later on 2026-10-16, with `687f99a` installed and all its bytes verified, the owner's
+restarted Codex still showed the AIOS sidebar icon far darker than its neighbours: a second
+native failure. The next candidate centres the mark and sends one theme-less SVG as both the
+`aios_open` tool icon and the server icon, through an owned `tools/list` handler on the SDK's
+public low-level server. With Node 26.8.1 and the copied locked dependencies, the bundled
+smoke failed on the `687f99a` bundle (no tool icon) and passed on the candidate, including a
+rejected invalid argument, Settings, status and saves. A stdio comparison found every
+`tools/list` field, server identity and capability unchanged apart from the new
+`aios_open.icons` and the changed server icon, which now match. Two
+builds were byte-identical. The 83 unit tests were not rerun: none imports the server. The
+[browser comparison](evidence/icon-56/README.md) is a proxy. Whether the installed sidebar
+shows the centred mark as readable as its neighbours has not been observed.
+
+Earlier on 2026-10-16, the owner restarted Codex with #56 candidate `6d3e040` installed. The AIOS
 panel looked fine, but the global sidebar icon was almost black on the dark sidebar: a
 native contrast failure. Which icon metadata Codex selected is not known. The repair sends
 one theme-less adaptive SVG server icon with a neutral fallback colour and keeps the

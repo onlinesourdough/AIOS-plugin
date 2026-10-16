@@ -21,29 +21,29 @@ try {
     assert.deepEqual(tools.find(tool => tool.name === name)._meta.ui.visibility, ['app']);
     assert.equal(tools.find(tool => tool.name === name).annotations.openWorldHint, true);
   }
-  // A host may show only the first icon as a standalone image, so one theme-less icon must stay
-  // visible with its light rule, its dark rule, and its fallback colour if the style is ignored.
+  // Hosts read the global tool's icons before the server icon, so both carry the same single
+  // theme-less SVG, and no other tool has an icon.
   const icons = client.getServerVersion().icons;
+  assert.deepEqual(tools[0].icons, icons);
+  assert.deepEqual(tools.filter(tool => tool.icons).map(tool => tool.name), ['aios_open']);
   assert.equal(icons.length, 1);
   const [icon] = icons;
   assert.equal(icon.theme, undefined);
   assert.equal(icon.mimeType, 'image/svg+xml');
-  assert.deepEqual(icon.sizes, ['20x20']);
+  assert.deepEqual(icon.sizes, ['16x16']);
   assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
   const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
-  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
+  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" [^>]*viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
+  // The SVG sets its own neutral colour for each colour scheme; each must read on that scheme's
+  // sidebar backgrounds, unselected then selected.
   const luminance = hex => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
     .map(c => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
     .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
   const contrast = (a, b) => { const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
-  const fallback = svg.match(/^<svg [^>]*\bcolor="(#[0-9a-f]{6})"/i)?.[1];
   const light = svg.match(/<style>:root\{color:(#[0-9a-f]{6})\}/i)?.[1];
-  const dark = svg.match(/prefers-color-scheme:\s*dark\)\{:root\{color:(#[0-9a-f]{6})\}/i)?.[1];
-  // Light and dark sidebar backgrounds, unselected then selected.
-  const lightBackgrounds = ['#ffffff', '#e6e6e6'];
-  const darkBackgrounds = ['#1c1c1c', '#333333'];
-  for (const [ink, backgrounds] of [[fallback, [...lightBackgrounds, ...darkBackgrounds]], [light, lightBackgrounds], [dark, darkBackgrounds]]) {
-    assert.ok(ink, 'icon colour path');
+  const dark = svg.match(/@media \(prefers-color-scheme:\s*dark\)\{:root\{color:(#[0-9a-f]{6})\}\}/i)?.[1];
+  for (const [ink, backgrounds] of [[light, ['#ffffff', '#e6e6e6']], [dark, ['#1c1c1c', '#333333']]]) {
+    assert.ok(ink, 'icon colour for each scheme');
     for (const background of backgrounds) assert.ok(contrast(ink, background) >= 3, `${ink} on ${background}`);
   }
   const view = await client.readResource({ uri: 'ui://aios/home-v5' });
@@ -59,7 +59,9 @@ try {
   assert.ok(['unknown', 'not_connected', 'not_installed'].includes(result._meta['aios/status'].notion.state));
   assert.equal(JSON.stringify(result.content).includes('Context:'), false);
   const target = 'https://app.notion.com/p/00000000000000000000000000000001';
-  const saved = await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: result._meta['aios/status'].context.revision } });
+  const invalid = await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: 'stale' } });
+  assert.equal(invalid.isError, true);
+  const saved =await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: result._meta['aios/status'].context.revision } });
   assert.equal(saved.isError, undefined);
   assert.equal(saved._meta['aios/status'].context.target, target);
   const read = await client.callTool({ name: 'aios_status', arguments: {} });
