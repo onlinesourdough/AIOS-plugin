@@ -13,13 +13,13 @@ import { NotionPages } from './notion-pages.mjs';
 const uri = 'ui://aios/home-v5';
 const notionPages = new NotionPages();
 // Context-hub mark; assets/branding/aios-icon.svg renders the same geometry as assets/icon.png.
-// A data-URI image does not inherit currentColor, so each theme variant carries its own ink.
-const icon = (ink) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="${ink}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="8" height="8" rx="2" fill="${ink}"/><rect x="13" y="3" width="5" height="5" rx="1.25"/><rect x="3" y="13" width="5" height="5" rx="1.25"/><rect x="13" y="13" width="5" height="5" rx="1.25"/><path d="M10 5.5h3M5.5 10v3M15.5 8v5M8 15.5h5"/></svg>`;
+// A data-URI image does not inherit the host's text colour, so one theme-less icon adapts
+// itself: neutral grey for light or dark schemes, and a mid grey if its style is ignored.
+const icon = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" color="#808080" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>:root{color:#4c4e4a}@media (prefers-color-scheme:dark){:root{color:#b4b4b4}}</style><rect x="2" y="2" width="8" height="8" rx="2" fill="currentColor"/><rect x="13" y="3" width="5" height="5" rx="1.25"/><rect x="3" y="13" width="5" height="5" rx="1.25"/><rect x="13" y="13" width="5" height="5" rx="1.25"/><path d="M10 5.5h3M5.5 10v3M15.5 8v5M8 15.5h5"/></svg>';
 // MCP SDK 1.31 does not serialize tool icons. The spec's server-icon fallback
 // supplies the navigation icon without patching SDK internals.
 const server = new McpServer({ name: 'aios', title: 'AIOS', version: __AIOS_VERSION__,
-  icons: [['light', '#2B1B12'], ['dark', '#F8F2E8']].map(([theme, ink]) => ({
-    src: `data:image/svg+xml;base64,${Buffer.from(icon(ink)).toString('base64')}`, mimeType: 'image/svg+xml', sizes: ['20x20'], theme })),
+  icons: [{ src: `data:image/svg+xml;base64,${Buffer.from(icon).toString('base64')}`, mimeType: 'image/svg+xml', sizes: ['20x20'] }],
 });
 new OpenAIExtensions(server);
 

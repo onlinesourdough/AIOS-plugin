@@ -1,6 +1,6 @@
 # Codex sidebar — 0.29.0
 
-Revision: 2026-10-13
+Revision: 2026-10-16
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and
@@ -99,8 +99,10 @@ runtime/sidebar. Resource: ui://aios/home-v5. Tools:
 The context-hub mark identifies AIOS. `assets/branding/aios-icon.svg` is the
 source of `assets/icon.png` (the Codex `composerIcon` and `logo`):
 `rsvg-convert -w 512 -h 512 assets/branding/aios-icon.svg -o assets/icon.png`.
-The server advertises the same geometry as `light` and `dark` SVG server icons
-with explicit ink, because a data-URI image does not inherit `currentColor`.
+The server advertises the same geometry as one SVG server icon with no `theme`
+field, so a host that shows only the first icon still gets it. A data-URI image
+does not inherit the host's text colour, so the SVG sets neutral grey itself for
+light and dark colour schemes, with a mid-grey fallback if its style is ignored.
 
 The short pointer lives in CODEX_HOME/AGENTS.md. Installing AIOS alone does not
 choose a context. Saving the primary Context during setup, or confirming a

@@ -1,5 +1,16 @@
 # Verification
 
+On 2026-10-16, the owner restarted Codex with #56 candidate `6d3e040` installed. The AIOS
+panel looked fine, but the global sidebar icon was almost black on the dark sidebar: a
+native contrast failure. Which icon metadata Codex selected is not known. The repair sends
+one theme-less adaptive SVG server icon with a neutral fallback colour and keeps the
+packaged PNG. The new bundled smoke failed on the `6d3e040` bundle (two icons) and on a
+`#8a8a8a` fallback draft (under 3:1 on a light selected background), then passed on the
+repair with Node 26.8.1. The rebuild was byte-identical and changed only the icon
+expression. The [browser comparison](evidence/icon-56/README.md) is a proxy, not a native
+capture. Whether the installed Codex sidebar shows the repaired mark, readable in light
+and dark themes, selected and unselected, has not been observed.
+
 On 2026-10-13, the issue #56 icon candidate (still 0.29.0) replaced the plugin icon and
 the sidebar server icon with one context-hub mark. The locked sidebar build changed only
 the icon expression in `runtime/sidebar/server.cjs`, and a rebuild was byte-identical. Node

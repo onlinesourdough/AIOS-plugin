@@ -21,19 +21,31 @@ try {
     assert.deepEqual(tools.find(tool => tool.name === name)._meta.ui.visibility, ['app']);
     assert.equal(tools.find(tool => tool.name === name).annotations.openWorldHint, true);
   }
-  // Data-URI icons render as standalone images, so each theme needs its own ink.
+  // A host may show only the first icon as a standalone image, so one theme-less icon must stay
+  // visible with its light rule, its dark rule, and its fallback colour if the style is ignored.
   const icons = client.getServerVersion().icons;
-  assert.deepEqual(icons.map(icon => icon.theme), ['light', 'dark']);
-  const svgs = icons.map(icon => {
-    assert.equal(icon.mimeType, 'image/svg+xml');
-    assert.deepEqual(icon.sizes, ['20x20']);
-    assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
-    const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
-    assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
-    assert.equal(svg.includes('currentColor'), false);
-    return svg;
-  });
-  assert.notEqual(svgs[0], svgs[1]);
+  assert.equal(icons.length, 1);
+  const [icon] = icons;
+  assert.equal(icon.theme, undefined);
+  assert.equal(icon.mimeType, 'image/svg+xml');
+  assert.deepEqual(icon.sizes, ['20x20']);
+  assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
+  const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
+  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
+  const luminance = hex => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map(c => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
+  const contrast = (a, b) => { const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
+  const fallback = svg.match(/^<svg [^>]*\bcolor="(#[0-9a-f]{6})"/i)?.[1];
+  const light = svg.match(/<style>:root\{color:(#[0-9a-f]{6})\}/i)?.[1];
+  const dark = svg.match(/prefers-color-scheme:\s*dark\)\{:root\{color:(#[0-9a-f]{6})\}/i)?.[1];
+  // Light and dark sidebar backgrounds, unselected then selected.
+  const lightBackgrounds = ['#ffffff', '#e6e6e6'];
+  const darkBackgrounds = ['#1c1c1c', '#333333'];
+  for (const [ink, backgrounds] of [[fallback, [...lightBackgrounds, ...darkBackgrounds]], [light, lightBackgrounds], [dark, darkBackgrounds]]) {
+    assert.ok(ink, 'icon colour path');
+    for (const background of backgrounds) assert.ok(contrast(ink, background) >= 3, `${ink} on ${background}`);
+  }
   const view = await client.readResource({ uri: 'ui://aios/home-v5' });
   assert.equal(view.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.deepEqual(view.contents[0]._meta['openai/ui'], { preferredDisplayMode: 'fullscreen', availableDisplayModes: ['fullscreen'] });
