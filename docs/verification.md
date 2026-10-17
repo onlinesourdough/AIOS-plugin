@@ -1,5 +1,50 @@
 # Verification
 
+On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
+geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
+light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged
+PNG and tool and server icon delivery, and removes the SVG's own colours so it paints only
+with `currentColor`. With Node 26.8.1 and the copied locked dependencies, the updated smoke
+failed on the `1d719a2` bundle (its `<style>`) and passed on the candidate. A stdio
+comparison found every `tools/list` field, server identity and capability unchanged apart
+from the icon bytes, still shared by `aios_open` and the server. Two builds were
+byte-identical. The [browser comparison](evidence/icon-56/README.md) is a proxy. Whether
+Codex colours the icon like its neighbours has not been observed.
+
+Later on 2026-10-16, with `687f99a` installed and all its bytes verified, the owner's
+restarted Codex still showed the AIOS sidebar icon far darker than its neighbours: a second
+native failure. `1d719a2` centres the mark and sends one theme-less SVG as both the
+`aios_open` tool icon and the server icon, through an owned `tools/list` handler on the SDK's
+public low-level server. With Node 26.8.1 and the copied locked dependencies, the bundled
+smoke failed on the `687f99a` bundle (no tool icon) and passed on `1d719a2`, including a
+rejected invalid argument, Settings, status and saves. A stdio comparison found every
+`tools/list` field, server identity and capability unchanged apart from the new
+`aios_open.icons` and the changed server icon, which now match. Two
+builds were byte-identical. The 83 unit tests were not rerun: none imports the server. The
+[browser comparison](evidence/icon-56/README.md) is a proxy. The owner's 2026-10-17 check
+above accepted its geometry and failed its colour.
+
+Earlier on 2026-10-16, the owner restarted Codex with #56 candidate `6d3e040` installed. The AIOS
+panel looked fine, but the global sidebar icon was almost black on the dark sidebar: a
+native contrast failure. Which icon metadata Codex selected is not known. The repair sends
+one theme-less adaptive SVG server icon with a neutral fallback colour and keeps the
+packaged PNG. The new bundled smoke failed on the `6d3e040` bundle (two icons) and on a
+`#8a8a8a` fallback draft (under 3:1 on a light selected background), then passed on the
+repair with Node 26.8.1. The rebuild was byte-identical and changed only the icon
+expression. The [browser comparison](evidence/icon-56/README.md) is a proxy, not a native
+capture. Whether the installed Codex sidebar shows the repaired mark, readable in light
+and dark themes, selected and unselected, has not been observed.
+
+On 2026-10-13, the issue #56 icon candidate (still 0.29.0) replaced the plugin icon and
+the sidebar server icon with one context-hub mark. The locked sidebar build changed only
+the icon expression in `runtime/sidebar/server.cjs`, and a rebuild was byte-identical. Node
+26.8.1 ran the 83 sidebar tests and the bundled smoke, which decodes both themed
+`serverInfo` icons and still opens the tool and resource. Dependencies were a hash-verified
+copy of the main checkout's locked install, not a fresh `npm ci`. The
+[browser comparison](evidence/icon-56/README.md) uses the actual emitted payloads and PNGs
+and is not a native Codex capture. An installed, reloaded Codex showing the new icon and
+still opening AIOS remains unverified.
+
 For the AIOS 0.29.0 design-skill retirement, `validate.py --baseline a14f285` (22 versioned
 skills), the seven release Python checks, `skill-version-rehearsal` and the content graph tests
 pass. Entry-routing, intent-trial and model-selection runs only prepared fixtures, not native-behavior

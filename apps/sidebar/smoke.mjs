@@ -21,7 +21,29 @@ try {
     assert.deepEqual(tools.find(tool => tool.name === name)._meta.ui.visibility, ['app']);
     assert.equal(tools.find(tool => tool.name === name).annotations.openWorldHint, true);
   }
-  assert.ok(client.getServerVersion().icons[0].src.startsWith('data:image/svg+xml;base64,'));
+  // Hosts read the global tool's icons before the server icon, so both carry the same single
+  // theme-less SVG, and no other tool has an icon.
+  const icons = client.getServerVersion().icons;
+  assert.deepEqual(tools[0].icons, icons);
+  assert.deepEqual(tools.filter(tool => tool.icons).map(tool => tool.name), ['aios_open']);
+  assert.equal(icons.length, 1);
+  const [icon] = icons;
+  assert.equal(icon.theme, undefined);
+  assert.equal(icon.mimeType, 'image/svg+xml');
+  assert.deepEqual(icon.sizes, ['16x16']);
+  assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
+  const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
+  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" [^>]*viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
+  // A monochrome icon leaves its colour to the host: it paints only with currentColor and sets no
+  // colour, style, opacity or filter of its own.
+  for (const [, attribute, value] of svg.matchAll(/\s(fill|stroke)="([^"]*)"/g)) assert.ok(['none', 'currentColor'].includes(value), `${attribute}="${value}"`);
+  assert.doesNotMatch(svg, /<style|\sstyle=|\scolor=|opacity|filter/i);
+  // The context-hub mark: one filled hub at the centre and four outline nodes placed symmetrically around it.
+  const circles = [...svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="[\d.]+"( fill="currentColor")?\/>/g)].map(([, x, y, filled]) => ({ x: +x, y: +y, filled: !!filled }));
+  assert.deepEqual(circles.filter(circle => circle.filled), [{ x: 10, y: 10, filled: true }]);
+  const nodes = circles.filter(circle => !circle.filled);
+  assert.equal(nodes.length, 4);
+  for (const { x, y } of nodes) assert.ok(nodes.some(other => other.x === 20 - x && other.y === 20 - y), `node ${x},${y} has an opposite`);
   const view = await client.readResource({ uri: 'ui://aios/home-v5' });
   assert.equal(view.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.deepEqual(view.contents[0]._meta['openai/ui'], { preferredDisplayMode: 'fullscreen', availableDisplayModes: ['fullscreen'] });
@@ -35,7 +57,9 @@ try {
   assert.ok(['unknown', 'not_connected', 'not_installed'].includes(result._meta['aios/status'].notion.state));
   assert.equal(JSON.stringify(result.content).includes('Context:'), false);
   const target = 'https://app.notion.com/p/00000000000000000000000000000001';
-  const saved = await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: result._meta['aios/status'].context.revision } });
+  const invalid = await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: 'stale' } });
+  assert.equal(invalid.isError, true);
+  const saved =await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: result._meta['aios/status'].context.revision } });
   assert.equal(saved.isError, undefined);
   assert.equal(saved._meta['aios/status'].context.target, target);
   const read = await client.callTool({ name: 'aios_status', arguments: {} });
