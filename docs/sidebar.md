@@ -1,6 +1,6 @@
 # Codex sidebar — 0.29.0
 
-Revision: 2026-10-16
+Revision: 2026-10-17
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and
@@ -101,8 +101,9 @@ source of `assets/icon.png` (the Codex `composerIcon` and `logo`):
 `rsvg-convert -w 512 -h 512 assets/branding/aios-icon.svg -o assets/icon.png`.
 The sidebar mark is one SVG with the same geometry and no `theme` field, sent
 both as the `aios_open` tool icon, which hosts read first, and as the server icon.
-A data-URI image does not inherit the host's text colour, so the SVG sets neutral
-grey itself for light and dark colour schemes. MCP SDK 1.31's `McpServer` drops
+It is monochrome: it paints only with `currentColor` and sets no colour of its
+own, so the host can colour it like its other sidebar icons. Earlier candidates
+that set their own greys looked wrong in the native sidebar. MCP SDK 1.31's `McpServer` drops
 tool icons, so the server sets its own `tools/list` handler through the SDK's
 public low-level server; it lists the registered tools unchanged apart from that
 icon.

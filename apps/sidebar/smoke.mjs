@@ -34,18 +34,16 @@ try {
   assert.ok(icon.src.startsWith('data:image/svg+xml;base64,'));
   const svg = Buffer.from(icon.src.slice(icon.src.indexOf(',') + 1), 'base64').toString();
   assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" [^>]*viewBox="0 0 20 20"[^>]*>.*<\/svg>$/s);
-  // The SVG sets its own neutral colour for each colour scheme; each must read on that scheme's
-  // sidebar backgrounds, unselected then selected.
-  const luminance = hex => [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255)
-    .map(c => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)
-    .reduce((sum, c, i) => sum + c * [0.2126, 0.7152, 0.0722][i], 0);
-  const contrast = (a, b) => { const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x); return (hi + 0.05) / (lo + 0.05); };
-  const light = svg.match(/<style>:root\{color:(#[0-9a-f]{6})\}/i)?.[1];
-  const dark = svg.match(/@media \(prefers-color-scheme:\s*dark\)\{:root\{color:(#[0-9a-f]{6})\}\}/i)?.[1];
-  for (const [ink, backgrounds] of [[light, ['#ffffff', '#e6e6e6']], [dark, ['#1c1c1c', '#333333']]]) {
-    assert.ok(ink, 'icon colour for each scheme');
-    for (const background of backgrounds) assert.ok(contrast(ink, background) >= 3, `${ink} on ${background}`);
-  }
+  // A monochrome icon leaves its colour to the host: it paints only with currentColor and sets no
+  // colour, style, opacity or filter of its own.
+  for (const [, attribute, value] of svg.matchAll(/\s(fill|stroke)="([^"]*)"/g)) assert.ok(['none', 'currentColor'].includes(value), `${attribute}="${value}"`);
+  assert.doesNotMatch(svg, /<style|\sstyle=|\scolor=|opacity|filter/i);
+  // The context-hub mark: one filled hub at the centre and four outline nodes placed symmetrically around it.
+  const circles = [...svg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="[\d.]+"( fill="currentColor")?\/>/g)].map(([, x, y, filled]) => ({ x: +x, y: +y, filled: !!filled }));
+  assert.deepEqual(circles.filter(circle => circle.filled), [{ x: 10, y: 10, filled: true }]);
+  const nodes = circles.filter(circle => !circle.filled);
+  assert.equal(nodes.length, 4);
+  for (const { x, y } of nodes) assert.ok(nodes.some(other => other.x === 20 - x && other.y === 20 - y), `node ${x},${y} has an opposite`);
   const view = await client.readResource({ uri: 'ui://aios/home-v5' });
   assert.equal(view.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.deepEqual(view.contents[0]._meta['openai/ui'], { preferredDisplayMode: 'fullscreen', availableDisplayModes: ['fullscreen'] });

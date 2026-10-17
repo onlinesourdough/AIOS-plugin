@@ -14,9 +14,9 @@ import { NotionPages } from './notion-pages.mjs';
 const uri = 'ui://aios/home-v5';
 const notionPages = new NotionPages();
 // Context-hub mark; assets/branding/aios-icon.svg renders the same geometry as assets/icon.png.
-// A data-URI image does not inherit the host's text colour, so one theme-less SVG sets neutral
-// grey for light and dark colour schemes itself. It is the global tool icon and the server icon.
-const icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><style>:root{color:#4c4e4a}@media (prefers-color-scheme:dark){:root{color:#b4b4b4}}</style><circle cx="10" cy="10" r="3.25" fill="currentColor"/><circle cx="3.75" cy="3.75" r="2"/><circle cx="16.25" cy="3.75" r="2"/><circle cx="3.75" cy="16.25" r="2"/><circle cx="16.25" cy="16.25" r="2"/><path d="M5.2 5.2l2.4 2.4M14.8 5.2l-2.4 2.4M5.2 14.8l2.4-2.4M14.8 14.8l-2.4-2.4"/></svg>';
+// A monochrome SVG drawn only in currentColor, with no colour of its own, so the host can colour
+// it like its other sidebar icons. It is the global tool icon and the server icon.
+const icon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="3.25" fill="currentColor"/><circle cx="3.75" cy="3.75" r="2"/><circle cx="16.25" cy="3.75" r="2"/><circle cx="3.75" cy="16.25" r="2"/><circle cx="16.25" cy="16.25" r="2"/><path d="M5.2 5.2l2.4 2.4M14.8 5.2l-2.4 2.4M5.2 14.8l2.4-2.4M14.8 14.8l-2.4-2.4"/></svg>';
 const icons = [{ src: `data:image/svg+xml;base64,${Buffer.from(icon).toString('base64')}`, mimeType: 'image/svg+xml', sizes: ['16x16'] }];
 const server = new McpServer({ name: 'aios', title: 'AIOS', version: __AIOS_VERSION__, icons });
 new OpenAIExtensions(server);
