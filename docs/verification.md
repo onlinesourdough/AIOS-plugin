@@ -21,8 +21,8 @@ rejected invalid argument, Settings, status and saves. A stdio comparison found 
 `tools/list` field, server identity and capability unchanged apart from the new
 `aios_open.icons` and the changed server icon, which now match. Two
 builds were byte-identical. The 83 unit tests were not rerun: none imports the server. The
-[browser comparison](evidence/icon-56/README.md) is a proxy. Whether the installed sidebar
-shows the centred mark as readable as its neighbours has not been observed.
+[browser comparison](evidence/icon-56/README.md) is a proxy. The owner's 2026-10-17 check
+above accepted its geometry and failed its colour.
 
 Earlier on 2026-10-16, the owner restarted Codex with #56 candidate `6d3e040` installed. The AIOS
 panel looked fine, but the global sidebar icon was almost black on the dark sidebar: a

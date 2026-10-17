@@ -28,6 +28,11 @@ they follow each cell's colour scheme, unlike the native result. It is a browser
 proxy, not a native Codex screenshot. Inputs: the `tools/list` result and server
 identity returned over stdio by the `1d719a2` and candidate bundles.
 
+![1d719a2 and the currentColor candidate at 16, 20 and 24 px on proxy sidebar backgrounds](comparison.png)
+
+[comparison.png](comparison.png) is that page captured by the T3 headless browser
+as a 720 by 295 pixel image of the 720 CSS px page, one image pixel per CSS pixel.
+
 Whether the installed sidebar shows the icon in the same colour as its
 neighbours, in light and dark themes, selected and unselected, is still to be
 observed.
