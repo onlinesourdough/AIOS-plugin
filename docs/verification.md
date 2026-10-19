@@ -94,8 +94,81 @@ first check: a synthetic model with six and four labelled sources beside notes c
 ambiguous with no groups. The new guard for genuine ambiguity, repeated headings and a
 chosen section passes on both versions. The locked build, the bundled stdio check without
 the optional Codex CLI, and the package, documentation and whitespace checks passed, and a
-separate rebuild matched all three runtime files; only the server bundle changed. A fresh
-independent review, CI and a rerun on the retained text have not run on this change.
+separate rebuild matched all three runtime files; only the server bundle changed. That
+version was published as `3c3bfa8` on the draft pull request, where a fresh independent
+source review accepted it and [CI](https://github.com/onlinesourdough/AIOS-plugin/actions/runs/39301119400)
+passed 121 tests with the release job skipped. It is not installed anywhere.
+
+On 2026-10-19 at 18:28:54Z the same coordinator ran the `3c3bfa8` parser once on the same
+retained model text, unchanged at 14,649 bytes, with no section choice, no normalization and
+no new Notion read or model call. The result was ready and partial, with 3 rows left out
+and 11 links in 3 groups. All ten role-labelled sources matched their roles, targets and
+original two sections, and the eleventh link is a valid standalone child page. No related,
+incidental or prose link appeared. A first comparison that expected role-only names was
+corrected by checking the same stored output against the documented role plus visible
+name; the parser was not run again. The public source files and the coordinator's input
+and configuration were unchanged before and after. This passes correspondence with this
+one retained revision, with limits: whether the original read was complete is unknown, the
+output bounds were observed but not exercised, and real fences and tabs were not tested.
+The earlier child-only and empty ambiguous results above remain the before-evidence. This
+is not live freshness, native app behavior or acceptance of all of #58.
+
+A later, uncommitted candidate then changed 18 method and documentation files for the
+rest of #58: the AI Operating Model under a private AIOS parent, optional Soul and About,
+one canonical Memory resolved by identity with native creator and editor fields, native
+Skills reported separately from the exact-page fallback, a thin portable host pointer,
+Check and Update descriptions and a shorter README. Locally, the package validator against
+`3c3bfa8`, the documentation, onboarding, layout, skill-version, continuity and
+context-footprint checks, the whitespace check, all 121 sidebar tests and the bundled
+synthetic stdio check passed; no native Codex CLI or provider login was available. The first
+continuity run stopped at its own guard because its synthetic source sat inside an unrelated
+Git checkout; the same unchanged test passed with its fixtures outside any Git repository.
+Runtime and parser code are unchanged, so no new build was needed. The CI result above
+covers `3c3bfa8`, not this candidate. A fresh model given eight withheld-answer setup and
+maintenance cases chose acceptable decisions in all eight, including keeping a custom
+Memory beside an empty native alias, reporting the exact-page skill fallback as a fallback,
+reading back each schema step and leaving independent repositories without personal
+context. No tools ran in those cases and the previous instructions were not compared, so
+this shows instruction decisions only, not real Memory saves, skill activation, recall or a
+second agent. During that source qualification the `notion://docs/memory` and
+`notion://docs/skills` resources and the active tool catalog were not read, and the public
+Notion setup guide was not accessible; the public Notion Skills help was read.
+
+Later on 2026-10-19, around 21:00 CEST, the owner's coordinator read both resources once
+and inspected the 40-tool catalog of their Notion connection. Neither resource gave a
+version, date or connector revision, and the installed plugin's version is not evidence
+of the backend. Nothing else was fetched or changed: no model, Memory entry, alias or skill
+body, and no write, enablement, account or lifecycle action. The memory guidance confirms
+the Type values, Source as the creating client kept on edits and Last updated by as the
+editing client. It describes the `memory` alias resolving the native Memories database and
+About page, created on the first save, with later operations using the returned identities;
+no alias fetch was made, so this is documented behavior only. It also says About links its
+supporting memories and a specific or newer memory overrides the summary, that search can
+lag behind a save, and that fetch results report truncation and unknown blocks. The guidance
+still describes creating a memory with a text `memory` parent, but that catalog's page
+creation tool takes a parent object with a page, database or data source ID. This mismatch
+is unresolved; no native save, update or alternative shape was tried, and the method now
+holds that mismatched native create and reports it. The catalog included fetch, search, data-source queries, page
+creation and update, with a skill-designation flag on creation and update. It had no
+enabled-skills, skill-enablement, memory-search or skill-download tool, so in that
+connection ordinary search and page fetches are only an explicit-destination fallback. The
+skills guidance separates per-user enablement from designation, describes enabled surfaces
+only through the enablement tool, and says automatic use loads skills by relevance while
+existing sessions keep their registry. This is documentation and catalog evidence for one
+connection at one time, not proof that any operation succeeds. Native save compatibility,
+account changes and revocation, freshness, save provenance, rendered Setup and overview,
+Memory, Skills and recovery, a useful task, fresh-session and second-agent use, independent
+review of this candidate, CI, merge, installation and release all remain open. Whether the
+retained model read was complete is still unknown. #58 is not complete.
+
+A later independent review of this candidate returned REVISE on two instructions that had
+not changed. The overview refresh told Setup to mark a read incomplete only when it was
+truncated, so a read with unknown blocks or without completeness signals could be saved as
+complete. The shortcut procedure still sent fresh onboarding through fixed Docs, Skills and
+Memory links, adding a second role map beside the model. Both instructions were corrected
+in source: Setup now marks a refresh complete only when the fetch reports nothing missing,
+and shortcut steps apply only to existing or explicitly requested shortcuts. No native
+operation, rerun on the retained text or CI followed this correction.
 
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the

@@ -35,7 +35,7 @@ JOB_PREFIXES = {
     "aios-ship-work": "Deliver ",
     "aios-spec-work": "Specify or revise ",
     "aios-triage-improvement": "Triage ",
-    "aios-update": "Update selected optional ",
+    "aios-update": "Update or roll back ",
 }
 CURRENT_NEUTRAL_SCAFFOLD = (
     "skills/aios-setup/assets/bridge.md",
@@ -213,6 +213,38 @@ def validate_routes():
     require("Reference isolation" in setup_scenarios and
             "do not load Pi, desktop, protection" in setup_scenarios,
             "onboarding reference isolation")
+
+    # Notion method contracts (#58). Static wording guards only; live provider,
+    # native Memory/Skills and second-agent behavior need their own evidence.
+    def flat(relative):
+        return " ".join((ROOT / relative).read_text().split())
+    notion = "skills/aios-context/references/notion/"
+    acceptance = (ROOT / notion / "acceptance.md").read_text()
+    require(all(f"| {row} |" in acceptance for row in (
+        "New home and same-title guide", "Memory identity", "Memory provenance",
+        "Schema transition", "Missing capability", "Native skills", "Selective context",
+        "Second agent", "Read-only Check", "Isolation")),
+        "Notion acceptance scenario coverage")
+    schema = flat(notion + "schema-and-templates.md")
+    require("An empty native alias does not mean there are no memories" in schema and
+            "Source names the creating client and is preserved on edits" in schema and
+            "never rename a property and reuse its old name in one unchecked batch" in schema,
+            "Memory identity, provenance and schema-transition contract")
+    skills = flat(notion + "personal-skills.md")
+    require("it is a page fallback, not native enabled discovery" in skills and
+            "neither “Enable for me”" not in skills,
+            "native skill discovery and page fallback are distinct")
+    require("need not be reread each time" in flat(notion + "operating.md"),
+            "ordinary retrieval avoids a second full policy read")
+    model = (ROOT / "skills/aios-context/assets/notion-aios.md").read_text()
+    require("\n# AI Operating Model\n" in model and "\n# AIOS\n" not in model,
+            "operating-model template title")
+    pointer = (ROOT / "skills/aios-context/assets/bridge.md").read_text()
+    require(len(pointer.splitlines()) <= 10 and
+            pointer.count("<!-- AIOS:BEGIN -->") == pointer.count("<!-- AIOS:END -->") == 1 and
+            len([line for line in pointer.splitlines() if line.startswith("Context:")]) == 1 and
+            "AIOS Context" not in pointer and "once per session" in pointer and "Report gaps;" in pointer,
+            "thin portable host pointer")
 
     owner_root = ROOT / "skills/aios-setup/assets/owner"
     actual_owner_assets = {

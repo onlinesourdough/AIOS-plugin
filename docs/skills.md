@@ -22,11 +22,11 @@ carries an independent quoted `metadata.version`; see
 | [AIOS:aios](../skills/aios/SKILL.md) | Select relevant context and methods for the current task |
 | [AIOS:interview](../skills/aios-interview/SKILL.md) | Explore context, challenge assumptions and find direction when requested or materially needed at the start; no routine interruption of execution |
 | [AIOS:build-work](../skills/aios-build-work/SKILL.md) | Implement and verify accepted work through in-scope fixes and Review |
-| [AIOS:check](../skills/aios-check/SKILL.md) | Inspect installation, owner format, and discovery |
+| [AIOS:check](../skills/aios-check/SKILL.md) | Inspect installation, discovery, owner format and context-home health without changes |
 | [AIOS:create-project](../skills/aios-create-project/SKILL.md) | Establish a useful project workspace, context and simple structure; Git is optional |
 | [AIOS:maintain-context](../skills/aios-maintain-context/SKILL.md) | Maintain owner facts, routes, connections, and explicit continuity Sync |
 | [AIOS:manage-skills](../skills/aios-manage-skills/SKILL.md) | Manage personal and installed skill lifecycles |
-| [AIOS:setup](../skills/aios-setup/SKILL.md) | Set up or move an owner home and native bridge |
+| [AIOS:setup](../skills/aios-setup/SKILL.md) | Set up, resume or move a context home and its host pointer, then prove a useful first task |
 | [AIOS:orchestrate-workers](../skills/aios-orchestrate-workers/SKILL.md) | Prepare and recover delegated workers when the caller retains coordination and acceptance |
 | [AIOS:risky-changes](../skills/aios-risky-changes/SKILL.md) | Assess consequential changes proportionately |
 | [AIOS:review-work](../skills/aios-review-work/SKILL.md) | Inspect the final result against its contract; caller acceptance remains separate for delegated work |
@@ -34,7 +34,7 @@ carries an independent quoted `metadata.version`; see
 | [AIOS:ship-work](../skills/aios-ship-work/SKILL.md) | Deliver an exactly reviewed result under authority |
 | [AIOS:spec-work](../skills/aios-spec-work/SKILL.md) | Resolve a substantive AIOS work contract |
 | [AIOS:triage-improvement](../skills/aios-triage-improvement/SKILL.md) | Route a concrete underlying improvement signal |
-| [AIOS:update](../skills/aios-update/SKILL.md) | Update selected optional specialists or adopt/roll back AIOS |
+| [AIOS:update](../skills/aios-update/SKILL.md) | Adopt or roll back a reviewed AIOS package or a selected System; acquiring new skills belongs to Manage Skills |
 
 Content preserves its domain standards through focused references
 and helpers. The assistant chains relevant skills using the current task and
@@ -42,8 +42,8 @@ its accepted result; no workflow engine or fixed chain schema is required.
 Working material stays in the project. Optional tool setup is loaded only for
 work that uses that tool.
 
-The [systems and workflow overview](../README.md#agentic-systems-and-skill-chains) connects these entrypoints
-by purpose and result. Interview owns adaptive exploration and a shared question
+The [README skill table](../README.md#skills) summarizes these entrypoints by
+purpose. Interview owns adaptive exploration and a shared question
 procedure; Setup owns home and harness readiness. Spec reuses interview answers
 and owns the execution contract. Neither installation nor a new project alone
 requires an interview.
@@ -72,7 +72,7 @@ Create Project establishes a workspace for the actual work; Git and a repository
 template are optional. Manage Skills owns reusable specialist
 methods. Independently maintained solutions keep their local ownership and
 ordinary project lifecycle. No mandatory AIOS registration is created.
-Update owns native package recovery and selected specialist maintenance;
+Update owns native package adoption, recovery and selected System maintenance;
 Maintain Context owns facts, and Check observes state. The
 [legacy behavior map](../skills/aios-setup/references/legacy-parity.md) records
 older method routes. Domain preservation is documented in the

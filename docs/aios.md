@@ -2,42 +2,45 @@
 
 AIOS version: 0.29.0
 
-**Business first. Productivity built in.**
-
 AIOS supplies portable context and skills to help an AI assistant work from an
 owner's relevant context and carry a task from a small request to a reviewed
 result. It is not a model, a hosted service, or a replacement for the tools and
 permissions supplied by the assistant's native harness.
 
-AIOS focuses on business work, decisions, content, design and practical
-automation. Projects own their implementation, engineering standards, design,
+AIOS focuses on business work, decisions, content and practical automation.
+Projects own their implementation, engineering standards, design,
 infrastructure and delivery configuration.
 
 ## Your context home
 
 AIOS means AI Operating System: the shared method and your chosen context home.
-In Codex, open **AIOS** in the sidebar. Numbered setup steps save your Context,
-Docs, Personal/Team Skills and Memory destinations, then open your dashboard.
-All setup sections remain visible and revisitable. Existing context opens the
-dashboard immediately; Settings opens a separate drawer. Connected Notion
-selectors list accessible pages by name and support search. Saved sources and
-manual links remain available; page listings fetch no page bodies. Selected destinations can read icon
-metadata via the official fetch tool; the remaining response is discarded.
-Clicks open destinations or save links directly; they never send a chat message.
-A saved link does not prove remote access or complete business onboarding.
+The home's **AI Operating Model** is the complete, user-owned contract for where
+context lives and how agents read and maintain it. For a new Notion home it is
+an ordinary child of a private **AIOS** page, beside only the useful Soul,
+About, Memory and Skills destinations. Existing workspaces keep their own
+structure and names; an existing guide is reused by identity, not by title.
+Another connected agent can follow the model without installing AIOS.
+
+In Codex, open **AIOS** in the sidebar. It shows a dated overview of the
+selected model's own source groups, saved from Setup, and saves the host
+pointer only when you choose Save pointer. Earlier Docs, Skills and Memory links
+remain as optional Saved shortcuts. Clicks open destinations or save links
+directly; they never send a chat message. A saved pointer or link does not
+prove remote access, native Skills or Memory, or that an agent loaded the model.
 
 For help organizing a new or messy workspace, explicitly invoke **Set up** or
 ask for AIOS Setup. That skill checks access, reuses useful destinations and
 helps with the first task. Personal and Team skills retain actual permissions;
-Audience and Space are not access control. The Notion entry is called **AIOS**
-by default; customer names remain theirs.
+Audience and Space are not access control.
 
 [Context](../skills/aios-context/SKILL.md) owns the common home contract and selects
-one provider. The host keeps a short pointer to an approved entry; the agent reads
-only relevant sources and personal methods. Notion is preferred for solo founders,
-business leaders and small teams. Reuse full-page Docs, native Skills and Memory,
-with Spaces for business and brand scopes. Start with one useful workflow in an
-existing workspace; no wholesale migration is required.
+one provider. The host keeps a short pointer to the model; the agent reads it
+once per session for context-dependent work, plus a selected Soul, then only
+relevant sources and personal methods. Notion is preferred for solo founders,
+business leaders and small teams. Memory stays one canonical store; native
+Memory and Skills are used only as the current connection actually supports.
+Start with one useful workflow in an existing workspace; no wholesale migration
+is required.
 
 An established alternative can use its own structure and verified tools. Managed
 file homes retain their concrete procedure; other providers need separate proof.
@@ -45,10 +48,10 @@ Shared methods stay in the plugin and operational records at their source.
 Maintain Context saves durable changes during work. No local mirror, hosted
 server or timer is required. The Codex panel is a bundled local MCP process
 managed by Codex, using Node.js 22+ and the installed Codex CLI for connection
-status. It reads connection metadata, the short pointer and a private navigation
-map of names/links scoped to that context. No source bodies are copied. Explicit
-Setup registers verified destinations through AIOS MCP after using the existing
-provider connector. Context retrieves the actual source when a task needs it.
+status. It reads connection metadata, the short pointer, a private navigation
+map and the derived overview snapshot. No source bodies are copied. Explicit
+Setup reads the model through the existing provider connector and saves that
+snapshot. Context retrieves the actual source when a task needs it.
 Installing or updating AIOS leaves existing homes
 intact; use Setup when you choose to establish or move one.
 

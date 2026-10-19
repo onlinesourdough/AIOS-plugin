@@ -1,5 +1,31 @@
 # Changelog
 
+## Unreleased
+
+Not released or installed; part of issue #58, which is not complete.
+
+- The Codex sidebar can preview a dated overview of the selected AI Operating
+  Model, saved by Setup from the model's own headings and labelled source rows.
+  Reviewing it never writes instructions; only Save pointer changes the host
+  pointer. Unusable source rows are counted and mark the overview partial, and a
+  section that needs a choice is reported instead of guessed. Setup marks a
+  refresh complete only when the fetch reports nothing missing. Earlier Docs,
+  Skills and Memory links remain as Saved shortcuts; a fresh model setup adds
+  none. The overview is navigation, not a live view.
+- Setup and Context guidance describes a new Notion home as a private AIOS page
+  with an AI Operating Model child and only the Soul, About, Memory and Skills
+  pages the owner chooses, while existing workspaces and guides are reused by
+  identity. Context 1.8.0 adds guidance for one canonical Memory resolved by
+  identity, native creator and editor fields, step-by-step schema readback, and
+  reporting native Skills discovery separately from the exact-page fallback.
+  Whether a connection supports native Memory or Skills is checked, not assumed.
+- The host pointer template is shorter and portable: another connected agent can
+  follow the model without AIOS. Existing pointers keep their wording.
+- Check 2.3.0 covers context-home health without changes; Update 2.0.4 no longer
+  advertises optional specialists. Maintain Context 1.4.1 keeps lessons in Memory
+  and changes About, Soul or the model only within their authority.
+- The README is shorter, with the current install routes and all 22 skills.
+
 ## 0.29.0 — 2026-10-13
 
 - Remove the Design, Review Design and OpenPencil Workbench skills

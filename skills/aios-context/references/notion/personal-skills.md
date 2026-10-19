@@ -27,9 +27,11 @@ sync or installation of its dependencies.
 For creation or promotion to Current, use the approved owner's mapping and the
 [schema contract](schema-and-templates.md) for completeness, identity and scope.
 
-1. Inspect the destination and current capability map. Read Notion's Skills
-   documentation. Use native upload/download tools when actually exposed;
-   advertised account access alone is not callable capability.
+1. Inspect the destination and current capability map. Read Notion's current
+   Skills documentation and `notion://docs/skills` resource. Use native
+   upload/download tools when actually exposed; advertised account access alone
+   is not callable capability. Preserve descriptions, owners, scope, source
+   versions, child references and files.
    Reuse an existing native Skills home. For an authorized new collection, use
    the supported canonical Skills database type, preserving its native fields;
    add only useful owner metadata. A Docs Type tag alone is not this collection.
@@ -57,14 +59,38 @@ For creation or promotion to Current, use the approved owner's mapping and the
 
 ## Discovery and execution
 
-External agents fetch the exact skill URL and required references when relevant.
-Notion's “Use automatically” applies to its own registry; it does not install
-skills in Codex or schedule them. A fresh external agent needs the host bridge
-and an accessible operating guide. Do not claim slash-command discovery for
-page-only skills. For this page-based Codex route, neither “Enable for me” in
-Notion nor a manual download is needed. Explain that distinction in the owner's
-Skills description or guide. A small directory is routing metadata, not a copied payload.
+Before claiming native behavior, read the current `notion://docs/skills`
+guidance and the tool catalog the connection actually exposes. Report these as
+separate states: native skill designation, enablement for the selected user,
+automatic-use setting, page access, discovery through the connection, native
+invocation, available references and resources, and a local export or
+execution copy. One does not prove another, and Notion's own documentation does
+not prove what an external connection exposes.
 
+When `notion-get-enabled-skills` is exposed, use it at session start to find
+enabled skills. Enablement is per user and separate from designation. Where a
+page create or update tool exposes a skill-designation flag, the flag alone
+establishes designation; it is not evidence that the current user has the skill
+enabled or that an active session loads it. Change enablement only for agreed
+skills, within existing scoped authority, through a supported tool or the Notion
+UI, then read back the selected account's state. When
+`notion-update-enabled-skills` is offered, its documented contract chooses the
+enabled surfaces (MCP and Notion AI, both by default). Without it, do not infer
+surfaces from a designation flag or a download; a supported UI readback
+establishes only the state it actually shows. “Use automatically” lets the provider load a skill when relevant;
+it does not run, schedule or install it in another host. Sessions already
+running keep the skills they started with; do not force a restart or new chat.
+
+When enabled-skill, enablement, download or search tools are absent, say so.
+Ordinary search or fetching the exact skill page and its required references
+from the model's list still works, but it is a page fallback, not native
+enabled discovery, and it creates no installed skill in Codex or another host. Never fabricate a call or claim
+slash-command discovery for page-only skills. Record which route the owner's
+model uses. A small directory is routing metadata, not a copied payload. How an
+external agent actually uses a skill is evidenced separately on that host.
+
+A download is a copy, not a synchronized second source. Use a documented
+download only when the connection actually exposes it; never fabricate one.
 If local script execution requires a package, use a supported download/export,
 inspect the exact revision, then stage the minimum files in the task workspace.
 Validate file paths before extraction and inspect executable content before use.

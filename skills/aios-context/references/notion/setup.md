@@ -6,8 +6,13 @@ and permissions. Code and operational records keep their existing source.
 No server, custom MCP, database service or local owner folder is required.
 
 Read the complete current [Notion setup guide](https://developers.notion.com/prompts/setup)
-and the relevant Skills documentation it links. Record the applied version and
-date; a newer remote guide is a review input, not authority to replace policy.
+and the relevant Skills documentation it links. Before a native Memory or
+Skills operation, also read the current `notion://docs/memory` or
+`notion://docs/skills` resource and the actual tool catalog the connection
+exposes. A guide describes a contract; it is not a callable tool or a grant.
+Record the applied versions and date; a newer remote guide is a review input,
+not authority to replace policy. Claims about native behavior rest on what the
+current provider exposes, not on this procedure.
 Use [operating boundaries](operating.md) throughout the setup.
 
 ## Start after installation
@@ -56,21 +61,45 @@ needs only one area. Reuse actual methods and allow Memory to start empty.
 
 ## Establish the destinations
 
-Verify the connected workspace/account and available tools. Reuse the owner's
-Business home, work destinations and memory structure when suitable. Inspect
-canonical pages and database schemas, not only keyword search. If none exists,
-create the smallest useful home, memory destination and personal-skill route
-within the authorized scope. Use native Notion skills, not an ordinary database
-that merely labels pages as skills. Preserve existing pages and unknown blocks.
+Verify the connected workspace/account and the account, destination access and
+action capabilities separately. Discover the existing operating model, Memory,
+Skills, document and work destinations and the host's instruction mechanism by
+reading narrowly; do not harvest chats or build an inventory. Show the concrete
+reuse/create/change decision before writing.
+
+For a new Notion home, create an ordinary private parent page **AIOS** with an
+ordinary child **AI Operating Model** from the [model template](../../assets/notion-aios.md),
+plus only the useful destinations the owner selects: Soul (only from chosen
+collaboration preferences; no placeholder), About, Memory and Skills. The parent
+is navigation; the pointer targets the model. An existing workspace keeps its
+names, IDs, structure, work systems and private/team boundaries. Identify an
+existing guide by role and ID, even if it is titled AIOS, and reuse it; a title
+never proves a missing page or justifies a duplicate. No Documents database is
+created just to hold the guide. Move a resource only when its identity,
+meaningful metadata, relations and access survive and the move is authorized;
+otherwise link it in place. Verify provider-controlled native placement.
+Use native Notion skills, not an ordinary database that merely labels pages as
+skills. Preserve existing pages and unknown blocks.
+
+Resolve Memory by exact identity before any write, using the
+[schema contract](schema-and-templates.md#memory-identity-and-provenance). An
+approved existing custom store stays canonical until an explicit, recoverable
+migration. An empty native alias neither hides it nor starts a second store;
+new native Memory starts only with a real authorized save, never placeholder
+facts. If native save is unavailable or rejects the documented shape, report
+the exact missing capability and continue through the approved existing store.
 
 Make the home usable by people: preserve ordinary Docs/Document Hub navigation
 and templates. Prefer full-page databases reached from the existing home;
 inline dashboards are optional, not a setup requirement. Reuse a native Skills
 destination and a memory destination when suitable; add only a missing useful
-destination, not an obligatory three-database hierarchy or an extra AIOS hub.
-Preserve Spaces as business/brand scopes within one owner home, including
-sub-brands and shared context. Projects use their native workspaces. Start with
-a Space property and useful views; a separate Space database is conditional.
+destination, not an obligatory database hierarchy or an extra hub.
+Preserve existing scopes within one owner home, such as Spaces for businesses,
+brands and sub-brands or areas of personal life, and reuse their existing
+property (Space, Area or similar). Projects use their native workspaces. There
+is no mandatory common taxonomy, and unscoped records are not implicitly shared.
+Add a scope property and useful views only when work needs one; a separate
+Space database is conditional.
 For properties, hierarchy, native templates and integrity checks, apply the
 [schema contract](schema-and-templates.md) to the existing workspace.
 Split large imports into coherent, independently editable topics with clear
@@ -122,25 +151,26 @@ transactional data. Cleanup of unrelated clutter is a separate scope.
 
 ## Establish ongoing use
 
-Create or update one short entry using the packaged
-[AIOS page](../../assets/notion-aios.md). Keep the familiar
-layout: where Docs, Skills and Memory are, where business topics are covered,
-what Spaces mean, how to start work
-and where results go. Fill the customer-specific links, Space map, sources,
-review/write agreements and recovery route from verified evidence. Put exact
-database/view IDs, field mappings and connection exceptions in its collapsed
-agent notes. Keep icons, titles and useful local wording. The customer owns
-this instance; package updates do not regenerate it or replace its agreements.
+Create or update the AI Operating Model using the packaged
+[model template](../../assets/notion-aios.md): how to use it, its context
+sources, work and output systems, any Spaces already in use, and the complete
+read/write policy. List each source as a labelled row under its own heading so
+people, agents and the panel overview find the same routes. Fill links, Spaces,
+write agreements, capability limits and recovery from verified evidence; put
+exact IDs, field mappings and connection exceptions in its collapsed agent
+notes. The owner chooses its name. Keep icons, titles and local wording. The
+owner owns this instance; package updates never regenerate it or replace its
+agreements, and an old template version alone requires no change.
 
-The plugin owns the reusable page layout and setup procedure. Resources explains
-how to use them. The customer does not have to copy a long setup prompt or build
-an instruction page from scratch. The page is the everyday map after onboarding;
-installation instructions and test receipts belong in the setup handoff.
+The model is the complete contract: another connected agent must be able to
+read and maintain this context from it without installing AIOS. The plugin
+keeps only reusable setup and provider procedures; installation notes and test
+receipts belong in the setup handoff, not the model.
 
-Prefer linking the host directly to this short entry to avoid reading the whole
-Business home or Docs database each session. Neither page name is mandatory.
-Keep detailed source, schema and skill procedures in the shared plugin; retain
-only the owner's actual mappings and exceptions in the guide.
+Link the host directly to the model so ordinary work reads it, not the whole
+home or a database. Reconcile upstream guidance, retired method names and stale
+routes deliberately during an authorized update; never replace policy
+automatically.
 
 Use the existing setup authority for this guide. Keep the host's persistent
 instruction a thin pointer using [the bridge](../../assets/bridge.md) and the selected
@@ -163,6 +193,8 @@ Skill automatic-use settings do not create scheduled runs.
 
 Run the authorized [acceptance checks](acceptance.md), including a
 fresh session that retrieves the correct live context and personal skill.
+A saved pointer is configuration; verify separately that a fresh session
+actually follows it. A setup replay with no change writes nothing.
 Import, native discovery and behavioral use are separate claims. Preserve
 earlier versions on failed activation, and complete independent work.
 If the first task needs no personal method, do not invent a skill to pass a test;
