@@ -28,6 +28,29 @@ function leadingReference(text) {
 }
 // Only a short annotation may follow a source reference; running prose makes it an ordinary item.
 const annotation = rest => /^\s*$/.test(rest) || /^\s*(?:[—–:·|(]|-\s)/.test(rest);
+// An explicitly labelled row: a bold role label with exactly one colon, inside
+// or just after the bold, then the reference itself. The label text holds no
+// colon, and a reference must follow directly, so any second colon fails. Its
+// tail may explain the role in prose; references in that tail are related or
+// incidental and never routes. A label of any length is recognized; only its
+// displayed name is cut to the usual label bound.
+function labelledReference(text) {
+  const label = text.match(/^(\*\*|__)([^*_:\n]+?)(:?)\1(:?)[ \t]*/);
+  if (!label || label[3] === label[4]) return null;
+  const role = cleanLabel(decode(label[2]));
+  const reference = leadingReference(text.slice(label[0].length));
+  return reference && role ? { ...reference, role } : null;
+}
+// A row that looks like a source but does not fit the grammar: it starts with a
+// reference, or with a bold or plain label, and any run of colons, directly
+// followed by one. It is never turned into a route; it only marks the overview
+// as missing something.
+const referenceStart = /^(?:<(?:mention-page|mention-database|mention-data-source|page|database|data-source)\b|\[[^\]\n]*\]\()/;
+function sourceLike(text) {
+  if (referenceStart.test(text)) return true;
+  return [/^(\*\*|__)[^\n]+?\1[: \t]*/, /^[^:<>[\]*_\n]+:[: \t]*/]
+    .some(label => { const prefix = text.match(label)?.[0]; return Boolean(prefix) && referenceStart.test(text.slice(prefix.length)); });
+}
 
 export function safeTarget(url) {
   const route = classifyTarget(decode(String(url)));
@@ -43,7 +66,7 @@ function sectionsOf(content) {
   const close = content.lastIndexOf('</content>'), open = content.indexOf('<content>');
   const body = open < 0 ? content : content.slice(open + 9, close > open ? close : undefined);
   const sections = [], stack = [];
-  let current = { path: [], refs: [], others: 0 }, fence = null;
+  let current = { path: [], refs: [], others: 0, loose: 0 }, fence = null;
   sections.push(current);
   for (const raw of body.split(/\r?\n/)) {
     const line = raw.trim();
@@ -64,15 +87,20 @@ function sectionsOf(content) {
       const level = heading[1].length;
       while (stack.length && stack.at(-1).level >= level) stack.pop();
       stack.push({ level, title: plain(heading[2]) || 'Untitled' });
-      current = { path: stack.map(item => item.title), refs: [], others: 0 };
+      current = { path: stack.map(item => item.title), refs: [], others: 0, loose: 0 };
       sections.push(current); continue;
     }
     const item = line.match(/^(?:[-*+]|\d+[.)])\s+(.*)$/);
-    const reference = leadingReference(item ? item[1].trim() : line);
-    if (reference && annotation(reference.rest) && (item || !reference.rest.trim())) current.refs.push(reference);
-    else if (item) current.others++;
+    const entry = item ? item[1].trim() : line;
+    const labelled = item ? labelledReference(entry) : null;
+    const reference = labelled || leadingReference(entry);
+    if (labelled || reference && annotation(reference.rest) && (item || !reference.rest.trim())) current.refs.push(reference);
+    else {
+      if (item) current.others++;
+      if (sourceLike(entry)) current.loose++;
+    }
   }
-  return { sections: sections.filter(section => section.refs.length || section.others), truncated: open >= 0 && close <= open };
+  return { sections: sections.filter(section => section.refs.length || section.others || section.loose), truncated: open >= 0 && close <= open };
 }
 const keyOf = path => path.join(' › ');
 
@@ -96,9 +124,15 @@ export function deriveOverview(content, { sections: selection } = {}) {
     if (missing.length) state = 'changed';
   } else if (candidates.some(section => section.others) || [...counts.values()].some(count => count > 1)) state = 'ambiguous';
   let skipped = 0, total = 0, truncated = parsed.truncated;
+  // Source-like rows the grammar cannot use are counted and mark the overview
+  // partial; they are never shown. Rows in a section without any usable source
+  // always count, so a lone valid section elsewhere cannot look complete.
+  const loose = parsed.sections.filter(section => !section.refs.length).reduce((count, section) => count + section.loose, 0);
+  if (loose) { skipped += loose; truncated = true; }
   const groups = [];
   if (['ready', 'changed'].includes(state)) for (const section of chosen) {
     if (groups.length >= LIMITS.groups) { truncated = true; break; }
+    if (section.loose) { skipped += section.loose; truncated = true; }
     const links = new Map();
     for (const reference of section.refs) {
       const target = safeTarget(reference.url);
@@ -106,7 +140,10 @@ export function deriveOverview(content, { sections: selection } = {}) {
       const identity = notionPageId(target) || target;
       if (links.has(identity)) continue;
       if (links.size >= LIMITS.links || total >= LIMITS.total) { truncated = true; continue; }
-      links.set(identity, { title: cleanLabel(decode(reference.title)) || shortLabel(target), target }); total++;
+      // A labelled row is named by its role, with the reference's own text when it has any.
+      const name = cleanLabel(decode(reference.title));
+      const title = reference.role ? cleanLabel(name ? `${reference.role} · ${name}` : reference.role) : name || shortLabel(target);
+      links.set(identity, { title, target }); total++;
     }
     if (!links.size) continue;
     groups.push({ path: section.path, links: [...links.values()] });
@@ -174,8 +211,8 @@ export function overviewView(status) {
   else if (model.state === 'ambiguous') notes.push('Some sections mix sources with other items, or repeat a heading. In chat, ask Setup which sections to show; their links stay as the model lists them.');
   else if (model.state === 'unsupported') notes.push('No heading followed by a list of page or database links was found, so nothing is shown. Open the model in Notion to navigate.');
   else if (model.state === 'changed') notes.push(`Chosen sections were not found in the latest read: ${model.missing.join(', ')}. Ask Setup to choose sections again.`);
-  if (!hidden && readable && (model.partial || !model.complete)) notes.push('Partial read: some sources may be missing. Ask Setup to refresh with the complete model.');
-  if (!hidden && readable && model.skipped) notes.push(`${model.skipped} unsupported ${model.skipped === 1 ? 'link was' : 'links were'} left out.`);
+  if (!hidden && readable && (model.partial || !model.complete)) notes.push('Some sources may be missing: the read was incomplete or capped, or some rows did not fit the supported format. Open the model in Notion to see everything.');
+  if (!hidden && readable && model.skipped) notes.push(`${model.skipped} ${model.skipped === 1 ? 'source row or link was' : 'source rows or links were'} left out because their format or link is not supported.`);
   const unchosen = model.selection ? model.sections.filter(section => !model.selection.includes(section.key)).length : 0;
   if (!hidden && readable && unchosen) notes.push(`${unchosen} other ${unchosen === 1 ? 'section with links is' : 'sections with links are'} not shown, as chosen in Setup.`);
   const changes = model.changes && (model.changes.added || model.changes.removed) ? `Since the previous snapshot: ${model.changes.added} added · ${model.changes.removed} removed` : '';

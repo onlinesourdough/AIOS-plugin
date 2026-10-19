@@ -26,9 +26,18 @@ There is no polling, live refresh, recursive destination fetch, embedded page,
 new credential or chat in the panel. Destinations are not fetched for icons.
 
 Only explicit structure counts: a heading followed by a list of page,
-database or Markdown links, where each item starts with the reference and has
-at most a short annotation. Prose, policy, evidence, code and quoted links
-never become navigation. No heading name is required and nothing is
+database or Markdown links. Each item either starts with the reference and has
+at most a short annotation, or starts with a bold role label ending in one
+colon (`**Role:**` or `**Role**:`) followed directly by the reference, then any
+explanation. A labelled link is named by its role, plus the reference's own
+text when it has any. A role label of any length is recognized; only its shown
+name is cut to 100 characters. Other references later in that row, such as a Related
+mention, are not routes. Prose, policy, evidence, code and quoted links
+never become navigation. A row that looks like a source but does not fit this
+grammar (a plain `Role:` label, a reference followed by running prose, a bold
+label without its colon, or a reference without a link) is never guessed into
+a route. It is counted as left out and marks the overview partial, so a valid
+section elsewhere cannot make the overview look complete. No heading name is required and nothing is
 translated. A section that mixes references with other items, or a repeated
 heading, makes the result `ambiguous`; the person chooses sections once, and
 that choice is kept apart from the derived groups and carried to later

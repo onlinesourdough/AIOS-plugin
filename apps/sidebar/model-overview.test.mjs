@@ -54,6 +54,135 @@ test('unsafe or unsupported links are left out and counted; labels are bounded',
   assert.equal(overview.groups[0].links.length, 2, 'a copied URL variant of the same page is not repeated');
 });
 
+// Explicitly labelled source rows: a bold role label, then the reference, then
+// optional prose. Synthetic shapes only; no real model or owner names.
+const notion = digit => `https://www.notion.so/${String(digit).repeat(32)}`;
+test('a bold role label before a reference is a source row; its related tail is not', () => {
+  const supplied = ['## Group A',
+    `- **Role A:** <mention-page url="${notion(1)}"/> owns this category.`,
+    `- **Role B:** <mention-page url="${notion(2)}"/> owns another category. Related: <mention-page url="${notion(3)}"/>.`,
+    '## Group B', `<page url="${notion(4)}">Example child</page>`].join('\n');
+  const overview = deriveOverview(supplied);
+  assert.deepEqual(overview.groups, [
+    { title: 'Group A', links: [{ title: 'Role A', target: notion(1) }, { title: 'Role B', target: notion(2) }] },
+    { title: 'Group B', links: [{ title: 'Example child', target: notion(4) }] }]);
+  assert.equal(overview.state, 'ready'); assert.equal(overview.partial, false); assert.equal(overview.skipped, 0);
+  assert.ok(!overview.groups.flatMap(group => group.links.map(link => link.target)).includes(notion(3)), 'the related mention is not a route');
+});
+
+test('ten labelled rows in two arbitrary sections keep their roles and targets; prose mentions stay out', () => {
+  const model = ['## Kontekst og hukommelse',
+    `- **Profil:** <mention-page url="${page(1)}"/> kort profil.`,
+    `- **Hukommelse**: <mention-database url="${page(2)}">Fakta</mention-database> — beslutninger. Se også <mention-page url="${page(90)}"/>.`,
+    `- **Metoder:** [Metodebibliotek](${page(3)}) bruges ved behov.`,
+    `- __Sjæl:__ <mention-page url="${page(4)}"/>`,
+    `- **Kilder:** <page url="${page(5)}">Arkiv</page> (kun læsning)`,
+    `Ask <mention-page url="${page(92)}"/> before changing a role.`,
+    '**Note:** keep this list short.',
+    '## Delivery & outputs',
+    `1. **Tasks:** <mention-database url="${page(6)}"/> live status lives here.`,
+    `2. **Projects**: <mention-page url="${page(7)}"/>`,
+    '3. **Repository:** [Code](https://github.com/example/repo) — related issue [#1](https://github.com/example/repo/issues/1).',
+    `4. **Outputs:** <mention-page url="${page(8)}"/> stores artifacts; related: <mention-page url="${page(91)}"/>.`,
+    `5. **Calendar:** <mention-page url="${page(9)}"/>`].join('\n');
+  const overview = deriveOverview(model);
+  assert.deepEqual(overview.groups, [
+    { title: 'Kontekst og hukommelse', links: [{ title: 'Profil', target: page(1) }, { title: 'Hukommelse · Fakta', target: page(2) },
+      { title: 'Metoder · Metodebibliotek', target: page(3) }, { title: 'Sjæl', target: page(4) }, { title: 'Kilder · Arkiv', target: page(5) }] },
+    { title: 'Delivery & outputs', links: [{ title: 'Tasks', target: page(6) }, { title: 'Projects', target: page(7) },
+      { title: 'Repository · Code', target: 'https://github.com/example/repo' }, { title: 'Outputs', target: page(8) }, { title: 'Calendar', target: page(9) }] }]);
+  assert.equal(overview.state, 'ready'); assert.equal(overview.partial, false); assert.equal(overview.skipped, 0);
+  const targets = overview.groups.flatMap(group => group.links.map(link => link.target));
+  for (const excluded of [page(90), page(91), page(92), 'https://github.com/example/repo/issues/1']) assert.ok(!targets.includes(excluded), `${excluded} is not a route`);
+  // A label followed by prose that only later mentions a page is policy, not a source row.
+  const policy = deriveOverview(['## Policy', `- **Rule:** read <mention-page url="${page(93)}"/> first.`, '## Children', `<page url="${page(4)}">Child</page>`].join('\n'));
+  assert.deepEqual(titles(policy), [['Children', ['Child']]]);
+});
+
+test('source-like rows outside the grammar are counted and mark the overview partial, never complete', () => {
+  const model = ['## Roles',
+    `- Role A: <mention-page url="${notion(1)}"/> owns this category.`,
+    `- <mention-page url="${notion(2)}"/> owns another category.`,
+    `- **Role C** <mention-page url="${notion(5)}"/>`,
+    '- **Role D:** <mention-page/> owns nothing.',
+    '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n');
+  const overview = deriveOverview(model);
+  assert.ok(!(overview.state === 'ready' && !overview.partial && overview.skipped === 0), 'a lone child section never looks like a complete overview');
+  assert.equal(overview.partial, true); assert.equal(overview.skipped, 4);
+  assert.deepEqual(titles(overview), [['Children', ['Example child']]]);
+  for (const digit of [1, 2, 5]) assert.ok(!overview.groups.flatMap(group => group.links.map(link => link.target)).includes(notion(digit)), `row ${digit} is not guessed into a route`);
+  const only = deriveOverview(`## Roles\n- Role A: <mention-page url="${notion(1)}"/> owns this category.`);
+  assert.equal(only.state, 'unsupported'); assert.equal(only.partial, true); assert.equal(only.skipped, 1); assert.deepEqual(only.groups, []);
+});
+
+// A malformed role label before a valid child section: never a route, always
+// counted, so the child alone cannot look like a complete overview.
+const malformedLabel = (name, row) => {
+  const overview = deriveOverview(['## Roles', row, '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n'));
+  assert.ok(!overview.groups.flatMap(group => group.links.map(link => link.target)).includes(notion(1)), `${name}: not a route`);
+  assert.deepEqual(titles(overview), [['Children', ['Example child']]], `${name}: only the valid child section is shown`);
+  assert.ok(!(overview.state === 'ready' && !overview.partial && overview.skipped === 0), `${name}: the child section does not look complete`);
+  assert.equal(overview.partial, true, name); assert.equal(overview.skipped, 1, name);
+};
+test('a role label with an extra colon inside the bold is never accepted as a route', () => {
+  for (const [name, row] of [
+    ['two colons inside the bold', `- **Role::** <mention-page url="${notion(1)}"/> owns this category.`],
+    ['a colon within the label text', `- **Ro:le:** <mention-page url="${notion(1)}"/> owns this category.`],
+    ['three colons inside the underscores', `- __Role:::__ <mention-page url="${notion(1)}"/>`],
+  ]) malformedLabel(name, row);
+});
+
+test('a role label with an extra colon after the bold, or after a plain label, is reported, not silently dropped', () => {
+  for (const [name, row] of [
+    ['two colons after the bold', `- **Role**:: <mention-page url="${notion(1)}"/> owns this category.`],
+    ['one colon inside and one after the bold', `- **Role:**: <mention-page url="${notion(1)}"/> owns this category.`],
+    ['a spaced second colon after the bold', `- **Role**: : <mention-page url="${notion(1)}"/>`],
+    ['two colons after a plain label', `- Role:: <mention-page url="${notion(1)}"/> owns this category.`],
+  ]) malformedLabel(name, row);
+  // Exactly one colon, inside or after the bold, still names a route; its related tail does not.
+  const valid = deriveOverview(['## Roles', `- **Role A:** <mention-page url="${notion(1)}"/> owns it. Related: <mention-page url="${notion(3)}"/>.`,
+    `- **Role B**: <mention-page url="${notion(2)}"/>`, '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n'));
+  assert.deepEqual(valid.groups, [{ title: 'Roles', links: [{ title: 'Role A', target: notion(1) }, { title: 'Role B', target: notion(2) }] },
+    { title: 'Children', links: [{ title: 'Example child', target: notion(4) }] }]);
+  assert.equal(valid.state, 'ready'); assert.equal(valid.partial, false); assert.equal(valid.skipped, 0);
+});
+
+test('a role label longer than the display bound is still a route; only its shown name is cut', () => {
+  for (const length of [LIMITS.label, LIMITS.label + 1, 250]) {
+    const role = 'R'.repeat(length);
+    for (const [form, label] of [['colon inside', `**${role}:**`], ['colon after', `**${role}**:`]]) {
+      const overview = deriveOverview(['## Roles', `- ${label} <mention-page url="${notion(1)}"/> owns this category. Related: <mention-page url="${notion(3)}"/>.`,
+        '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n'));
+      assert.deepEqual(overview.groups, [{ title: 'Roles', links: [{ title: 'R'.repeat(LIMITS.label), target: notion(1) }] },
+        { title: 'Children', links: [{ title: 'Example child', target: notion(4) }] }], `${length} characters, ${form}: primary route kept, name bounded, related mention excluded`);
+      assert.equal(overview.state, 'ready'); assert.equal(overview.partial, false); assert.equal(overview.skipped, 0);
+    }
+  }
+});
+
+test('a long malformed role label is still reported, never silently lost', () => {
+  for (const length of [LIMITS.label + 1, 250]) {
+    const role = 'R'.repeat(length);
+    malformedLabel(`${length} characters with two colons inside`, `- **${role}::** <mention-page url="${notion(1)}"/> owns this category.`);
+    malformedLabel(`${length} characters with two colons after`, `- **${role}**:: <mention-page url="${notion(1)}"/> owns this category.`);
+    malformedLabel(`${length} characters as a plain label`, `- ${role}: <mention-page url="${notion(1)}"/> owns this category.`);
+  }
+});
+
+test('labelled rows keep section choice, mixed-section and unsafe-link behavior', () => {
+  const model = ['## Sources', `- **Docs:** <mention-page url="${notion(1)}"/>`, '- Ask before sharing anything.', `- Owner: <mention-page url="${notion(2)}"/> approves changes.`,
+    '## Team', `- **Team docs:** [Team](${page(6)})`].join('\n');
+  const unresolved = deriveOverview(model);
+  assert.equal(unresolved.state, 'ambiguous'); assert.deepEqual(unresolved.groups, []);
+  assert.deepEqual(unresolved.sections.map(section => [section.key, section.links, section.mixed]), [['Sources', 1, true], ['Team', 1, false]]);
+  const chosen = deriveOverview(model, { sections: ['Sources'] });
+  assert.equal(chosen.state, 'ready'); assert.deepEqual(chosen.groups, [{ title: 'Sources', links: [{ title: 'Docs', target: notion(1) }] }]);
+  assert.equal(chosen.skipped, 1, 'the unusable owner row in the chosen section is counted'); assert.equal(chosen.partial, true);
+  const unsafe = deriveOverview(['## Sources', '- **Script:** [Run](javascript:void)', '- **Plain:** [Old](http://example.com/a)', `- **Docs:** [Docs](${page(1)})`].join('\n'));
+  assert.equal(unsafe.state, 'ready'); assert.deepEqual(unsafe.groups, [{ title: 'Sources', links: [{ title: 'Docs · Docs', target: page(1) }] }]);
+  assert.equal(unsafe.skipped, 2);
+});
+
 test('code examples never become navigation, whatever their fence length or kind', () => {
   const longer = ['## Sources', `- [Real](${page(1)})`, '````md', '```', '## Example', `- [Example](${page(2)})`, '```', '````', '## After', `- [After](${page(3)})`].join('\n');
   const mixedKinds = ['## Sources', `- [Real](${page(1)})`, '~~~', '```', `- [Tilde example](${page(4)})`, '~~~', '```js', '~~~', '``` js', `- [Backtick example](${page(5)})`, '```', '## After', `- [After](${page(3)})`].join('\n');

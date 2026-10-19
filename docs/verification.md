@@ -51,6 +51,34 @@ leading tabs as Notion's nesting of child blocks; this is an assumption tested o
 synthetic input, not checked against Notion's actual fetch format. The browser check was
 not repeated on the current runtime.
 
+The real-format check then failed. The owner's coordinator read one selected model once
+through Notion and ran the published parser on its exact text. The overview came back
+ready and complete, with one link from an incidental child page. None of the model's ten
+role-labelled source rows, spread over two sections, was recognized. Whether that read was
+complete was not exposed. No link was invented. The repair recognizes a bold role label
+followed directly by a reference, keeps related mentions in the rest of the row out, and
+counts source-like rows it cannot use, marking the overview partial instead of complete.
+With only the new parser tests added to the previous published candidate, its 4 new cases
+failed at their first checks: the supplied shape's groups, the ten-role shape's groups,
+the partial flag for unusable source rows and the mixed-section ambiguity. Review then
+found that a role label with a second colon could become a route, or be dropped without
+being reported. With only the parser tests for that fix added to the version before it,
+its 2 new cases failed at their first checks: an extra colon inside the bold was accepted
+as a route, and an extra colon after it left a lone child section looking complete. A
+later check found that a role label over 100 characters was silently lost. After that
+fix, with Node 22.23.3, the 77 affected tests passed: 48 UI, 20 parser and 9 storage
+tests. The 42 other tests were not rerun because their files had not changed. With only
+the final parser tests added to the version before this fix, its 2 new cases failed at
+their first checks: a 101-character label lost its route, and a 101-character malformed
+label left a lone child section looking complete. In each before-check, later checks in a
+failing case did not run. The locked build, the bundled stdio check without the optional
+Codex CLI, and the package and whitespace checks passed, and a separate rebuild matched
+all three runtime files; only the server bundle changed. The earlier CI pass covers only
+the previously published commit; CI and a fresh independent review have not run on this
+revision. These tests use synthetic shapes only. The repaired parser has not been checked
+against the real model, no native app, account or model was used, and no complete read of
+the model is claimed. The draft pull request is not installed anywhere.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged
