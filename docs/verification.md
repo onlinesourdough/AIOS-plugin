@@ -73,11 +73,29 @@ their first checks: a 101-character label lost its route, and a 101-character ma
 label left a lone child section looking complete. In each before-check, later checks in a
 failing case did not run. The locked build, the bundled stdio check without the optional
 Codex CLI, and the package and whitespace checks passed, and a separate rebuild matched
-all three runtime files; only the server bundle changed. The earlier CI pass covers only
-the previously published commit; CI and a fresh independent review have not run on this
-revision. These tests use synthetic shapes only. The repaired parser has not been checked
-against the real model, no native app, account or model was used, and no complete read of
-the model is claimed. The draft pull request is not installed anywhere.
+all three runtime files; only the server bundle changed. That version was then published
+as `61f5cc0`, where a fresh independent source review accepted it and CI passed. These
+tests use synthetic shapes only. No native app, account or model was used,
+and no complete read of the model is claimed. The draft pull request is not installed
+anywhere.
+
+The owner's coordinator then ran the `61f5cc0` parser once on the same retained model
+text, with no new Notion read and no section choice. All ten role-labelled source rows
+were now recognized, six in one section and four in another, but that second section was
+reported as mixed because it also held other list items. The result was ambiguous, so the
+overview showed no links at all; it was partial, with two unusable rows counted as left
+out. No related or prose link was emitted. Whether the read was complete is still
+unknown. The next change treats other items beside references that all carry a role
+label as needing no section choice, while an unlabelled reference among other items or a
+repeated heading still does. With Node 22.23.3, the 79 affected tests passed: 48 UI, 22
+parser and 9 storage tests. The 42 other tests were not rerun because their files had not
+changed. With only the final parser tests added to `61f5cc0`, one case failed at its
+first check: a synthetic model with six and four labelled sources beside notes came back
+ambiguous with no groups. The new guard for genuine ambiguity, repeated headings and a
+chosen section passes on both versions. The locked build, the bundled stdio check without
+the optional Codex CLI, and the package, documentation and whitespace checks passed, and a
+separate rebuild matched all three runtime files; only the server bundle changed. A fresh
+independent review, CI and a rerun on the retained text have not run on this change.
 
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the

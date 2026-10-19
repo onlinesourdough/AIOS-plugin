@@ -105,16 +105,21 @@ function sectionsOf(content) {
 const keyOf = path => path.join(' › ');
 
 // Deterministic: the same text and selection always produce the same overview.
-// Without a selection, every heading whose items are all references becomes a
-// group. A section that mixes references with other items, or headings that
-// repeat, cannot be resolved without the person's one-time section choice.
+// Without a selection, every heading whose items are all references, or whose
+// references are all role-labelled, becomes a group. A section that mixes
+// unlabelled references with other items, or headings that repeat, cannot be
+// resolved without the person's one-time section choice.
 export function deriveOverview(content, { sections: selection } = {}) {
   if (typeof content !== 'string' || content.length > LIMITS.content) throw new Error('The model text is too large for an overview. Nothing was saved.');
   const parsed = sectionsOf(content);
   const counts = new Map();
   for (const section of parsed.sections) if (section.refs.length) counts.set(keyOf(section.path), (counts.get(keyOf(section.path)) || 0) + 1);
   const candidates = parsed.sections.filter(section => section.refs.length);
-  const listed = candidates.slice(0, LIMITS.listed).map(section => ({ key: cleanLabel(keyOf(section.path), LIMITS.section), title: section.path.at(-1) || '', links: section.refs.length, mixed: section.others > 0 }));
+  // Other items make a section mixed only beside an unlabelled reference. When
+  // every recognized reference carries an explicit role label, the rows say
+  // which items are sources, so ordinary notes need no section choice.
+  const mixed = section => section.others > 0 && !section.refs.every(reference => reference.role);
+  const listed = candidates.slice(0, LIMITS.listed).map(section => ({ key: cleanLabel(keyOf(section.path), LIMITS.section), title: section.path.at(-1) || '', links: section.refs.length, mixed: mixed(section) }));
   let chosen = candidates, missing = [], state = 'ready';
   if (!candidates.length) state = 'unsupported';
   else if (Array.isArray(selection)) {
@@ -122,7 +127,7 @@ export function deriveOverview(content, { sections: selection } = {}) {
     chosen = candidates.filter(section => wanted.has(keyOf(section.path)) && counts.get(keyOf(section.path)) === 1);
     missing = selection.filter(key => !chosen.some(section => keyOf(section.path) === key));
     if (missing.length) state = 'changed';
-  } else if (candidates.some(section => section.others) || [...counts.values()].some(count => count > 1)) state = 'ambiguous';
+  } else if (candidates.some(mixed) || [...counts.values()].some(count => count > 1)) state = 'ambiguous';
   let skipped = 0, total = 0, truncated = parsed.truncated;
   // Source-like rows the grammar cannot use are counted and mark the overview
   // partial; they are never shown. Rows in a section without any usable source

@@ -38,10 +38,11 @@ grammar (a plain `Role:` label, a reference followed by running prose, a bold
 label without its colon, or a reference without a link) is never guessed into
 a route. It is counted as left out and marks the overview partial, so a valid
 section elsewhere cannot make the overview look complete. No heading name is required and nothing is
-translated. A section that mixes references with other items, or a repeated
-heading, makes the result `ambiguous`; the person chooses sections once, and
-that choice is kept apart from the derived groups and carried to later
-refreshes of the same model. Removed chosen sections are reported as
+translated. Ordinary notes beside references that all carry a role label do not
+need a choice, so those routes appear directly. A section that mixes unlabelled
+references with other items, or a repeated heading, makes the result
+`ambiguous`; the person chooses sections once, and that choice is kept apart
+from the derived groups and carried to later refreshes of the same model. Removed chosen sections are reported as
 `changed`; no explicit list is `unsupported`. Non-HTTPS, credentialed,
 relative or overlong links are dropped and counted. Output is capped at 12
 groups, 20 links per group and 60 links; a truncated read or capped output is

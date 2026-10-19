@@ -170,7 +170,9 @@ test('a long malformed role label is still reported, never silently lost', () =>
 });
 
 test('labelled rows keep section choice, mixed-section and unsafe-link behavior', () => {
-  const model = ['## Sources', `- **Docs:** <mention-page url="${notion(1)}"/>`, '- Ask before sharing anything.', `- Owner: <mention-page url="${notion(2)}"/> approves changes.`,
+  // The mixed section's source is an unlabelled leading reference beside notes,
+  // which still needs the person's section choice.
+  const model = ['## Sources', `- <mention-page url="${notion(1)}">Docs</mention-page>`, '- Ask before sharing anything.', `- Owner: <mention-page url="${notion(2)}"/> approves changes.`,
     '## Team', `- **Team docs:** [Team](${page(6)})`].join('\n');
   const unresolved = deriveOverview(model);
   assert.equal(unresolved.state, 'ambiguous'); assert.deepEqual(unresolved.groups, []);
@@ -181,6 +183,50 @@ test('labelled rows keep section choice, mixed-section and unsafe-link behavior'
   const unsafe = deriveOverview(['## Sources', '- **Script:** [Run](javascript:void)', '- **Plain:** [Old](http://example.com/a)', `- **Docs:** [Docs](${page(1)})`].join('\n'));
   assert.equal(unsafe.state, 'ready'); assert.deepEqual(unsafe.groups, [{ title: 'Sources', links: [{ title: 'Docs · Docs', target: page(1) }] }]);
   assert.equal(unsafe.skipped, 2);
+});
+
+// Explicitly role-labelled sections with ordinary notes: no section choice is
+// needed, and nothing outside the labelled references becomes a route.
+const sixAndFour = ['## Group A',
+  ...[1, 2, 3, 4, 5, 6].map(n => `- **Role ${n}:** <mention-page url="${page(n)}"/> owns category ${n}.${n === 2 ? ` Related: <mention-page url="${page(90)}"/>.` : ''}`),
+  '## Group B',
+  `These roles change rarely. Ask <mention-page url="${page(92)}"/> before editing.`,
+  `- **Role 7:** <mention-page url="${page(7)}"/> owns category 7.`,
+  '- Keep these notes short.',
+  `- **Role 8**: [Eight](${page(8)})`,
+  '- Ask the owner before changing a role.',
+  `- **Role 9:** <mention-database url="${page(9)}"/> Related: <mention-page url="${page(91)}"/>.`,
+  `- **Role 10:** <mention-page url="${page(10)}"/>`,
+  '## Group C', `<page url="${page(20)}">Example child</page>`,
+  '## Group D', `- Role X: <mention-page url="${page(30)}"/> owns something.`, `- <mention-page url="${page(31)}"/> owns something else.`].join('\n');
+const sixAndFourGroups = [
+  { title: 'Group A', links: [1, 2, 3, 4, 5, 6].map(n => ({ title: `Role ${n}`, target: page(n) })) },
+  { title: 'Group B', links: [{ title: 'Role 7', target: page(7) }, { title: 'Role 8 · Eight', target: page(8) }, { title: 'Role 9', target: page(9) }, { title: 'Role 10', target: page(10) }] },
+  { title: 'Group C', links: [{ title: 'Example child', target: page(20) }] }];
+
+test('role-labelled sources beside ordinary notes appear without a section choice; unusable rows stay reported', () => {
+  const overview = deriveOverview(sixAndFour);
+  assert.deepEqual(overview.groups, sixAndFourGroups, 'all ten labelled primary routes and the child, with no choice made');
+  assert.equal(overview.state, 'ready');
+  assert.deepEqual(overview.sections.map(section => [section.key, section.links, section.mixed]), [['Group A', 6, false], ['Group B', 4, false], ['Group C', 1, false]]);
+  assert.equal(overview.skipped, 2, 'the two unusable rows in Group D are still counted'); assert.equal(overview.partial, true);
+  const targets = overview.groups.flatMap(group => group.links.map(link => link.target));
+  for (const excluded of [page(30), page(31), page(90), page(91), page(92)]) assert.ok(!targets.includes(excluded), `${excluded} is not a route`);
+});
+
+test('an unlabelled reference among notes or a repeated heading still needs a choice; a chosen section still works', () => {
+  const unlabelled = sixAndFour.replace('- **Role 10:** ', '- ');
+  const genuine = deriveOverview(unlabelled);
+  assert.equal(genuine.state, 'ambiguous', 'one unlabelled reference beside notes keeps the section mixed'); assert.deepEqual(genuine.groups, []);
+  assert.deepEqual(genuine.sections.map(section => [section.key, section.mixed]), [['Group A', false], ['Group B', true], ['Group C', false]]);
+  const repeated = deriveOverview(sixAndFour.replace('## Group B', '## Group A'));
+  assert.equal(repeated.state, 'ambiguous', 'a repeated heading still needs a choice'); assert.deepEqual(repeated.groups, []);
+  const chosen = deriveOverview(unlabelled, { sections: ['Group B'] });
+  assert.equal(chosen.state, 'ready');
+  assert.deepEqual(chosen.groups, [{ title: 'Group B', links: [...sixAndFourGroups[1].links.slice(0, 3), { title: `app.notion.com/p/${page(10).slice(-32)}`, target: page(10) }] }]);
+  assert.equal(chosen.skipped, 2); assert.equal(chosen.partial, true);
+  const explicit = deriveOverview(sixAndFour, { sections: ['Group B'] });
+  assert.deepEqual(explicit.groups, [sixAndFourGroups[1]], 'an explicit choice still narrows the overview');
 });
 
 test('code examples never become navigation, whatever their fence length or kind', () => {
