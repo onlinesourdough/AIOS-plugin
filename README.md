@@ -37,6 +37,20 @@ directly in Codex or Claude; T3 Code is not required for that. AIOS does not
 install it or copy its content. Without a selected foundation method, AIOS
 reports the gap instead of improvising one.
 
+## Why I built this
+
+I built AIOS to carry useful context, decisions and working methods between AI
+apps, so each conversation can build on the work that came before.
+
+AIOS installs as a native plugin in Codex and Claude Code and adds reusable
+skills for planning, building, reviewing and writing. It builds on open formats
+such as Agent Skills and on what those apps already provide, so I mostly write
+methods and small adaptations, with little code to maintain.
+
+Your context stays in a home you choose, such as Notion or a repository. The app
+provides the models, tools and permissions; AIOS helps the assistant find and
+maintain the context it needs.
+
 ## Understand complex topics
 
 [Clarify](skills/clarify/SKILL.md) explains a difficult topic or decision from
