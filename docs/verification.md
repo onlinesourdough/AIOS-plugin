@@ -1,5 +1,56 @@
 # Verification
 
+On 2026-10-19 an unreleased source candidate for the #58 model overview (coordinated
+with #62) added a sidebar overview of the selected AI Operating Model. It is derived
+from an explicit, revision-labelled snapshot that Setup saves from the model's headings
+and source lists. The panel shows connection, model read and pointer saved as separate
+facts, and does not claim to update live. Only an explicit Save pointer writes the
+pointer. The final sidebar UI suite passed 48 of 48. Its new stale-connection test failed
+on the previous candidate at the first check that links stay hidden after a failed
+refresh, so later checks did not run there. The 57 other sidebar unit tests were not
+rerun for the final candidate because their files had not changed. Of those, 37 passed in
+the first run. The other 20 storage tests first failed with disk-quota error -122 in
+`/tmp`, then passed with task-local scratch space; the first run's 98-test failure is
+kept on record. The package,
+documentation, onboarding, layout, continuity, skill-version and context-footprint checks
+passed. The first continuity run was in the wrong location, and a disposable non-Git
+fixture then passed. The native onboarding option was not run. The rebuilt runtime's
+server bundle is byte-identical to the one that passed the stdio check, which ran without
+the Codex executable on the PATH and did not access Notion. In a browser with the
+synthetic localhost fixture, the built sidebar showed the preview before saving, saved
+once on request and listed 2 groups with 7 model-derived links. A click emitted the
+expected synthetic link without navigating. The light theme at full width and the dark
+theme at 320px had no horizontal overflow. Pressing Tab moved focus to a source link,
+which then matched `:focus-visible`; the drawn focus style was not measured. Reopening kept
+the pointer and overview without a new save. Ambiguous and no-access snapshots showed no
+links and saved nothing. The fixture rejected the `localhost` origin and worked at its
+documented `127.0.0.1` address, and one timed-out click was not counted. This is
+synthetic rendering, not native Codex or Notion acceptance. Native Memory, Skills and
+provenance, a real model's structure and connector access, fresh-session agent loading,
+independent review, release and adoption remain open. #58 is not complete. Review then
+found that a fenced code example could become navigation and that an over-bound stored
+snapshot was trimmed rather than refused; the fix for both was made after the checks above.
+After the fix, the 66 affected tests passed: 48 UI, 10 parser and 8 storage tests. The
+42 other tests were not rerun because their files had not changed. With only the new tests
+added to the previous candidate, its three new cases failed at their first intended checks:
+a link inside a four-backtick example, the total link limit, and an over-bound stored
+snapshot. The built stdio check passed again without the Codex executable on the PATH and
+without any account or model call. Two locked builds produced identical runtime files, and
+the documentation and whitespace checks passed. The browser check above was not repeated
+on the fixed candidate, and no real model or account was used. A second review then
+found that an indented fence line inside a code block could still close it, and that a
+stored link target wrapped in an array was accepted as a link. After those fixes, the 69
+affected tests passed: 48 UI, 12 parser and 9 storage tests. The 42 other tests were
+again not rerun because their files had not changed. With only the new tests added to the
+previous candidate, its three new cases failed at their first checks: the indented
+example link, an array link target in the parser and the same target in storage. The
+built stdio check passed again without the Codex executable on the PATH, with a private
+synthetic store and no account or model call. A separate locked build reproduced the
+runtime files, and the documentation and whitespace checks passed. The parser treats
+leading tabs as Notion's nesting of child blocks; this is an assumption tested only with
+synthetic input, not checked against Notion's actual fetch format. The browser check was
+not repeated on the current runtime.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged

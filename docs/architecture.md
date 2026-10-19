@@ -14,7 +14,7 @@ task; AIOS has no model runner, background service or permission system.
 | Project workspace | Local requirements, working files, outputs, proof and recovery; Git is selected when useful |
 | Optional System | A separately maintained specialist with its own dependencies or operational needs |
 | Native manifests | Package identity and discovery over the same 22 skills |
-| Codex sidebar | A host-managed local MCP App for numbered source setup and a dashboard; stores private navigation names/links, with no company-content copy or chat handoff |
+| Codex sidebar | A host-managed local MCP App for numbered source setup, a dashboard and a dated overview of the selected operating model; stores private navigation names/links and the overview's derived groups/links, with no company-content copy or chat handoff |
 
 ## Work and methods
 

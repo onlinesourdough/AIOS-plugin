@@ -42,3 +42,31 @@ system prompt. A new context cannot inherit another context's links. The
 short AGENTS pointer and Notion's guide still govern agent retrieval and Spaces.
 When a verified route changes, update this navigation metadata within that same
 authorized change. No background sync, daily task or duplicate company brain.
+These links are the panel's secondary Saved shortcuts when an overview exists.
+
+## Operating-model overview
+
+The panel shows the selected AI Operating Model's own source groups from a
+dated snapshot, never a live read. Refresh it only when the person selects a
+model or asks for a refresh during Setup or Settings work:
+
+1. Fetch only the selected model page through the official Notion connection.
+   Do not fetch its linked destinations.
+2. Call `aios_save_model_overview` with the model `target`, its page `title`,
+   a `revision` label when the connector reports one (such as last edited
+   time) and `content` exactly as fetched. Set `complete: false` if the
+   response was truncated. If the read failed, pass `outcome` `no_access`,
+   `not_found` or `disconnected` instead; this replaces the earlier overview.
+3. AIOS keeps only headings followed by lists of page or database references.
+   Prose, policy, evidence and quoted links are ignored, and the text is
+   discarded. A result of `ambiguous` lists sections: ask the person once which
+   to show and call again with `sections`. Later refreshes keep that choice;
+   `changed` reports chosen sections that disappeared; `[]` clears the choice.
+   `unsupported` means no explicit source list; report it rather than guess or
+   rewrite the model.
+4. Tell the person to refresh the panel and review it. Saving the pointer is
+   their explicit panel action; this tool never changes it.
+
+One snapshot is kept at `$CODEX_HOME/aios/overview/model.json`. It is derived
+navigation, not routing authority, and implies no access, native Skills,
+Memory or agent loading. An account change is visible only to the next refresh.

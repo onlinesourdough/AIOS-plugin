@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { readContextRoute, saveContextRoute } from './context-route.mjs';
 import { readSources, saveSources } from './sources.mjs';
+import { readModelOverview, saveModelOverview } from './model-snapshot.mjs';
+import { ownerModel, mixedModel, modelTarget } from './model-fixtures.mjs';
 import { readNotionSetup } from './codex-status.mjs';
 import { NotionPages } from './notion-pages.mjs';
 const port = Number(process.env.PORT || 43195);
@@ -32,6 +34,19 @@ async function reset(codexHome, scenario) {
     await saveSources({target:context.target,expectedContextRevision:context.revision,expectedRevision:current.revision,title:'Studio AIOS',links},{codexHome});
   }
   if (scenario === 'ambiguous') await writeFile(join(codexHome, 'AGENTS.md'), '<!-- AIOS:BEGIN -->old instructions');
+  // Overview scenarios: a model preview before any pointer, the saved model with
+  // earlier shortcuts, an unresolved section choice and a failed refresh.
+  const model = { target: modelTarget, title: 'AI Operating Model', revision: '2026-10-19T09:00:00.000Z', content: ownerModel };
+  if (scenario === 'overview') {
+    await writeFile(join(codexHome, 'AGENTS.md'), bridge.replace('<verified-context-entry-url-or-absolute-path>', modelTarget));
+    const context = await readContextRoute({ codexHome });
+    const current = await readSources(context.target, { codexHome });
+    await saveSources({ target: context.target, expectedContextRevision: context.revision, expectedRevision: current.revision, title: '',
+      links: { docs: { title: 'Company docs', target: examplePages[1].target } } }, { codexHome });
+  }
+  if (['preview', 'overview'].includes(scenario)) await saveModelOverview(model, { codexHome });
+  if (scenario === 'model-ambiguous') await saveModelOverview({ ...model, content: mixedModel }, { codexHome });
+  if (scenario === 'model-denied') await saveModelOverview({ ...model, outcome: 'no_access', content: '' }, { codexHome });
 }
 await reset(roots.home,'dashboard');
 let lastCheck = 0;
@@ -66,8 +81,9 @@ const server = createServer(async (req, res) => {
     const state = ({ missing: 'not_installed', disconnected: 'not_connected', disabled: 'plugin_disabled', unknown: 'unknown' })[scenario] || 'connected';
     const context = await readContextRoute({ codexHome });
     const sources = context.state === 'configured' ? await readSources(context.target, { codexHome }) : {state:'missing', title:'', links:{}};
+    const model = await readModelOverview({ codexHome });
     const notion = liveNotion ? await readNotionSetup() : { state };
-    res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ content: [], _meta: { 'aios/status': { version, features: { notionPages: true, notionIcons: true }, notion, context, sources, checkedAt: new Date(lastCheck).toISOString() } } }));
+    res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ content: [], _meta: { 'aios/status': { version, features: { notionPages: true, notionIcons: true, modelOverview: true }, notion, context, sources, model, checkedAt: new Date(lastCheck).toISOString() } } }));
   } catch (error) { res.writeHead(400); res.end(JSON.stringify({ error: error.message })); }
 }).listen(port, '127.0.0.1', () => console.log(`AIOS preview (sample workspace): http://127.0.0.1:${port}/ — /setup — /settings`));
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(async () => { await notionPages.close(); await rm(scratch, { recursive: true, force: true }); process.exit(0); }));

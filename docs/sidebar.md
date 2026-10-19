@@ -1,6 +1,58 @@
 # Codex sidebar — 0.29.0
 
-Revision: 2026-10-17
+Revision: 2026-10-19
+
+## Operating-model overview (#58 source candidate)
+
+This section describes an unreleased source candidate for issue #58. It has
+not been qualified in a live app or with a native agent.
+
+A fixed section at the top shows the selected **AI Operating Model**: its title
+with Open in Notion, plain-text lines for Notion connected, model read
+(Snapshot from … and the reported revision) and host pointer saved, then the
+model's own groups and links. Group names and labels come from the model's
+headings and reference lists. These lines are separate facts; none claims that
+an agent has loaded the model, that native Skills are enabled or that Memory
+exists. The full model stays in Notion.
+
+The panel has no qualified app-authorized way to read a page body; the page
+fetch it uses for icons is not that proof. The overview is therefore a
+revision-labelled, derived snapshot. During a Setup or Settings refresh the
+person asked for, the agent reads the model through its existing official
+Notion connection and passes the text to the model-only
+`aios_save_model_overview` tool. The server derives the groups
+deterministically, keeps only labels, groups and links, and discards the text.
+There is no polling, live refresh, recursive destination fetch, embedded page,
+new credential or chat in the panel. Destinations are not fetched for icons.
+
+Only explicit structure counts: a heading followed by a list of page,
+database or Markdown links, where each item starts with the reference and has
+at most a short annotation. Prose, policy, evidence, code and quoted links
+never become navigation. No heading name is required and nothing is
+translated. A section that mixes references with other items, or a repeated
+heading, makes the result `ambiguous`; the person chooses sections once, and
+that choice is kept apart from the derived groups and carried to later
+refreshes of the same model. Removed chosen sections are reported as
+`changed`; no explicit list is `unsupported`. Non-HTTPS, credentialed,
+relative or overlong links are dropped and counted. Output is capped at 12
+groups, 20 links per group and 60 links; a truncated read or capped output is
+shown as partial. Additions and removals since the previous snapshot of the
+same model are shown.
+
+A failed refresh (`no_access`, `not_found` or `disconnected`) replaces the
+earlier links. When Codex reports Notion as not installed, disabled, not
+connected or needing attention, the panel hides the links. A check that could
+not verify the connection does not hide them on its own, but it never re-shows
+links hidden by such a report; only a later Connected status does. The panel cannot observe an account change; the next
+refresh shows its result.
+
+Reviewing an overview never writes Codex instructions. **Save pointer** shows
+what will change, then uses the existing revision-checked, backed-up
+`aios_save_context` write and leaves unrelated instructions intact. The
+setup Context step now names its write Save pointer. Existing Docs, Skills and
+Memory links remain under a secondary **Saved shortcuts** heading, showing only
+filled roles, editable in Settings. Without an overview, and for folder
+contexts, the earlier layout below is unchanged.
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and
@@ -93,8 +145,9 @@ runtime/sidebar. Resource: ui://aios/home-v5. Tools:
 - aios_notion_pages: app-only bounded read-only navigation listing/search; UI metadata only.
 - aios_settings: app-only native settings entry, opening the same drawer.
 - aios_save_context: app-only owned AGENTS pointer save.
-- aios_sources: explicit model read of the context and navigation with revisions.
+- aios_sources: explicit model read of the context, navigation with revisions and the overview snapshot.
 - aios_save_sources: app/model navigation replacement, scoped to current context.
+- aios_save_model_overview: model-only save of a derived operating-model overview; no Notion read or pointer change.
 
 The context-hub mark identifies AIOS. `assets/branding/aios-icon.svg` is the
 source of `assets/icon.png` (the Codex `composerIcon` and `logo`):
@@ -127,6 +180,12 @@ Notion identity normalizes copied URL variants; other providers use their exact
 location. A changed context loads its own map, never the previous one's sources.
 No source bodies, credentials, policy or access claims are stored. The map is
 not preloaded as agent context or used as a second source of business truth.
+
+The overview snapshot is one file, CODEX_HOME/aios/overview/model.json, replaced
+by each refresh. It holds the model link and title, the reported revision, read
+time, any section choice, and bounded groups, labels and links. It uses the same
+bounded read, locking, atomic rename and fail-closed checks; an invalid or
+symlinked state is shown as needing attention and is never overwritten.
 
 Writes use bounded reads, file identity checks, per-map locking, context/source
 revisions, backups and atomic rename. Invalid or symlinked state fails closed.
@@ -172,4 +231,7 @@ Notion and its sources. Clear a selected teamMemory navigation slot before a
 a reviewed earlier map, preserving any later edits. Pointer backups are under
 CODEX_HOME/backups/aios-context; map backups sit alongside the JSON file as
 <file>.<revision>.bak. Prove a crashed writer stopped before removing its lock.
+The overview snapshot is derived and has no backup: remove
+CODEX_HOME/aios/overview/ to clear it or recover from an invalid file, then
+refresh through Setup. Older builds ignore that folder.
 An already-open Codex panel may require an app reopen to load the new runtime.

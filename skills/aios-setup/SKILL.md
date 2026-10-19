@@ -2,7 +2,7 @@
 name: aios-setup
 description: Set up, resume or move AIOS, from installation to a useful first task.
 metadata:
-  version: "1.8.1"
+  version: "1.9.0"
 ---
 
 # AIOS:setup

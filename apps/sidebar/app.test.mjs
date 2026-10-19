@@ -3,8 +3,11 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import { readFile } from 'node:fs/promises';
 import { classifyTarget, connectionCopy } from './ui-model.mjs';
+import { overviewView, deriveOverview } from './model-overview.mjs';
+import { ownerModel, mixedModel, modelTarget } from './model-fixtures.mjs';
 import { createDocument } from './test-dom.mjs';
 // The browser modules share one VM realm with a small DOM; imports become globals.
+// Modules not concatenated below, such as the real overview helper, are injected.
 const read = name => readFile(new URL(name, import.meta.url), 'utf8');
 const source = (await Promise.all(['page-icons.mjs', 'source-label.mjs', 'setup-state.mjs', 'picker.mjs', 'app.mjs'].map(read)))
   .map(text => text.replace(/^import .*;\n/gm, '').replace(/^export /gm, '')).join('\n');
@@ -16,9 +19,10 @@ const saved = (links, title = 'Our AIOS') => ({ state: 'saved', revision: 'c'.re
 const plain = value => JSON.parse(JSON.stringify(value));
 
 async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sources = { state: 'missing', revision: 'c'.repeat(64), title: '', links: {} }, options = {}) {
-  let time = 100000, host, fail = Boolean(options.initialFailure), delay, release, revision = 0, linkFailure = false;
+  let time = 100000, host, fail = Boolean(options.initialFailure), delay, release, revision = 0, linkFailure = false, malformed = false;
   const calls = [], links = [], document = createDocument(template);
   const status = { features: { notionPages: Boolean(options.pages), notionIcons: Boolean(options.icons) }, notion: { state: options.notion || 'connected' }, context, sources, checkedAt: new Date(time).toISOString() };
+  if (options.model) Object.assign(status, { model: options.model, features: { ...status.features, modelOverview: true } });
   const snapshot = () => ({ _meta: { 'aios/status': structuredClone({ ...status, checkedAt: new Date(time).toISOString() }) } });
   const rejected = text => ({ isError: true, content: [{ type: 'text', text }] });
   class App {
@@ -39,6 +43,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
     async callServerTool({ name, arguments: args }) {
       calls.push({ name, args: plain(args) }); if (delay) await delay;
       if (fail) throw new Error('Request failed');
+      if (malformed && name === 'aios_status') return {};
       if (name === 'aios_notion_pages') return { _meta: { 'aios/pages': await options.pages(args.query) } };
       if (name === 'aios_notion_icons') return { _meta: { 'aios/kind': 'icons', 'aios/icons': await options.icons(args.targets) } };
       time += 10;
@@ -56,7 +61,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
       return snapshot();
     }
   }
-  const sandbox = { App, classifyTarget, connectionCopy, __AIOS_VERSION__: 'test', applyDocumentTheme() {}, applyHostStyleVariables() {},
+  const sandbox = { App, classifyTarget, connectionCopy, overviewView, __AIOS_VERSION__: 'test', applyDocumentTheme() {}, applyHostStyleVariables() {},
     document, URL, structuredClone, setTimeout, clearTimeout, Date: class extends Date { static now() { return time; } } };
   await vm.runInNewContext(`(async () => {${source}})()`, sandbox);
   const get = id => document.getElementById(id);
@@ -64,6 +69,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
     get, calls, links, status, names: () => calls.map(call => call.name), focused: () => document.activeElement?.id,
     text: id => get(id).textContent, shown: id => !get(id).hidden,
     notify: value => host.ontoolresult(value), fail: value => { fail = value; }, failLinks: value => { linkFailure = value; },
+    malformed: value => { malformed = value; },
     delay() { delay = new Promise(resolve => { release = resolve; }); }, release() { release(); delay = undefined; },
     click: id => get(id).dispatch('click'),
     key: (id, key) => get(id).dispatch('keydown', { key }),
@@ -654,4 +660,162 @@ test('Settings keeps Optional for assistive technology and None still clears an 
   assert.equal(u.text('settings-teamMemory-picker'), 'None');
   await u.click('drawer-save');
   assert.deepEqual(u.calls[0].args.links, { docs });
+});
+
+// Operating-model overview (#58). Snapshots are derived by the real deriveOverview
+// from invented connector-shaped models and rendered by the real overviewView.
+const modelSnapshot = (content = ownerModel, overrides = {}) => ({ version: 1, model: { identity: 'notion:' + modelTarget.slice(-32), target: modelTarget, title: 'AI Operating Model' },
+  revision: '2026-10-19T09:00:00.000Z', readAt: '2026-10-19T09:01:00.000Z', complete: true, selection: null, changes: null, ...deriveOverview(content), ...overrides });
+const derivedGroups = content => deriveOverview(content).groups.map(group => [group.title, group.links.map(link => link.title)]);
+const overviewRows = u => u.get('overview-groups').descendants().filter(node => node.tagName === 'BUTTON');
+const facts = u => u.get('overview-facts').children.map(item => [item.children[0].textContent, item.children[1].textContent]);
+const fact = (u, label) => facts(u).find(([name]) => name === label)?.[1];
+
+test('a model snapshot previews its own groups; browsing, opening and choosing a page never write or fetch destinations', async () => {
+  const requested = [];
+  const u = await ui(undefined, undefined, { model: modelSnapshot(),
+    pages: async () => ({ pages: [{ title: 'AI Operating Model', target: modelTarget }], hasMore: false }),
+    icons: async targets => { requested.push(...targets); return { icons: [] }; } });
+  assert.equal(u.shown('overview'), true); assert.equal(u.shown('setup'), true);
+  assert.equal(u.text('model-meta'), 'AI Operating Model');
+  const shown = u.get('overview-groups').children.map(section => [section.children[0].textContent, section.children.slice(1).map(row => row.textContent)]);
+  assert.deepEqual(shown, derivedGroups(ownerModel));
+  assert.deepEqual(shown, [['Context sources', ['Soul', 'About', 'Memory', 'Skills']], ['Work and outputs', ['Tasks', 'Projects', 'Repository']]]);
+  // Connected, model read, revision and pointer are separate lines; nothing claims agent loading or activation.
+  assert.deepEqual(facts(u).map(([label]) => label), ['Notion', 'Model read', 'Model revision', 'Host pointer']);
+  assert.equal(fact(u, 'Notion'), 'Connected'); assert.match(fact(u, 'Model read'), /^Snapshot from /);
+  assert.equal(fact(u, 'Model revision'), '2026-10-19T09:00:00.000Z'); assert.equal(fact(u, 'Host pointer'), 'Not saved');
+  assert.doesNotMatch(u.text('overview'), /loaded|enabled|activated|Ready/);
+  assert.equal(u.shown('save-pointer'), true); assert.match(u.text('pointer-text'), /Other instructions stay unchanged/);
+  await u.click('open-model');
+  for (const row of overviewRows(u)) await row.dispatch('click');
+  const targets = deriveOverview(ownerModel).groups.flatMap(group => group.links.map(link => link.target));
+  assert.deepEqual(u.links, [modelTarget, ...targets]);
+  assert.deepEqual(u.calls, [], 'reviewing and opening navigation calls no tool');
+  await u.click('setup-context-picker'); await settled();
+  await u.options('setup-context-picker').find(option => option.textContent.startsWith('AI Operating Model')).dispatch('click');
+  await settled();
+  assert.equal(u.get('target').value, modelTarget);
+  assert.equal(u.names().some(name => name.startsWith('aios_save_')), false, 'selecting a page writes nothing');
+  assert.ok(requested.every(value => value === modelTarget), 'icons are read only for the selected page, never for overview destinations');
+  assert.equal(fact(u, 'Host pointer'), 'Not saved');
+});
+
+test('only Save pointer writes the pointer, with the read revision, and it does not claim the agent loaded it', async () => {
+  const u = await ui(undefined, undefined, { model: modelSnapshot() });
+  await u.click('refresh');
+  assert.deepEqual(u.names(), ['aios_status'], 'refreshing the panel writes nothing');
+  const revision = u.status.context.revision;
+  await u.click('save-pointer');
+  assert.deepEqual(u.names(), ['aios_status', 'aios_save_context']);
+  assert.deepEqual(u.calls[1].args, { target: modelTarget, expectedRevision: revision });
+  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('heading'), 'AIOS');
+  assert.equal(fact(u, 'Host pointer'), 'Saved'); assert.equal(fact(u, 'Notion'), 'Connected');
+  assert.equal(u.shown('pointer-change'), false);
+  assert.equal(u.text('feedback-text'), 'Pointer saved. This does not show that a running agent has loaded the model.');
+  assert.equal(u.shown('open-context'), false, 'the overview names the saved model; no duplicate Primary row');
+  assert.equal(u.shown('shortcuts-title'), false, 'no empty Saved shortcuts heading for a new setup');
+  await u.click('save-pointer');
+  assert.equal(u.names().length, 2, 'an already saved pointer offers no second write');
+});
+
+test('the Context step names its write, and Save pointer asks before discarding source edits', async () => {
+  const u = await ui(undefined, undefined, { model: modelSnapshot() });
+  await u.input(target);
+  assert.equal(u.text('continue-1'), 'Save pointer');
+  await u.submit();
+  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.equal(u.text('continue-1'), 'Continue');
+  assert.equal(fact(u, 'Host pointer'), 'Points to another context');
+  assert.match(u.text('pointer-text'), /replaces only the Context line/);
+  await u.addLink('setup-docs-picker', 'https://example.com/docs');
+  const revision = u.status.context.revision;
+  await u.click('save-pointer');
+  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.equal(u.text('save-pointer'), 'Discard edits and save pointer');
+  assert.equal(u.text('feedback-text'), 'Unsaved source changes will be discarded.');
+  await u.click('save-pointer');
+  assert.deepEqual(u.names(), ['aios_save_context', 'aios_save_context']);
+  assert.deepEqual(u.calls[1].args, { target: modelTarget, expectedRevision: revision });
+  assert.equal(u.shown('dashboard'), true); assert.equal(fact(u, 'Host pointer'), 'Saved');
+});
+
+test('earlier links stay as editable Saved shortcuts beside the saved model', async () => {
+  const docs = { title: 'Company docs', target: 'https://example.com/docs' }, memory = { title: 'Decisions', target: 'https://example.com/memory' };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs, memory }), { model: modelSnapshot() });
+  assert.equal(u.shown('dashboard'), true); assert.equal(fact(u, 'Host pointer'), 'Saved'); assert.equal(u.shown('pointer-change'), false);
+  assert.equal(u.shown('shortcuts-title'), true); assert.equal(u.text('shortcuts-title'), 'Saved shortcuts');
+  assert.equal(u.shown('open-context'), false);
+  assert.deepEqual(['docs', 'personalSkills', 'teamSkills', 'memory', 'teamMemory'].filter(role => u.shown('open-' + role)), ['docs', 'memory']);
+  assert.equal(u.get('skills-title').parentNode.hidden, true);
+  assert.equal(u.text('docs-meta'), 'Company docs');
+  await u.click('open-docs'); assert.deepEqual(u.links, [docs.target]);
+  await u.click('settings'); await u.addLink('settings-teamSkills-picker', 'https://example.com/team', 'Team methods');
+  await u.click('drawer-save');
+  assert.deepEqual(u.names(), ['aios_save_sources']);
+  assert.equal(u.calls[0].args.target, modelTarget);
+  assert.deepEqual(u.calls[0].args.links, { docs, teamSkills: { title: 'Team methods', target: 'https://example.com/team' }, memory });
+  assert.equal(u.shown('open-teamSkills'), true); assert.equal(u.get('skills-title').parentNode.hidden, false);
+});
+
+test('an ambiguous model lists its sections for a choice in Setup and shows no guessed links', async () => {
+  const u = await ui(undefined, undefined, { model: modelSnapshot(mixedModel) });
+  assert.equal(overviewRows(u).length, 0);
+  assert.deepEqual(u.get('overview-groups').children[0].children.map(item => item.textContent), ['Sources · 1 link · mixed with other items', 'Team · 1 link']);
+  assert.match(u.text('overview-notes'), /ask Setup which sections to show/);
+  assert.deepEqual(u.calls, []);
+});
+
+test('disconnection, a failed read and late snapshots cannot resurrect overview navigation', async () => {
+  const u = await ui({ ...configured(), target: modelTarget }, saved({}), { model: modelSnapshot() });
+  const ready = plain(u.status);
+  assert.equal(overviewRows(u).length, 7);
+  u.status.notion = { state: 'not_connected' }; await u.click('refresh');
+  assert.equal(overviewRows(u).length, 0); assert.equal(fact(u, 'Notion'), 'Not connected');
+  assert.match(u.text('overview-notes'), /Notion is not connected/);
+  u.notify({ _meta: { 'aios/status': { ...ready, checkedAt: new Date(100005).toISOString() } } });
+  assert.equal(overviewRows(u).length, 0, 'a late connected snapshot is ignored');
+  u.status.notion = { state: 'connected' }; u.status.model = modelSnapshot(ownerModel, { state: 'no_access', groups: [], sections: [] });
+  await u.click('refresh');
+  assert.equal(overviewRows(u).length, 0); assert.equal(fact(u, 'Last refresh').startsWith('Snapshot from '), true);
+  assert.match(u.text('overview-notes'), /could not access the model/);
+  u.notify({ _meta: { 'aios/status': { ...ready, checkedAt: new Date(100015).toISOString() } } });
+  assert.equal(overviewRows(u).length, 0, 'a late earlier read cannot restore cleared links');
+  u.status.model = { state: 'unavailable' }; await u.click('refresh');
+  assert.equal(u.text('model-meta'), 'Overview unavailable'); assert.equal(u.get('open-model').disabled, true);
+  assert.equal(overviewRows(u).length, 0);
+  assert.equal(u.names().some(name => name.startsWith('aios_save_')), false);
+});
+
+test('after a definite disconnect, failed, malformed or unverified checks keep overview links hidden until Connected returns', async () => {
+  const u = await ui({ ...configured(), target: modelTarget }, saved({}), { model: modelSnapshot() });
+  const targets = new Set(deriveOverview(ownerModel).groups.flatMap(group => group.links.map(link => link.target)));
+  const hidden = step => {
+    assert.equal(overviewRows(u).length, 0, `${step}: no overview link actions`);
+    assert.equal(u.links.some(link => targets.has(link)), false, `${step}: no overview link opened`);
+    assert.equal(u.names().some(name => name.startsWith('aios_save_')), false, `${step}: no pointer or source save`);
+  };
+  assert.equal(overviewRows(u).length, 7);
+  u.status.notion = { state: 'not_connected' }; await u.click('refresh');
+  hidden('disconnected');
+  u.fail(true); await u.click('refresh'); u.fail(false);
+  assert.equal(u.text('connection-label'), 'Could not verify');
+  hidden('failed refresh');
+  assert.match(u.text('overview-notes'), /not been confirmed since/);
+  u.status.notion = { state: 'connected' }; u.malformed(true); await u.click('refresh'); u.malformed(false);
+  assert.equal(u.text('connection-label'), 'Could not verify');
+  hidden('malformed refresh');
+  u.notify({ _meta: { 'aios/status': { notion: { state: 'connected' }, context: { state: 'configured' }, checkedAt: new Date(200000).toISOString() } } });
+  hidden('malformed tool result');
+  u.status.notion = { state: 'unknown' }; await u.click('refresh');
+  hidden('unverified status');
+  u.notify({ _meta: { 'aios/status': { ...plain(u.status), notion: { state: 'connected' }, checkedAt: new Date(100000).toISOString() } } });
+  hidden('late connected snapshot');
+  u.status.notion = { state: 'connected' }; await u.click('refresh');
+  assert.equal(u.text('connection-label'), '✓ Connected');
+  assert.equal(overviewRows(u).length, 7, 'a fresh Connected status restores the readable snapshot');
+  assert.doesNotMatch(u.text('overview-notes'), /not been confirmed since/);
+  u.status.model = modelSnapshot(ownerModel, { state: 'no_access', groups: [], sections: [] }); await u.click('refresh');
+  u.fail(true); await u.click('refresh'); u.fail(false);
+  assert.equal(overviewRows(u).length, 0, 'a failed refresh keeps a no-access result cleared');
 });

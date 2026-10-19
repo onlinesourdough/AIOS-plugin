@@ -94,6 +94,22 @@ h1:focus, .drawer-head h2:focus { outline: none; }
 #dashboard > section:first-of-type h2 { margin-top: 0; }
 #dashboard section .row { width: calc(100% + 24px); margin: 0 -12px; }
 
+/* Operating-model overview: the model, plain-text facts, then its own groups.
+   Facts stack their label above the value at narrow widths instead of clipping. */
+#overview { margin-bottom: 36px; }
+#overview h2 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
+#overview h3 { margin: 24px 0 4px; font-size: 13px; font-weight: 600; }
+#overview .row { width: calc(100% + 24px); margin: 0 -12px; }
+#overview .row-title { flex: 1; }
+.facts { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--aios-muted); }
+.facts li { display: flex; flex-wrap: wrap; column-gap: 8px; overflow-wrap: anywhere; }
+.fact-label { min-width: 112px; color: var(--aios-text); }
+.pointer-change { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; }
+.pointer-change p { margin: 0; }
+.pointer-change .step-actions { margin-top: 12px; }
+#dashboard .shortcuts-title { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--aios-muted); }
+#dashboard[data-secondary="true"] section h2 { margin: 16px 0 4px; font-size: 13px; font-weight: 500; }
+
 .feedback { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin-top: 24px; padding: 4px 4px 4px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; overflow-wrap: anywhere; }
 .feedback[data-error="true"] { color: var(--aios-danger); }
 #repo-error { margin-top: 24px; overflow-wrap: anywhere; }
