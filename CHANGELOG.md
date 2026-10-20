@@ -9,9 +9,14 @@ Not released or installed; part of issue #58, which is not complete.
   Reviewing it never writes instructions; only Save pointer changes the host
   pointer. Unusable source rows are counted and mark the overview partial, and a
   section that needs a choice is reported instead of guessed. Setup marks a
-  refresh complete only when the fetch reports nothing missing. Earlier Docs,
-  Skills and Memory links remain as Saved shortcuts; a fresh model setup adds
-  none. The overview is navigation, not a live view.
+  refresh complete only when the fetch reports nothing missing. The overview
+  uses the model's own title once and shows each of its sections as a card. A
+  role-labelled row whose page has the same name is shown once; names that differ
+  in any meaningful character keep both, and snapshots saved before this change
+  keep their stored names until Setup saves the overview again. The source
+  revision is shown apart from when the snapshot was saved. Earlier Docs, Skills and Memory links remain as Saved shortcuts,
+  collapsed beside the model; a fresh model setup adds none. The overview is
+  navigation, not a live view.
 - Setup and Context guidance describes a new Notion home as a private AIOS page
   with an AI Operating Model child and only the Soul, About, Memory and Skills
   pages the owner chooses, while existing workspaces and guides are reused by

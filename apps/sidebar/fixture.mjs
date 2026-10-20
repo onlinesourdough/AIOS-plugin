@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { readContextRoute, saveContextRoute } from './context-route.mjs';
 import { readSources, saveSources } from './sources.mjs';
 import { readModelOverview, saveModelOverview } from './model-snapshot.mjs';
-import { ownerModel, mixedModel, modelTarget } from './model-fixtures.mjs';
+import { ownerModel, mixedModel, modelTarget, variedModel, variedTarget } from './model-fixtures.mjs';
 import { readNotionSetup } from './codex-status.mjs';
 import { NotionPages } from './notion-pages.mjs';
 const port = Number(process.env.PORT || 43195);
@@ -47,6 +47,17 @@ async function reset(codexHome, scenario) {
   if (['preview', 'overview'].includes(scenario)) await saveModelOverview(model, { codexHome });
   if (scenario === 'model-ambiguous') await saveModelOverview({ ...model, content: mixedModel }, { codexHome });
   if (scenario === 'model-denied') await saveModelOverview({ ...model, outcome: 'no_access', content: '' }, { codexHome });
+  // Another person's model: its own title and headings, an older source revision
+  // than the save time, completeness not reported, one row left out, and an
+  // earlier shortcut kept beside it.
+  if (scenario === 'varied') {
+    await writeFile(join(codexHome, 'AGENTS.md'), bridge.replace('<verified-context-entry-url-or-absolute-path>', variedTarget));
+    const context = await readContextRoute({ codexHome });
+    const current = await readSources(context.target, { codexHome });
+    await saveSources({ target: context.target, expectedContextRevision: context.revision, expectedRevision: current.revision, title: '',
+      links: { docs: { title: 'Company docs', target: examplePages[1].target } } }, { codexHome });
+    await saveModelOverview({ target: variedTarget, title: 'Workspace guide', revision: '2026-10-18T09:00:00.000Z', content: variedModel, complete: false }, { codexHome });
+  }
 }
 await reset(roots.home,'dashboard');
 let lastCheck = 0;

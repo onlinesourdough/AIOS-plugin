@@ -170,6 +170,31 @@ in source: Setup now marks a refresh complete only when the fetch reports nothin
 and shortcut steps apply only to existing or explicitly requested shortcuts. No native
 operation, rerun on the retained text or CI followed this correction.
 
+That corrected version, published as `75aebda` on the draft pull request, was then
+accepted by a further independent source review with its native gates still open, and CI
+passed 121 of 121. The owner's coordinator installed it once in Codex; every source file
+matched, and the earlier install and unrelated configuration were kept. After an ordinary
+Codex restart, the AIOS panel ran the installed server, and Setup saved one overview from
+the same retained export, marked not complete, with no section choice and no new Notion
+read. The app showed 3 groups, 11 links, 3 rows left out, the partial warning and the
+original source revision, matching the export; the pointer and saved shortcuts were
+unchanged. Whether an overview existed before that save was not inventoried. This
+qualifies that Setup and overview path only, not methods, Memory, Skills, account changes,
+recall, a second agent or release. The owner found it hard to use: one long list, the
+model's title shown twice, and a role and page with the same name, such as AIOS, shown
+twice. A following source candidate shows the model's title once, its sections as cards,
+the source revision apart from the snapshot's save time, and keeps saved shortcuts
+collapsed. Its affected tests, build, package and stdio checks and a synthetic browser
+fixture at wide and narrow widths, with clicks, keyboard focus and states, passed. Two
+independent findings then showed its rule for showing a role and page name once was too
+broad: it treated "C++" and "C#", "x²" and "x2", and "ACME®" and "ACME" as the same name,
+and shortened a page whose own title happened to contain a middle dot. The repair records a
+short label only where Setup parses a role-labelled row whose page has the same name, and
+otherwise shows titles exactly as stored, so snapshots saved earlier keep their names until
+Setup saves the overview again. Results for the current source are in its CI run and the
+lead's check record, not here. The synthetic browser fixture is not native proof, and this
+layout has not been installed or checked in the app.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged

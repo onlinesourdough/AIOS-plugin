@@ -1,19 +1,39 @@
 # Codex sidebar — 0.29.0
 
-Revision: 2026-10-19
+Revision: 2026-10-20
 
 ## Operating-model overview (#58 source candidate)
 
-This section describes an unreleased source candidate for issue #58. It has
-not been qualified in a live app or with a native agent.
+This section describes an unreleased source candidate for issue #58. An earlier
+version was installed once and showed a real saved model; this layout has not
+been installed or checked in the app.
 
-A fixed section at the top shows the selected **AI Operating Model**: its title
-with Open in Notion, plain-text lines for Notion connected, model read
-(Snapshot from … and the reported revision) and host pointer saved, then the
-model's own groups and links. Group names and labels come from the model's
-headings and reference lists. These lines are separate facts; none claims that
-an agent has loaded the model, that native Skills are enabled or that Memory
-exists. The full model stays in Notion.
+The section at the top uses the selected model's own title as its heading, once,
+with Open in Notion beside it. A small "Operating model" label appears above
+only when that title does not already say so. Below is one wrapping line of
+facts: Notion connection, host pointer, the source revision the connector
+reported (or Not reported), when this snapshot was saved, and coverage
+(Complete as reported, Partial or Completeness unknown, with the number of rows
+left out). The save time is not a read time: a snapshot saved today from an
+older export says so. Problems that need attention, such as a hidden or failed
+overview or a section choice, show as notes; explanations of a usable but
+partial overview sit behind About this overview. None of these claims that an
+agent has loaded the model, that native Skills are enabled or that Memory exists.
+
+Each of the model's own sections is a card with its heading and links. Cards
+share the width in columns of at least 220px and stack into one column in a
+narrow panel; long names wrap. When a role-labelled row's page has the same
+name as its role, such as `**Notes:**` linking a page called Notes, Setup records
+that page name as a short label and the card shows it once. Only letter case,
+spacing and emoji shown as pictures are ignored; names that differ in any other
+character, such as "C++ · C#", "x² · x2" or "ACME® · ACME", keep both. A link
+that was not a labelled row is never shortened, even if its own title contains a
+middle dot. The stored title and every target stay unchanged, and a snapshot
+with a malformed label is refused whole. Snapshots saved before this change have
+no labels, so they show their stored names exactly; to shorten them, ask Setup
+to save the overview again from the same model text; when that text is still
+available, no new Notion read is needed. Nothing is rewritten automatically.
+Earlier versions ignore the label. The full model stays in Notion.
 
 The panel has no qualified app-authorized way to read a page body; the page
 fetch it uses for icons is not that proof. The overview is therefore a
@@ -60,9 +80,9 @@ Reviewing an overview never writes Codex instructions. **Save pointer** shows
 what will change, then uses the existing revision-checked, backed-up
 `aios_save_context` write and leaves unrelated instructions intact. The
 setup Context step now names its write Save pointer. Existing Docs, Skills and
-Memory links remain under a secondary **Saved shortcuts** heading, showing only
-filled roles, editable in Settings. Without an overview, and for folder
-contexts, the earlier layout below is unchanged.
+Memory links remain under a secondary **Saved shortcuts** disclosure, collapsed
+until opened, showing only filled roles, editable in Settings. Without an
+overview, and for folder contexts, the earlier layout below is unchanged.
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and

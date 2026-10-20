@@ -53,6 +53,23 @@ export const teamModel = `<page url="${page(30)}">
 </content>
 </page>`;
 
+// A model with its own name and headings: role-labelled sources beside notes,
+// a role whose page has the same name, one with a different page name, an
+// unlabelled link, and one row that does not fit the grammar.
+export const variedTarget = page(50);
+export const variedModel = `<content>
+## Daily work
+- **Planner:** <mention-page url="${page(51)}"/> plans the week.
+- **Notes:** <mention-page url="${page(52)}">Notes</mention-page>
+- Keep this list short.
+## Reference
+- **Docs:** [Handbook](${page(53)})
+- [Archive](${page(54)})
+## Team
+- **Studio:** <mention-page url="${page(55)}">Studio</mention-page>
+- Owner: <mention-page url="${page(56)}"/> approves changes.
+</content>`;
+
 // A section that mixes a source with an instruction cannot be resolved alone.
 export const mixedModel = `<content>
 ## Sources

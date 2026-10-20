@@ -181,7 +181,7 @@ test('labelled rows keep section choice, mixed-section and unsafe-link behavior'
   assert.equal(chosen.state, 'ready'); assert.deepEqual(chosen.groups, [{ title: 'Sources', links: [{ title: 'Docs', target: notion(1) }] }]);
   assert.equal(chosen.skipped, 1, 'the unusable owner row in the chosen section is counted'); assert.equal(chosen.partial, true);
   const unsafe = deriveOverview(['## Sources', '- **Script:** [Run](javascript:void)', '- **Plain:** [Old](http://example.com/a)', `- **Docs:** [Docs](${page(1)})`].join('\n'));
-  assert.equal(unsafe.state, 'ready'); assert.deepEqual(unsafe.groups, [{ title: 'Sources', links: [{ title: 'Docs · Docs', target: page(1) }] }]);
+  assert.equal(unsafe.state, 'ready'); assert.deepEqual(unsafe.groups, [{ title: 'Sources', links: [{ title: 'Docs · Docs', target: page(1), label: 'Docs' }] }]);
   assert.equal(unsafe.skipped, 2);
 });
 
@@ -313,6 +313,73 @@ test('non-string targets and read times are refused rather than coerced', () => 
     ['a read time in a one-element array', { readAt: ['2026-10-19T09:01:00.000Z'] }],
     ['a numeric read time', { readAt: 1792400460000 }],
   ]) assert.equal(readOverview(stored(overrides)), null, name);
+});
+
+// Labels are recorded only where a role-labelled row is parsed. Display uses the
+// label, or the stored title exactly.
+const labelledRows = rows => deriveOverview(`## Home\n${rows.map(([role, name, n]) => `- **${role}:** <mention-page url="${page(n)}">${name}</mention-page>`).join('\n')}`);
+const shownLinks = overview => overviewView(statusWith(stored(overview))).groups.flatMap(group => group.links);
+
+test('a role-labelled row whose page has the same name is shown once; any meaningful difference keeps both', () => {
+  const same = [['AIOS', 'AIOS', 211], ['Memory', '🧠 Memory', 212], ['aios', 'AIOS', 213], ['Ideas', '💡 Ideas', 214], ['Team notes', 'Team  notes', 215]];
+  const different = [['Docs', 'Handbook', 216], ['C++', 'C#', 217], ['C++', 'C', 218], ['Node.js', 'Node js', 219], ['Q&A', 'QA', 220],
+    ['x²', 'x2', 221], ['ACME®', 'ACME', 222], ['Plans', 'Plans 2026', 223]];
+  const overview = labelledRows([...same, ...different]);
+  assert.deepEqual(overview.groups[0].links.slice(0, same.length), [
+    { title: 'AIOS · AIOS', target: page(211), label: 'AIOS' }, { title: 'Memory · 🧠 Memory', target: page(212), label: '🧠 Memory' },
+    { title: 'aios · AIOS', target: page(213), label: 'AIOS' }, { title: 'Ideas · 💡 Ideas', target: page(214), label: '💡 Ideas' },
+    { title: 'Team notes · Team notes', target: page(215), label: 'Team notes' }], 'the derived title is kept and the label is added');
+  assert.deepEqual(shownLinks(overview), [
+    ...['AIOS', '🧠 Memory', 'AIOS', '💡 Ideas', 'Team notes'].map((title, i) => ({ title, target: page(211 + i) })),
+    ...different.map(([role, name, n]) => ({ title: `${role} · ${name}`, target: page(n) }))]);
+});
+
+test('meaningful symbols and literal page titles are never folded away', () => {
+  const target = 'https://example.com/math?view=source#equations';
+  for (const [name, row, shown] of [
+    ['a superscript', '- **x²:** [x2](' + target + ')', 'x² · x2'],
+    ['a registered mark', '- **ACME®:** [ACME](' + target + ')', 'ACME® · ACME'],
+    ['an unlabelled page whose own title has a middle dot', '- [Notes · Notes](' + target + ')', 'Notes · Notes'],
+  ]) {
+    const overview = deriveOverview(`## Home\n${row}`);
+    assert.deepEqual(shownLinks(overview), [{ title: shown, target }], name);
+    assert.equal(overview.groups[0].links[0].label, undefined, `${name}: no label recorded`);
+  }
+});
+
+test('older snapshots without labels show every title exactly as stored; a malformed label rejects the snapshot', () => {
+  const links = [{ title: 'AIOS · AIOS', target: page(231) }, { title: 'Notes · Notes', target: page(232) },
+    { title: 'Docs · Handbook', target: page(233) }, { title: 'A · B · A', target: page(234) }];
+  const older = stored({ groups: [{ title: 'Home', links }] });
+  assert.deepEqual(overviewView(statusWith(older)).groups, [{ title: 'Home', links }], 'no role is guessed from a middle dot');
+  assert.deepEqual(readOverview(older).groups[0].links, links, 'stored titles are not migrated');
+  const ok = { title: 'Notes · Notes', target: page(241), label: 'Notes' };
+  assert.deepEqual(readOverview(stored({ groups: [{ title: 'G', links: [ok] }] })).groups[0].links, [ok]);
+  for (const [name, link] of [
+    ['a label that does not end its title', { ...ok, label: 'Other' }],
+    ['a label naming something other than the role', { title: 'Docs · Handbook', target: page(242), label: 'Handbook' }],
+    ['a label differing from the role by a symbol', { title: 'x² · x2', target: page(243), label: 'x2' }],
+    ['a label that is the whole title', { title: 'Notes', target: page(244), label: 'Notes' }],
+    ['an empty label', { ...ok, label: '' }],
+    ['a non-string label', { ...ok, label: ['Notes'] }],
+  ]) assert.equal(readOverview(stored({ groups: [{ title: 'G', links: [link] }] })), null, name);
+});
+
+test('the C++ and C# witness keeps both names and its exact target', () => {
+  const derived = overviewView(statusWith(stored(deriveOverview('## Languages\n- **C++:** [C#](https://example.com/csharp)'))));
+  assert.deepEqual(derived.groups, [{ title: 'Languages', links: [{ title: 'C++ · C#', target: 'https://example.com/csharp' }] }]);
+});
+
+test('coverage and left-out rows are explained in details, not urgent notes; a generic kind label only when the title lacks it', () => {
+  const partial = overviewView(statusWith(stored({ complete: false, partial: true, skipped: 3 })));
+  assert.deepEqual([partial.complete, partial.partial, partial.skipped], [false, true, 3]);
+  assert.ok(partial.details.some(text => /3 source rows or links were left out/.test(text)));
+  assert.ok(partial.details.some(text => /may be missing/.test(text)));
+  assert.ok(!partial.notes.some(text => /left out|may be missing/.test(text)));
+  const complete = overviewView(statusWith(stored()));
+  assert.deepEqual(complete.details, []); assert.equal(complete.kind, false, '"AI Operating Model" already says what it is');
+  const named = overviewView(statusWith(stored({ model: { identity: 'notion:x', target: modelTarget, title: 'Workspace guide' } })));
+  assert.equal(named.kind, true);
 });
 
 test('connected, read and pointer saved stay separate; disconnection and failed reads hide links', () => {

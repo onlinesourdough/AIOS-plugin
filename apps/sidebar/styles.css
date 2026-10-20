@@ -91,23 +91,47 @@ h1:focus, .drawer-head h2:focus { outline: none; }
 .row-meta { min-width: 0; max-width: 60%; margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--aios-muted); }
 .row:disabled { opacity: .5; cursor: default; }
 #dashboard section h2 { margin: 36px 0 8px; font-size: 15px; font-weight: 600; }
-#dashboard > section:first-of-type h2 { margin-top: 0; }
+#shortcuts-list > section:first-of-type h2 { margin-top: 0; }
 #dashboard section .row { width: calc(100% + 24px); margin: 0 -12px; }
 
-/* Operating-model overview: the model, plain-text facts, then its own groups.
-   Facts stack their label above the value at narrow widths instead of clipping. */
+/* Operating-model overview: the model's own title once, a quiet line of facts,
+   then each of its sections as a card. Cards share the width in columns of at
+   least 220px and stack into one column in a narrow panel; long names wrap
+   instead of clipping. */
 #overview { margin-bottom: 36px; }
-#overview h2 { margin: 0 0 8px; font-size: 15px; font-weight: 600; }
-#overview h3 { margin: 24px 0 4px; font-size: 13px; font-weight: 600; }
-#overview .row { width: calc(100% + 24px); margin: 0 -12px; }
-#overview .row-title { flex: 1; }
+.overview-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 16px; }
+.overview-name { min-width: 0; flex: 1 1 200px; }
+.overview-kind { margin: 0 0 2px; font-size: 12px; color: var(--aios-muted); }
+#overview h2 { margin: 0; font-size: 18px; font-weight: 600; line-height: 1.3; overflow-wrap: anywhere; }
+#overview h2 .source-title { white-space: normal; }
 .facts { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--aios-muted); }
 .facts li { display: flex; flex-wrap: wrap; column-gap: 8px; overflow-wrap: anywhere; }
 .fact-label { min-width: 112px; color: var(--aios-text); }
+/* In the overview, facts flow as one wrapping line of short label–value pairs. */
+#overview-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px; }
+#overview-facts .fact-label { min-width: 0; }
+#overview-facts .fact-label::after { content: ':'; }
+#overview-notes .hint:first-child { margin-top: 10px; }
+.overview-more { margin-top: 8px; font-size: 12px; color: var(--aios-muted); }
+.overview-more summary { width: fit-content; border-radius: 6px; cursor: pointer; }
+.overview-more summary:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
+.overview-more .hint { margin: 6px 0 0; }
+.overview-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-top: 20px; }
+.overview-card { min-width: 0; padding: 10px 8px 8px; border: 1px solid var(--aios-line); border-radius: 12px; }
+.overview-card h3 { margin: 0 8px 4px; font-size: 12px; font-weight: 600; color: var(--aios-muted); overflow-wrap: anywhere; }
+#overview .overview-link { min-height: 32px; padding: 6px 8px; }
+#overview .overview-link .row-title { flex: 1; white-space: normal; overflow-wrap: anywhere; font-weight: 500; }
+#overview .overview-link .source-title { white-space: normal; }
+.section-choices { grid-column: 1 / -1; margin: 0; }
 .pointer-change { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; }
 .pointer-change p { margin: 0; }
 .pointer-change .step-actions { margin-top: 12px; }
 #dashboard .shortcuts-title { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--aios-muted); }
+.disclosure { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-left: -8px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.disclosure::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+.disclosure[aria-expanded="true"]::before { transform: rotate(45deg); }
+.disclosure:not(:disabled):hover, .disclosure:focus-visible { background: var(--aios-hover); color: var(--aios-text); }
+.disclosure:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
 #dashboard[data-secondary="true"] section h2 { margin: 16px 0 4px; font-size: 13px; font-weight: 500; }
 
 .feedback { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin-top: 24px; padding: 4px 4px 4px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; overflow-wrap: anywhere; }

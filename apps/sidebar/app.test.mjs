@@ -681,10 +681,12 @@ test('a model snapshot previews its own groups; browsing, opening and choosing a
   const shown = u.get('overview-groups').children.map(section => [section.children[0].textContent, section.children.slice(1).map(row => row.textContent)]);
   assert.deepEqual(shown, derivedGroups(ownerModel));
   assert.deepEqual(shown, [['Context sources', ['Soul', 'About', 'Memory', 'Skills']], ['Work and outputs', ['Tasks', 'Projects', 'Repository']]]);
-  // Connected, model read, revision and pointer are separate lines; nothing claims agent loading or activation.
-  assert.deepEqual(facts(u).map(([label]) => label), ['Notion', 'Model read', 'Model revision', 'Host pointer']);
-  assert.equal(fact(u, 'Notion'), 'Connected'); assert.match(fact(u, 'Model read'), /^Snapshot from /);
-  assert.equal(fact(u, 'Model revision'), '2026-10-19T09:00:00.000Z'); assert.equal(fact(u, 'Host pointer'), 'Not saved');
+  // Connection, pointer, the source's revision, the snapshot's save time and coverage are
+  // separate facts; nothing claims a fresh read, agent loading or activation.
+  assert.deepEqual(facts(u).map(([label]) => label), ['Notion', 'Host pointer', 'Source revision', 'Snapshot saved', 'Coverage']);
+  assert.equal(fact(u, 'Notion'), 'Connected'); assert.ok(fact(u, 'Snapshot saved'));
+  assert.equal(fact(u, 'Source revision'), '2026-10-19T09:00:00.000Z'); assert.equal(fact(u, 'Host pointer'), 'Not saved');
+  assert.equal(fact(u, 'Coverage'), 'Complete as reported');
   assert.doesNotMatch(u.text('overview'), /loaded|enabled|activated|Ready/);
   assert.equal(u.shown('save-pointer'), true); assert.match(u.text('pointer-text'), /Other instructions stay unchanged/);
   await u.click('open-model');
@@ -749,6 +751,10 @@ test('earlier links stay as editable Saved shortcuts beside the saved model', as
   assert.deepEqual(['docs', 'personalSkills', 'teamSkills', 'memory', 'teamMemory'].filter(role => u.shown('open-' + role)), ['docs', 'memory']);
   assert.equal(u.get('skills-title').parentNode.hidden, true);
   assert.equal(u.text('docs-meta'), 'Company docs');
+  // Beside the saved model the shortcuts start collapsed, then open with the same rows.
+  assert.equal(u.shown('shortcuts-list'), false); assert.equal(u.get('shortcuts-toggle').getAttribute('aria-expanded'), 'false');
+  await u.click('shortcuts-toggle');
+  assert.equal(u.shown('shortcuts-list'), true); assert.equal(u.get('shortcuts-toggle').getAttribute('aria-expanded'), 'true');
   await u.click('open-docs'); assert.deepEqual(u.links, [docs.target]);
   await u.click('settings'); await u.addLink('settings-teamSkills-picker', 'https://example.com/team', 'Team methods');
   await u.click('drawer-save');
@@ -777,7 +783,7 @@ test('disconnection, a failed read and late snapshots cannot resurrect overview 
   assert.equal(overviewRows(u).length, 0, 'a late connected snapshot is ignored');
   u.status.notion = { state: 'connected' }; u.status.model = modelSnapshot(ownerModel, { state: 'no_access', groups: [], sections: [] });
   await u.click('refresh');
-  assert.equal(overviewRows(u).length, 0); assert.equal(fact(u, 'Last refresh').startsWith('Snapshot from '), true);
+  assert.equal(overviewRows(u).length, 0); assert.ok(fact(u, 'Refresh recorded')); assert.equal(fact(u, 'Coverage'), undefined);
   assert.match(u.text('overview-notes'), /could not access the model/);
   u.notify({ _meta: { 'aios/status': { ...ready, checkedAt: new Date(100015).toISOString() } } });
   assert.equal(overviewRows(u).length, 0, 'a late earlier read cannot restore cleared links');
@@ -818,4 +824,78 @@ test('after a definite disconnect, failed, malformed or unverified checks keep o
   u.status.model = modelSnapshot(ownerModel, { state: 'no_access', groups: [], sections: [] }); await u.click('refresh');
   u.fail(true); await u.click('refresh'); u.fail(false);
   assert.equal(overviewRows(u).length, 0, 'a failed refresh keeps a no-access result cleared');
+});
+
+// Another person's model with its own title and headings (invented, inline so
+// this file needs nothing new from the modules it tests).
+const pageUrl = n => `https://app.notion.com/p/${String(n).padStart(32, '0')}`;
+const otherTarget = pageUrl(200);
+const otherModel = ['## Daily work', `- **Planner:** <mention-page url="${pageUrl(201)}"/> plans the week.`,
+  `- **Notes:** <mention-page url="${pageUrl(202)}">Notes</mention-page>`, '- Keep this list short.',
+  '## Reference', `- **Docs:** [Handbook](${pageUrl(203)})`, `- [Archive](${pageUrl(204)})`,
+  '## Team', `- **Studio:** <mention-page url="${pageUrl(205)}">Studio</mention-page>`,
+  `- Owner: <mention-page url="${pageUrl(206)}"/> approves changes.`].join('\n');
+const otherSnapshot = (overrides = {}) => modelSnapshot(otherModel,
+  { model: { identity: 'notion:' + otherTarget.slice(-32), target: otherTarget, title: 'Workspace guide' }, ...overrides });
+const cards = u => u.get('overview-groups').children.filter(node => node.tagName === 'SECTION')
+  .map(section => [section.children[0].textContent, section.children.slice(1).map(row => [row.textContent, row.title])]);
+
+test('any model shows its own title once and its own sections as cards, naming an equivalent role and page once', async () => {
+  const u = await ui({ ...configured(), target: otherTarget }, saved({}), { model: otherSnapshot() });
+  assert.equal(u.text('overview-title'), 'Workspace guide');
+  assert.equal((u.text('overview').match(/Workspace guide/g) || []).length, 1, 'the title appears once');
+  assert.equal(u.shown('overview-kind'), true, 'a title that does not say what it is gets a quiet label');
+  assert.equal(u.text('open-model'), 'Open in Notion');
+  assert.deepEqual(cards(u), [
+    ['Daily work', [['Planner', pageUrl(201)], ['Notes', pageUrl(202)]]],
+    ['Reference', [['Docs · Handbook', pageUrl(203)], ['Archive', pageUrl(204)]]],
+    ['Team', [['Studio', pageUrl(205)]]]]);
+  assert.ok(u.get('overview-groups').children.every(node => node.className === 'overview-card'), 'each section is its own card');
+  for (const row of overviewRows(u)) await row.dispatch('click');
+  assert.deepEqual(u.links, [201, 202, 203, 204, 205].map(pageUrl), 'exact targets open unchanged');
+  assert.deepEqual(u.calls, []);
+  const titled = await ui(undefined, undefined, { model: modelSnapshot() });
+  assert.equal(titled.shown('overview-kind'), false);
+  assert.equal((titled.text('overview').match(/AI Operating Model/g) || []).length, 1, 'no generic heading repeats a model already titled so');
+});
+
+test('a snapshot saved by the earlier version keeps its stored names exactly; a resave of the same text shows equivalent names once', async () => {
+  const persisted = otherSnapshot({ groups: [{ title: 'Home', links: [{ title: 'AIOS · AIOS', target: pageUrl(211) },
+    { title: 'Notes · Notes', target: pageUrl(212) }, { title: 'Plans · Plans 2026', target: pageUrl(213) }] }] });
+  const u = await ui({ ...configured(), target: otherTarget }, saved({}), { model: persisted });
+  assert.deepEqual(cards(u), [['Home', [['AIOS · AIOS', pageUrl(211)], ['Notes · Notes', pageUrl(212)], ['Plans · Plans 2026', pageUrl(213)]]]],
+    'an older snapshot does not record which titles join a role and a page, so none is shortened');
+  assert.deepEqual(u.calls, [], 'the older snapshot stays usable without a save or refresh');
+  const resaved = await ui({ ...configured(), target: otherTarget }, saved({}),
+    { model: otherSnapshot({ ...deriveOverview(`## Home\n- **AIOS:** <mention-page url="${pageUrl(211)}">AIOS</mention-page>\n- [Notes · Notes](${pageUrl(212)})`) }) });
+  assert.deepEqual(cards(resaved), [['Home', [['AIOS', pageUrl(211)], ['Notes · Notes', pageUrl(212)]]]],
+    'the labelled row is shortened; a page literally titled with a middle dot is not');
+});
+
+test('the source revision and the snapshot save time stay separate, and partial coverage stays visible', async () => {
+  const u = await ui({ ...configured(), target: otherTarget }, saved({}),
+    { model: otherSnapshot({ revision: '2026-10-18T09:00:00.000Z', readAt: '2026-10-20T08:30:00.000Z', complete: false }) });
+  assert.equal(fact(u, 'Source revision'), '2026-10-18T09:00:00.000Z');
+  assert.ok(fact(u, 'Snapshot saved')); assert.notEqual(fact(u, 'Snapshot saved'), fact(u, 'Source revision'));
+  assert.ok(facts(u).every(([label, value]) => !/\bread\b/i.test(`${label} ${value}`)), 'saving a snapshot is not presented as reading the model');
+  assert.equal(fact(u, 'Coverage'), 'Partial · 1 left out');
+  assert.equal(u.shown('overview-more'), true);
+  assert.match(u.text('overview-details'), /1 source row or link was left out/);
+  assert.match(u.text('overview-details'), /Some sources may be missing/);
+  assert.doesNotMatch(u.text('overview-notes'), /left out|may be missing/, 'explanations do not crowd the urgent notes');
+  const unknown = await ui({ ...configured(), target: otherTarget }, saved({}),
+    { model: otherSnapshot({ revision: '', complete: false, partial: false, skipped: 0 }) });
+  assert.equal(fact(unknown, 'Source revision'), 'Not reported');
+  assert.equal(fact(unknown, 'Coverage'), 'Completeness unknown');
+  assert.match(unknown.text('overview-details'), /Some sources may be missing/);
+});
+
+test('without a model, or for a folder context, shortcuts stay a plain open list with no toggle', async () => {
+  const docs = { title: 'Handbook', target: 'https://example.com/docs' };
+  const u = await ui({ state: 'configured', target: '/work/context', kind: 'path', revision: 'a'.repeat(64) }, saved({ docs }));
+  assert.equal(u.shown('overview'), false);
+  assert.equal(u.shown('shortcuts-title'), false); assert.equal(u.shown('shortcuts-list'), true);
+  assert.equal(u.shown('open-context'), true); assert.equal(u.shown('open-docs'), true);
+  await u.click('open-docs'); assert.deepEqual(u.links, [docs.target]);
+  assert.deepEqual(u.calls, []);
 });

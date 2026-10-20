@@ -148,7 +148,10 @@ export function deriveOverview(content, { sections: selection } = {}) {
       // A labelled row is named by its role, with the reference's own text when it has any.
       const name = cleanLabel(decode(reference.title));
       const title = reference.role ? cleanLabel(name ? `${reference.role} · ${name}` : reference.role) : name || shortLabel(target);
-      links.set(identity, { title, target }); total++;
+      // Only here is it known that a title joins a role and a page name. When the
+      // two are the same name, record the page name as a shorter display label.
+      const label = reference.role && name && title === `${reference.role} · ${name}` && sameName(reference.role, name) ? name : '';
+      links.set(identity, label ? { title, target, label } : { title, target }); total++;
     }
     if (!links.size) continue;
     groups.push({ path: section.path, links: [...links.values()] });
@@ -173,7 +176,13 @@ const within = (value, max, valid) => Array.isArray(value) && value.length <= ma
 // Targets must already be strings: the URL check below would otherwise coerce
 // an array or object into a valid-looking link.
 const validTarget = target => text(target, LIMITS.target) && Boolean(safeTarget(target));
-const validLink = link => record(link) && text(link.title, LIMITS.label, true) && validTarget(link.target);
+// An optional label must be the page-name half of its own title, naming the same
+// thing as the role before it; anything else rejects the snapshot. Snapshots
+// without labels, including those saved by earlier versions, stay valid.
+const validLabel = link => link.label === undefined || text(link.label, LIMITS.label, true)
+  && link.title.length > link.label.length + 3 && link.title.endsWith(` · ${link.label}`)
+  && sameName(link.title.slice(0, -(link.label.length + 3)), link.label);
+const validLink = link => record(link) && text(link.title, LIMITS.label, true) && validTarget(link.target) && validLabel(link);
 const validGroup = group => record(group) && text(group.title, LIMITS.label) && Array.isArray(group.links) && group.links.length > 0 && within(group.links, LIMITS.links, validLink);
 const validSection = section => record(section) && text(section.key, LIMITS.section) && text(section.title, LIMITS.label) && counter(section.links) && typeof section.mixed === 'boolean';
 const validKey = key => text(key, LIMITS.section, true);
@@ -192,7 +201,8 @@ export function readOverview(value) {
     selection: value.selection && value.selection.map(key => cleanLabel(key, LIMITS.section)), missing: value.missing.map(key => cleanLabel(key, LIMITS.section)), skipped: value.skipped,
     sections: value.sections.map(section => ({ key: cleanLabel(section.key, LIMITS.section), title: cleanLabel(section.title), links: section.links, mixed: section.mixed })),
     changes: value.changes && { added: value.changes.added, removed: value.changes.removed },
-    groups: value.groups.map(group => ({ title: cleanLabel(group.title), links: group.links.map(link => ({ title: cleanLabel(link.title), target: safeTarget(link.target) })) })),
+    groups: value.groups.map(group => ({ title: cleanLabel(group.title), links: group.links.map(link => ({ title: cleanLabel(link.title), target: safeTarget(link.target),
+      ...(link.label === undefined ? {} : { label: cleanLabel(link.label) }) })) })),
   };
 }
 
@@ -210,21 +220,37 @@ export function overviewView(status) {
     : context.state !== 'configured' ? 'none' : sameTarget(context.target, model.model.target) ? 'saved' : 'other';
   const hidden = hiddenBy[status.notion?.state];
   const readable = !failed[model.state];
-  const notes = [];
+  // notes need attention now; details explain an otherwise usable overview and
+  // stay one step away, behind the visible coverage line.
+  const notes = [], details = [];
   if (hidden) notes.push(`Overview hidden: ${hidden}. Reconnect, then ask Setup to refresh it.`);
   else if (!readable) notes.push(`The latest refresh could not read the model: ${failed[model.state]}. Its earlier overview was cleared.`);
   else if (model.state === 'ambiguous') notes.push('Some sections mix sources with other items, or repeat a heading. In chat, ask Setup which sections to show; their links stay as the model lists them.');
   else if (model.state === 'unsupported') notes.push('No heading followed by a list of page or database links was found, so nothing is shown. Open the model in Notion to navigate.');
   else if (model.state === 'changed') notes.push(`Chosen sections were not found in the latest read: ${model.missing.join(', ')}. Ask Setup to choose sections again.`);
-  if (!hidden && readable && (model.partial || !model.complete)) notes.push('Some sources may be missing: the read was incomplete or capped, or some rows did not fit the supported format. Open the model in Notion to see everything.');
-  if (!hidden && readable && model.skipped) notes.push(`${model.skipped} ${model.skipped === 1 ? 'source row or link was' : 'source rows or links were'} left out because their format or link is not supported.`);
+  if (!hidden && readable && (model.partial || !model.complete)) details.push('Some sources may be missing: the read was incomplete or capped, or some rows did not fit the supported format. Open the model in Notion to see everything.');
+  if (!hidden && readable && model.skipped) details.push(`${model.skipped} ${model.skipped === 1 ? 'source row or link was' : 'source rows or links were'} left out because their format or link is not supported.`);
   const unchosen = model.selection ? model.sections.filter(section => !model.selection.includes(section.key)).length : 0;
-  if (!hidden && readable && unchosen) notes.push(`${unchosen} other ${unchosen === 1 ? 'section with links is' : 'sections with links are'} not shown, as chosen in Setup.`);
+  if (!hidden && readable && unchosen) details.push(`${unchosen} other ${unchosen === 1 ? 'section with links is' : 'sections with links are'} not shown, as chosen in Setup.`);
   const changes = model.changes && (model.changes.added || model.changes.removed) ? `Since the previous snapshot: ${model.changes.added} added · ${model.changes.removed} removed` : '';
   return {
     title: model.model.title, target: model.model.target, state: model.state, readAt: model.readAt, revision: model.revision,
-    pointer, readable, hidden: Boolean(hidden), notes, changes,
-    groups: hidden || !readable ? [] : model.groups,
+    // A generic "Operating model" label is only useful when the model's own title does not already say so.
+    kind: !comparable(model.model.title).includes('operating model'),
+    pointer, readable, hidden: Boolean(hidden), notes, details, changes,
+    complete: model.complete, partial: model.partial, skipped: model.skipped,
+    // A link shows its recorded label, otherwise its title exactly as stored: a
+    // middle dot in a title is never taken as proof of a role and page name.
+    groups: hidden || !readable ? [] : model.groups.map(group => ({ title: group.title, links: group.links.map(link => ({ title: link.label ?? link.title, target: link.target })) })),
     sections: !hidden && model.state === 'ambiguous' ? model.sections : [],
   };
 }
+
+// Whether a role and a page name are the same name. Conservative: only letter
+// case, spacing and emoji shown as pictures (such as 🧠) are ignored. Canonical
+// composition is applied, but no compatibility folding, so x² stays apart from
+// x2; text symbols such as ® and punctuation such as C++ or C# always count.
+const comparable = text => text.normalize('NFC').toLowerCase()
+  .replace(/[\p{Emoji_Presentation}\p{Emoji_Modifier}‍️]/gu, '')
+  .replace(/\s+/gu, ' ').trim();
+const sameName = (a, b) => Boolean(comparable(a)) && comparable(a) === comparable(b);

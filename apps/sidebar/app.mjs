@@ -17,7 +17,7 @@ const connectable = ['not_connected', 'disabled', 'unavailable'];
 // the revisions they were read from; only an explicit reload replaces edits.
 let status, draft, checkedAt = -Infinity, firstStatus = true, saving = false, refreshing = false, stale = false;
 let onboarding = false, openStep = 0, other = false, confirmSwitch = false, settingsOpen = false, discardPrompt = false, confirmPointer = false;
-let message = { text: '', error: false }, groupsKey = '';
+let message = { text: '', error: false }, groupsKey = '', shortcutsOpen = false;
 let selectedContext = null;
 const canBrowse = () => Boolean(status?.features?.notionPages && status.notion.state === 'connected');
 // The last definite result that hides overview links. A failed, malformed or
@@ -195,36 +195,47 @@ function renderSetup(locked) {
   setupContextPicker.render({ value: displayed(selected), choices: [], browse: canBrowse(), disabled: locked });
   for (const role of sourceRoles) setupPickers[role].render({ value: displayed(draft.links[role]), choices: [displayed(draft.saved[role])], browse: canBrowse() && !other, disabled: locked || !ready });
 }
-// The overview names the model, then its own groups. Connected, read and pointer
-// saved are separate lines; none claims that an agent has loaded the model.
+// The overview names the selected model once, then shows its own sections as
+// cards. Connection, pointer, the source's revision and the time this snapshot
+// was saved are separate facts; none claims a fresh read or that an agent has
+// loaded the model.
 const readTime = value => new Date(value).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+function coverage(view) {
+  const state = view.partial ? 'Partial' : view.complete ? 'Complete as reported' : 'Completeness unknown';
+  return view.skipped ? `${state} · ${view.skipped} left out` : state;
+}
 function renderOverview(view, locked) {
   $('overview').hidden = !view;
   $('settings-model').textContent = view?.target
-    ? 'The overview is a snapshot, not a live view. To refresh it, ask Setup in chat to read your AI Operating Model again.'
-    : 'To see an overview, ask Setup in chat to read your AI Operating Model. The panel does not read Notion pages itself.';
+    ? 'The overview is a saved snapshot, not a live view. To refresh it, ask Setup in chat to read your operating model again.'
+    : 'To see an overview, ask Setup in chat to read your operating model. The panel does not read Notion pages itself.';
   if (!view) return;
   if (view.unavailable) {
     sourceLabel($('model-meta'), { title: 'Overview unavailable' });
+    $('overview-kind').hidden = true;
     $('open-model').disabled = true; $('open-model').title = '';
     $('overview-facts').replaceChildren();
     paintNotes(['The saved overview needs attention and was left unchanged. Ask Setup to refresh it.']);
+    paintDetails([]);
     $('pointer-change').hidden = true; $('overview-groups').replaceChildren(); groupsKey = '';
     return;
   }
   sourceLabel($('model-meta'), { title: view.title });
+  $('overview-kind').hidden = !view.kind;
   $('open-model').title = view.target; $('open-model').disabled = locked;
   $('open-model').setAttribute('aria-label', `Open ${view.title} in Notion`);
   const notion = refreshing ? 'Checking…' : connectionCopy[status.notion.state].replace('✓ ', '');
   const pointer = { saved: 'Saved', other: 'Points to another context', none: 'Not saved', blocked: 'Needs attention' }[view.pointer];
-  const facts = [['Notion', notion], [view.readable ? 'Model read' : 'Last refresh', `Snapshot from ${readTime(view.readAt)}`],
-    ['Model revision', view.revision || 'Not reported'], ['Host pointer', pointer]];
+  // The revision is what the source reported; the save time is when Setup stored this snapshot.
+  const facts = [['Notion', notion], ['Host pointer', pointer], ['Source revision', view.revision || 'Not reported'],
+    [view.readable ? 'Snapshot saved' : 'Refresh recorded', readTime(view.readAt)], ...view.readable ? [['Coverage', coverage(view)]] : []];
   $('overview-facts').replaceChildren(...facts.map(([label, value]) => {
     const item = document.createElement('li'), name = document.createElement('span');
     name.className = 'fact-label'; name.textContent = label;
     item.append(name, document.createTextNode(value)); return item;
   }));
-  paintNotes([...view.notes, overviewHeld() ? 'The connection has not been confirmed since, so links stay hidden until Notion is connected again.' : '', view.changes]);
+  paintNotes([...view.notes, overviewHeld() ? 'The connection has not been confirmed since, so links stay hidden until Notion is connected again.' : '']);
+  paintDetails([...view.details, view.changes]);
   const offer = ['none', 'other'].includes(view.pointer) && view.readable;
   $('pointer-change').hidden = !offer && view.pointer !== 'blocked';
   $('pointer-text').textContent = view.pointer === 'blocked' ? 'Existing context instructions need attention, so the pointer cannot be saved here.'
@@ -240,10 +251,11 @@ function renderOverview(view, locked) {
   groupsKey = key;
   const groups = view.groups.map(group => {
     const section = document.createElement('section');
+    section.className = 'overview-card';
     if (group.title) { const heading = document.createElement('h3'); heading.textContent = group.title; section.append(heading); }
     for (const link of group.links) {
       const row = document.createElement('button'), meta = document.createElement('span');
-      row.type = 'button'; row.className = 'row cursor-interaction'; row.title = link.target; row.disabled = locked;
+      row.type = 'button'; row.className = 'row overview-link cursor-interaction'; row.title = link.target; row.disabled = locked;
       row.setAttribute('aria-label', `Open ${link.title}`);
       meta.className = 'row-title'; sourceLabel(meta, { title: link.title });
       row.append(meta); row.addEventListener('click', () => open(link.target));
@@ -253,7 +265,7 @@ function renderOverview(view, locked) {
   });
   if (view.sections.length) {
     const list = document.createElement('ul');
-    list.className = 'facts';
+    list.className = 'facts section-choices';
     for (const section of view.sections) {
       const item = document.createElement('li');
       item.textContent = `${section.key || 'Before the first heading'} · ${section.links} ${section.links === 1 ? 'link' : 'links'}${section.mixed ? ' · mixed with other items' : ''}`;
@@ -263,10 +275,15 @@ function renderOverview(view, locked) {
   }
   $('overview-groups').replaceChildren(...groups);
 }
-function paintNotes(notes) {
-  $('overview-notes').replaceChildren(...notes.filter(Boolean).map(text => {
+function paintNotes(notes, box = 'overview-notes') {
+  $(box).replaceChildren(...notes.filter(Boolean).map(text => {
     const note = document.createElement('p'); note.className = 'hint'; note.textContent = text; return note;
   }));
+}
+// Explanations of a usable overview sit one click away; the coverage fact stays visible.
+function paintDetails(details) {
+  paintNotes(details, 'overview-details');
+  $('overview-more').hidden = !details.some(Boolean);
 }
 // Primary is the context page itself; the row label never renames that page.
 // When the overview shows the saved model, earlier links stay as secondary
@@ -291,7 +308,12 @@ function renderDashboard(locked, view) {
   }
   const sections = [...$('dashboard').querySelectorAll('section')];
   for (const section of sections) section.hidden = ![...section.querySelectorAll('.row')].some(row => !row.hidden);
+  // Beside the saved model, shortcuts are secondary: collapsed until opened, with
+  // the same rows, targets and Settings editing.
   $('shortcuts-title').hidden = !secondary || sections.every(section => section.hidden);
+  $('shortcuts-toggle').setAttribute('aria-expanded', String(shortcutsOpen));
+  $('shortcuts-toggle').disabled = locked;
+  $('shortcuts-list').hidden = secondary && !shortcutsOpen;
 }
 function renderSettings(locked) {
   const dirty = isDirty(draft);
@@ -508,6 +530,7 @@ for (const id of ['reload-draft', 'drawer-reload']) $(id).addEventListener('clic
 $('open-context').addEventListener('click', () => open(status.context.target));
 $('open-model').addEventListener('click', () => { const view = currentView(); if (view?.target) open(view.target); });
 $('save-pointer').addEventListener('click', savePointer);
+$('shortcuts-toggle').addEventListener('click', () => { shortcutsOpen = !shortcutsOpen; render(); });
 for (const role of sourceRoles) $(`open-${role}`).addEventListener('click', () => {
   const link = status.sources.links[role];
   return link ? open(link.target) : openSettings(role);
