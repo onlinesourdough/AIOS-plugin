@@ -34,17 +34,25 @@ async function reset(codexHome, scenario) {
     await saveSources({target:context.target,expectedContextRevision:context.revision,expectedRevision:current.revision,title:'Studio AIOS',links},{codexHome});
   }
   if (scenario === 'ambiguous') await writeFile(join(codexHome, 'AGENTS.md'), '<!-- AIOS:BEGIN -->old instructions');
-  // Overview scenarios: a model preview before any pointer, the saved model with
-  // earlier shortcuts, an unresolved section choice and a failed refresh.
+  // Overview scenarios: a model preview before any pointer; the saved model with a
+  // shortcut, with none, with one shortcut repeating a model link, with Notion
+  // disconnected and with completeness not reported; an unresolved section
+  // choice and a failed refresh.
   const model = { target: modelTarget, title: 'AI Operating Model', revision: '2026-10-19T09:00:00.000Z', content: ownerModel };
-  if (scenario === 'overview') {
-    await writeFile(join(codexHome, 'AGENTS.md'), bridge.replace('<verified-context-entry-url-or-absolute-path>', modelTarget));
+  const savedPointer = async (target, links) => {
+    await writeFile(join(codexHome, 'AGENTS.md'), bridge.replace('<verified-context-entry-url-or-absolute-path>', target));
+    if (!links) return;
     const context = await readContextRoute({ codexHome });
     const current = await readSources(context.target, { codexHome });
-    await saveSources({ target: context.target, expectedContextRevision: context.revision, expectedRevision: current.revision, title: '',
-      links: { docs: { title: 'Company docs', target: examplePages[1].target } } }, { codexHome });
-  }
-  if (['preview', 'overview'].includes(scenario)) await saveModelOverview(model, { codexHome });
+    await saveSources({ target: context.target, expectedContextRevision: context.revision, expectedRevision: current.revision, title: '', links }, { codexHome });
+  };
+  const soulPage = 'https://app.notion.com/p/00000000000000000000000000000011';
+  if (scenario === 'overview') await savedPointer(modelTarget, { docs: { title: 'Company docs', target: examplePages[1].target } });
+  if (['overview-empty', 'overview-disconnected', 'model-unknown'].includes(scenario)) await savedPointer(modelTarget);
+  if (scenario === 'overview-duplicate') await savedPointer(modelTarget, { docs: { title: 'Soul page', target: soulPage + '?source=copy_link' },
+    memory: { title: 'Decisions', target: examplePages[3].target } });
+  if (['preview', 'overview', 'overview-empty', 'overview-duplicate', 'overview-disconnected'].includes(scenario)) await saveModelOverview(model, { codexHome });
+  if (scenario === 'model-unknown') await saveModelOverview({ ...model, revision: '', complete: false }, { codexHome });
   if (scenario === 'model-ambiguous') await saveModelOverview({ ...model, content: mixedModel }, { codexHome });
   if (scenario === 'model-denied') await saveModelOverview({ ...model, outcome: 'no_access', content: '' }, { codexHome });
   // Another person's model: its own title and headings, an older source revision
@@ -89,7 +97,7 @@ const server = createServer(async (req, res) => {
     else if (action === 'sources') await saveSources(args, { codexHome });
     else if (action !== 'status') throw new Error('Unsupported test operation');
     lastCheck = Math.max(lastCheck + 1, Date.now());
-    const state = ({ missing: 'not_installed', disconnected: 'not_connected', disabled: 'plugin_disabled', unknown: 'unknown' })[scenario] || 'connected';
+    const state = ({ missing: 'not_installed', disconnected: 'not_connected', 'overview-disconnected': 'not_connected', disabled: 'plugin_disabled', unknown: 'unknown' })[scenario] || 'connected';
     const context = await readContextRoute({ codexHome });
     const sources = context.state === 'configured' ? await readSources(context.target, { codexHome }) : {state:'missing', title:'', links:{}};
     const model = await readModelOverview({ codexHome });

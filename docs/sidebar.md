@@ -8,17 +8,24 @@ This section describes an unreleased source candidate for issue #58. An earlier
 version was installed once and showed a real saved model; this layout has not
 been installed or checked in the app.
 
-The section at the top uses the selected model's own title as its heading, once,
-with Open in Notion beside it. A small "Operating model" label appears above
-only when that title does not already say so. Below is one wrapping line of
-facts: Notion connection, host pointer, the source revision the connector
-reported (or Not reported), when this snapshot was saved, and coverage
-(Complete as reported, Partial or Completeness unknown, with the number of rows
-left out). The save time is not a read time: a snapshot saved today from an
-older export says so. Problems that need attention, such as a hidden or failed
-overview or a section choice, show as notes; explanations of a usable but
-partial overview sit behind About this overview. None of these claims that an
-agent has loaded the model, that native Skills are enabled or that Memory exists.
+The dashboard leads with navigation. The section at the top uses the selected
+model's own title as its heading, once, with Open in Notion beside it; a small
+"Operating model" label appears above only when that title does not already say
+so. The model's cards follow directly. The main view shows only what needs
+action: a hidden, failed or held overview, a section choice, or Save pointer
+before the pointer is saved. When the links may be incomplete or completeness
+is unknown, one short line above the cards says "Some links may be missing",
+with a Details button. Healthy connection is shown only by the header's
+Connected badge.
+
+Routine facts sit in one closed **About this overview** disclosure below the cards:
+Notion connection, host pointer, the source revision the connector reported (or
+Not reported), when this snapshot was saved, coverage (Complete as reported,
+Partial or Completeness unknown, with the number of rows left out), why rows
+were left out and changes since the previous snapshot. The save time is not a
+read time: a snapshot saved today from an older export says so. Details opens it
+and moves focus to its summary. None of these claims that an agent has loaded
+the model, that native Skills are enabled or that Memory exists.
 
 Each of the model's own sections is a card with its heading and links. Cards
 share the width in columns of at least 220px and stack into one column in a
@@ -79,10 +86,18 @@ refresh shows its result.
 Reviewing an overview never writes Codex instructions. **Save pointer** shows
 what will change, then uses the existing revision-checked, backed-up
 `aios_save_context` write and leaves unrelated instructions intact. The
-setup Context step now names its write Save pointer. Existing Docs, Skills and
-Memory links remain under a secondary **Saved shortcuts** disclosure, collapsed
-until opened, showing only filled roles, editable in Settings. Without an
-overview, and for folder contexts, the earlier layout below is unchanged.
+setup Context step now names its write Save pointer. Beside the saved model,
+existing Docs, Skills and Memory links appear below the cards as a compact
+**More links** row of chips, each named by its role, showing only filled roles
+and still edited in Settings. A saved link that opens the same destination as a
+link shown in the model's cards is not repeated. Destinations match only when
+their links are identical apart from Notion's copied-link marker (a lone
+`?source=copy_link`); a different database view, block or any other query or
+fragment keeps the saved link visible, and links are never matched by name. The
+stored link and the link it opens are unchanged. With nothing distinct to show
+there is no More links block. While Notion is disconnected and the model's
+links are hidden, every saved link shows. Without an overview, and for folder
+contexts, the earlier layout below is unchanged.
 
 The Meetings-inspired layout uses a compact header and three matching sections
 of simple rows: Context with Primary and Docs, then Personal/Team for Skills and

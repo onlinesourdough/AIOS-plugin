@@ -746,15 +746,14 @@ test('earlier links stay as editable Saved shortcuts beside the saved model', as
   const docs = { title: 'Company docs', target: 'https://example.com/docs' }, memory = { title: 'Decisions', target: 'https://example.com/memory' };
   const u = await ui({ ...configured(), target: modelTarget }, saved({ docs, memory }), { model: modelSnapshot() });
   assert.equal(u.shown('dashboard'), true); assert.equal(fact(u, 'Host pointer'), 'Saved'); assert.equal(u.shown('pointer-change'), false);
-  assert.equal(u.shown('shortcuts-title'), true); assert.equal(u.text('shortcuts-title'), 'Saved shortcuts');
+  assert.equal(u.shown('shortcuts-title'), true); assert.equal(u.text('shortcuts-title'), 'More links');
   assert.equal(u.shown('open-context'), false);
   assert.deepEqual(['docs', 'personalSkills', 'teamSkills', 'memory', 'teamMemory'].filter(role => u.shown('open-' + role)), ['docs', 'memory']);
   assert.equal(u.get('skills-title').parentNode.hidden, true);
   assert.equal(u.text('docs-meta'), 'Company docs');
-  // Beside the saved model the shortcuts start collapsed, then open with the same rows.
-  assert.equal(u.shown('shortcuts-list'), false); assert.equal(u.get('shortcuts-toggle').getAttribute('aria-expanded'), 'false');
-  await u.click('shortcuts-toggle');
-  assert.equal(u.shown('shortcuts-list'), true); assert.equal(u.get('shortcuts-toggle').getAttribute('aria-expanded'), 'true');
+  // Beside the saved model the populated shortcuts are a compact visible row, each named by its role.
+  assert.equal(u.shown('shortcuts-list'), true);
+  assert.deepEqual(['docs', 'memory'].map(role => u.get('open-' + role).children[0].textContent), ['Docs', 'Memory']);
   await u.click('open-docs'); assert.deepEqual(u.links, [docs.target]);
   await u.click('settings'); await u.addLink('settings-teamSkills-picker', 'https://example.com/team', 'Team methods');
   await u.click('drawer-save');
@@ -888,6 +887,137 @@ test('the source revision and the snapshot save time stay separate, and partial 
   assert.equal(fact(unknown, 'Source revision'), 'Not reported');
   assert.equal(fact(unknown, 'Coverage'), 'Completeness unknown');
   assert.match(unknown.text('overview-details'), /Some sources may be missing/);
+});
+
+// The main view is navigation; routine facts are in one closed About this overview surface.
+const mainText = u => u.get('overview').children.filter(node => node.id !== 'overview-more' && !node.hidden).map(node => node.textContent).join(' ');
+
+test('the main view leads with navigation; connection, pointer, revision, save time and coverage sit in About this overview', async () => {
+  const u = await ui({ ...configured(), target: modelTarget }, saved({}), { model: modelSnapshot() });
+  assert.equal(overviewRows(u).length, 7);
+  for (const routine of ['Host pointer', 'Source revision', 'Snapshot saved', 'Coverage', 'Connected', '2026-10-19T09:00:00.000Z'])
+    assert.ok(!mainText(u).includes(routine), `${routine} is not in the main view`);
+  assert.equal(u.shown('overview-partial'), false, 'a complete overview carries no notice');
+  assert.equal(u.text('overview-notes'), '');
+  assert.equal(u.shown('overview-more'), true); assert.equal(u.get('overview-more').open, false);
+  assert.equal(u.text('overview-more-summary'), 'About this overview');
+  assert.equal(u.get('overview-facts').parentNode.id, 'overview-more');
+  assert.equal(fact(u, 'Notion'), 'Connected'); assert.equal(fact(u, 'Host pointer'), 'Saved');
+  assert.equal(fact(u, 'Source revision'), '2026-10-19T09:00:00.000Z'); assert.equal(fact(u, 'Coverage'), 'Complete as reported');
+  assert.equal(u.shown('shortcuts-title'), false, 'no empty More links block');
+  assert.ok(u.get('dashboard').querySelectorAll('section').every(section => section.hidden));
+});
+
+test('partial or unknown links carry one short notice whose Details opens the specifics; actionable problems stay visible', async () => {
+  const u = await ui({ ...configured(), target: otherTarget }, saved({}), { model: otherSnapshot({ complete: false }) });
+  assert.equal(u.shown('overview-partial'), true); assert.match(u.text('overview-partial'), /^Some links may be missing\./);
+  assert.doesNotMatch(mainText(u), /left out|Coverage|Partial/, 'counts and coverage are not in the main view');
+  assert.equal(u.get('overview-more').open, false);
+  await u.click('overview-why');
+  assert.equal(u.get('overview-more').open, true); assert.equal(u.focused(), 'overview-more-summary');
+  assert.equal(fact(u, 'Coverage'), 'Partial · 1 left out');
+  assert.match(u.text('overview-details'), /1 source row or link was left out/);
+  const unknown = await ui({ ...configured(), target: otherTarget }, saved({}), { model: otherSnapshot({ complete: false, partial: false, skipped: 0 }) });
+  assert.equal(unknown.shown('overview-partial'), true, 'unknown completeness is not shown as complete');
+  assert.equal(fact(unknown, 'Coverage'), 'Completeness unknown');
+  const off = await ui({ ...configured(), target: otherTarget }, saved({}), { model: otherSnapshot({ complete: false }), notion: 'not_connected' });
+  assert.equal(overviewRows(off).length, 0); assert.match(off.text('overview-notes'), /Notion is not connected/);
+  assert.equal(off.shown('notice'), true); assert.equal(off.shown('notice-connect'), true);
+  assert.equal(off.shown('overview-partial'), false, 'the disconnect note replaces the partial notice');
+  const denied = await ui({ ...configured(), target: otherTarget }, saved({}), { model: otherSnapshot({ state: 'no_access', groups: [], sections: [] }) });
+  assert.match(denied.text('overview-notes'), /could not access the model/); assert.equal(denied.shown('overview-partial'), false);
+});
+
+test('a saved link to the same destination as a model link is not shown again; same-named or other pages stay; stored links are unchanged', async () => {
+  const soul = deriveOverview(ownerModel).groups[0].links[0].target;
+  const docs = { title: 'Soul page', target: soul + '?source=copy_link' }, memory = { title: 'Soul', target: 'https://example.com/soul' };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs, memory }), { model: modelSnapshot() });
+  assert.equal(u.shown('open-docs'), false, 'the same Notion page as a model card');
+  assert.equal(u.shown('open-memory'), true, 'the same name but a different page stays');
+  assert.equal(u.shown('shortcuts-title'), true);
+  await u.click('open-memory'); assert.deepEqual(u.links, [memory.target]);
+  assert.deepEqual(u.calls, []); assert.deepEqual(plain(u.status.sources.links), { docs, memory }, 'nothing is deleted or migrated');
+  await u.click('settings');
+  assert.ok(u.get('settings-docs-picker').textContent.includes('Soul page'), 'the repeated shortcut stays manageable in Settings');
+  const only = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot() });
+  assert.equal(only.shown('shortcuts-title'), false, 'no block when every shortcut repeats a model link');
+  const offline = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot(), notion: 'not_connected' });
+  assert.equal(offline.shown('open-docs'), true, 'while model links are hidden, the shortcut remains reachable');
+});
+
+// A saved link is hidden only when it opens exactly the destination of a model
+// card, apart from Notion's copied-link decoration. Database views, blocks and
+// any unknown query keep it visible. Each case renders one real model card.
+const destinationPage = 'https://app.notion.com/p/00000000000000000000000000000011';
+const blockA = '11111111111111111111111111111111', blockB = '22222222222222222222222222222222';
+for (const [name, card, link, visible] of [
+  ['a Notion block fragment is a different destination from its page', destinationPage, `${destinationPage}#${blockA}`, true],
+  ['different Notion database views stay distinct', `${destinationPage}?v=${blockA}`, `${destinationPage}?v=${blockB}`, true],
+  ['different Notion block anchors stay distinct', `${destinationPage}#${blockA}`, `${destinationPage}#${blockB}`, true],
+  ['an unknown Notion query keeps a link distinct', destinationPage, `${destinationPage}?mode=print`, true],
+  ['a different view with copied-link decoration stays distinct', `${destinationPage}?v=${blockA}`, `${destinationPage}?v=${blockB}&source=copy_link`, true],
+  ['the same view with copied-link decoration is the same destination', `${destinationPage}?v=${blockA}`, `${destinationPage}?v=${blockA}&source=copy_link`, false],
+  ['non-Notion links with different queries stay distinct', 'https://example.com/docs?view=one#intro', 'https://example.com/docs?view=two#intro', true],
+  ['an identical destination is not repeated', destinationPage, destinationPage, false],
+  ['Notion copied-link decoration alone is the same destination', destinationPage, `${destinationPage}?source=copy_link`, false],
+  ['the same block with copied-link decoration is the same destination', `${destinationPage}#${blockA}`, `${destinationPage}?source=copy_link#${blockA}`, false],
+]) test(`More links: ${name}`, async () => {
+  const docs = { title: 'Roadmap', target: link };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot(`## Destinations\n- [Roadmap](${card})`) });
+  assert.equal(overviewRows(u).length, 1); assert.equal(overviewRows(u)[0].title, card, 'the card keeps its exact target');
+  assert.equal(u.shown('open-docs'), visible);
+  assert.equal(u.shown('shortcuts-title'), visible, visible ? 'More links shows the distinct destination' : 'no block when nothing distinct remains');
+  if (visible) { await u.click('open-docs'); assert.deepEqual(u.links, [link], 'the saved link opens exactly as stored'); }
+  assert.deepEqual(plain(u.status.sources.links), { docs }); assert.deepEqual(u.calls, []);
+  await u.click('settings'); assert.ok(u.get('settings-docs-picker').textContent.includes('Roadmap'), 'still managed in Settings');
+});
+
+// Removing the copied-link marker leaves the rest of the query exactly as written.
+for (const [name, card, link, visible] of [
+  ['a bare unknown field differs from an explicit empty value', `${destinationPage}?flag=`, `${destinationPage}?flag&source=copy_link`, true],
+  ['the same raw unknown query plus only the marker is the same destination', `${destinationPage}?flag=`, `${destinationPage}?flag=&source=copy_link`, false],
+  ['the same bare unknown field plus only the marker is the same destination', `${destinationPage}?flag`, `${destinationPage}?flag&source=copy_link`, false],
+  ['percent-encoded and plus-encoded values stay distinct', `${destinationPage}?q=a%20b`, `${destinationPage}?q=a+b&source=copy_link`, true],
+  ['the same percent-encoded value plus only the marker is the same destination', `${destinationPage}?q=a%20b`, `${destinationPage}?q=a%20b&source=copy_link`, false],
+]) test(`More links: ${name}`, async () => {
+  const docs = { title: 'Roadmap', target: link };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot(`## Destinations\n- [Roadmap](${card})`) });
+  assert.equal(overviewRows(u).length, 1); assert.equal(overviewRows(u)[0].title, card, 'the card keeps its exact target');
+  assert.equal(u.get('open-docs').title, link, 'the saved link keeps its exact target');
+  assert.equal(u.shown('open-docs'), visible);
+  if (visible) { await u.click('open-docs'); assert.deepEqual(u.links, [link], 'the saved link opens exactly as stored'); }
+  assert.deepEqual(plain(u.status.sources.links), { docs }); assert.deepEqual(u.calls, []);
+  await u.click('settings'); assert.ok(u.get('settings-docs-picker').textContent.includes('Roadmap'), 'still managed in Settings');
+});
+
+// A link without a qualified marker is compared exactly as classified, empty
+// delimiters included; an encoded second source field leaves the marker in place.
+for (const [name, card, link, visible] of [
+  ['an empty query delimiter is not erased', destinationPage, `${destinationPage}?`, true],
+  ['an empty fragment delimiter is not erased', destinationPage, `${destinationPage}#`, true],
+  ['an encoded second source field keeps the marker', `${destinationPage}?%73ource=other`, `${destinationPage}?source=copy_link&%73ource=other`, true],
+]) test(`More links: ${name}`, async () => {
+  const docs = { title: 'Roadmap', target: link };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot(`## Destinations\n- [Roadmap](${card})`) });
+  assert.equal(overviewRows(u).length, 1); assert.equal(overviewRows(u)[0].title, card, 'the card keeps its exact target');
+  assert.equal(u.get('open-docs').title, link, 'the saved link keeps its exact target');
+  assert.equal(u.shown('feedback'), false, 'no render error');
+  assert.equal(u.shown('open-docs'), visible);
+  if (visible) { await u.click('open-docs'); assert.deepEqual(u.links, [link], 'the saved link opens exactly as stored'); }
+  assert.deepEqual(plain(u.status.sources.links), { docs }); assert.deepEqual(u.calls, []);
+  await u.click('settings'); assert.ok(u.get('settings-docs-picker').textContent.includes('Roadmap'), 'still managed in Settings');
+});
+
+test('absolute path sources stay usable beside the saved model', async () => {
+  const docs = { title: 'Project reference', target: '/synthetic/project/reference' };
+  const u = await ui({ ...configured(), target: modelTarget }, saved({ docs }), { model: modelSnapshot() });
+  assert.equal(u.shown('feedback'), false, 'a valid saved absolute-path source must not cause a refresh/render error');
+  assert.equal(u.shown('open-docs'), true);
+  await u.click('open-docs');
+  // A folder path is never sent to the host link route; the panel shows its location, as before.
+  assert.deepEqual(u.links, []);
+  assert.equal(u.text('feedback-text'), docs.target); assert.equal(u.get('feedback').dataset.error, 'false');
+  assert.deepEqual(u.calls, []);
 });
 
 test('without a model, or for a folder context, shortcuts stay a plain open list with no toggle', async () => {

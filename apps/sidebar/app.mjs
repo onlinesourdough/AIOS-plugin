@@ -17,7 +17,7 @@ const connectable = ['not_connected', 'disabled', 'unavailable'];
 // the revisions they were read from; only an explicit reload replaces edits.
 let status, draft, checkedAt = -Infinity, firstStatus = true, saving = false, refreshing = false, stale = false;
 let onboarding = false, openStep = 0, other = false, confirmSwitch = false, settingsOpen = false, discardPrompt = false, confirmPointer = false;
-let message = { text: '', error: false }, groupsKey = '', shortcutsOpen = false;
+let message = { text: '', error: false }, groupsKey = '';
 let selectedContext = null;
 const canBrowse = () => Boolean(status?.features?.notionPages && status.notion.state === 'connected');
 // The last definite result that hides overview links. A failed, malformed or
@@ -216,7 +216,7 @@ function renderOverview(view, locked) {
     $('open-model').disabled = true; $('open-model').title = '';
     $('overview-facts').replaceChildren();
     paintNotes(['The saved overview needs attention and was left unchanged. Ask Setup to refresh it.']);
-    paintDetails([]);
+    paintDetails([]); $('overview-more').hidden = true; $('overview-partial').hidden = true;
     $('pointer-change').hidden = true; $('overview-groups').replaceChildren(); groupsKey = '';
     return;
   }
@@ -234,8 +234,13 @@ function renderOverview(view, locked) {
     name.className = 'fact-label'; name.textContent = label;
     item.append(name, document.createTextNode(value)); return item;
   }));
+  // The main view keeps problems that need action and one short partial notice
+  // beside the links; routine facts, counts and explanations live in About this overview.
   paintNotes([...view.notes, overviewHeld() ? 'The connection has not been confirmed since, so links stay hidden until Notion is connected again.' : '']);
   paintDetails([...view.details, view.changes]);
+  $('overview-more').hidden = false;
+  $('overview-partial').hidden = !view.readable || view.hidden || !(view.partial || !view.complete);
+  $('overview-why').disabled = locked;
   const offer = ['none', 'other'].includes(view.pointer) && view.readable;
   $('pointer-change').hidden = !offer && view.pointer !== 'blocked';
   $('pointer-text').textContent = view.pointer === 'blocked' ? 'Existing context instructions need attention, so the pointer cannot be saved here.'
@@ -280,17 +285,38 @@ function paintNotes(notes, box = 'overview-notes') {
     const note = document.createElement('p'); note.className = 'hint'; note.textContent = text; return note;
   }));
 }
-// Explanations of a usable overview sit one click away; the coverage fact stays visible.
-function paintDetails(details) {
-  paintNotes(details, 'overview-details');
-  $('overview-more').hidden = !details.some(Boolean);
-}
+// Explanations of a usable overview sit with its facts in About this overview.
+function paintDetails(details) { paintNotes(details, 'overview-details'); }
 // Primary is the context page itself; the row label never renames that page.
-// When the overview shows the saved model, earlier links stay as secondary
-// Saved shortcuts: only filled roles, still editable in Settings.
+// When the overview shows the saved model, earlier links become a compact
+// More links row: only filled roles, named by role, still editable in Settings.
+// A saved link that opens the same destination as a link already shown in the
+// model's cards is not repeated; never matched by name, and stored links are not
+// changed. Destinations match only when their URLs are identical apart from
+// Notion's copied-link decoration (a lone ?source=copy_link). Any other query or
+// fragment, such as a database view or a block, keeps them distinct; an
+// uncertain match stays visible.
+function linkIdentity(target) {
+  const route = classifyTarget(target);
+  if (!route) return target;
+  // A folder path, a non-Notion link or any link without a qualified marker is
+  // its own identity, exactly as classified; nothing is rebuilt or normalized.
+  const raw = route.target;
+  if (route.kind !== 'notion') return raw;
+  const hash = raw.indexOf('#'), end = hash < 0 ? raw.length : hash, start = raw.slice(0, end).indexOf('?');
+  if (start < 0) return raw;
+  // Only one literal source=copy_link, with no other source field even when its
+  // name is encoded, may be dropped. Every other query byte, delimiter and the
+  // whole fragment are kept from the original string.
+  const parts = raw.slice(start + 1, end).split('&');
+  if (parts.filter(part => part === 'source=copy_link').length !== 1 || new URL(raw).searchParams.getAll('source').length !== 1) return raw;
+  const rest = parts.filter(part => part !== 'source=copy_link');
+  return raw.slice(0, start) + (rest.length ? `?${rest.join('&')}` : '') + raw.slice(end);
+}
 function renderDashboard(locked, view) {
   const secondary = view?.pointer === 'saved';
   $('dashboard').dataset.secondary = String(secondary);
+  const shown = new Set(secondary ? view.groups.flatMap(group => group.links.map(link => linkIdentity(link.target))) : []);
   const context = status.sources.title || 'Context';
   sourceLabel($('context-meta'), displayed({ title: context, target: status.context.target }));
   $('open-context').title = status.context.target;
@@ -300,20 +326,16 @@ function renderDashboard(locked, view) {
   for (const role of sourceRoles) {
     const link = status.sources.links[role], row = $(`open-${role}`);
     sourceLabel($(`${role}-meta`), link ? { ...displayed(link), title: link.title === roleLabels[role] && !notionPageId(link.target) ? shortTarget(link.target) : link.title } : { title: 'Add' });
+    row.children[0].textContent = secondary ? roleLabels[role] : slotLabels[role];
     row.title = link?.target || '';
     row.dataset.empty = String(!link);
-    row.hidden = secondary && !link;
+    row.hidden = secondary && (!link || shown.has(linkIdentity(link.target)));
     row.disabled = locked || status.sources.state === 'unavailable';
     row.setAttribute('aria-label', link ? `Open ${roleLabels[role]}: ${link.title}` : `Add ${roleLabels[role]}`);
   }
   const sections = [...$('dashboard').querySelectorAll('section')];
   for (const section of sections) section.hidden = ![...section.querySelectorAll('.row')].some(row => !row.hidden);
-  // Beside the saved model, shortcuts are secondary: collapsed until opened, with
-  // the same rows, targets and Settings editing.
   $('shortcuts-title').hidden = !secondary || sections.every(section => section.hidden);
-  $('shortcuts-toggle').setAttribute('aria-expanded', String(shortcutsOpen));
-  $('shortcuts-toggle').disabled = locked;
-  $('shortcuts-list').hidden = secondary && !shortcutsOpen;
 }
 function renderSettings(locked) {
   const dirty = isDirty(draft);
@@ -530,7 +552,8 @@ for (const id of ['reload-draft', 'drawer-reload']) $(id).addEventListener('clic
 $('open-context').addEventListener('click', () => open(status.context.target));
 $('open-model').addEventListener('click', () => { const view = currentView(); if (view?.target) open(view.target); });
 $('save-pointer').addEventListener('click', savePointer);
-$('shortcuts-toggle').addEventListener('click', () => { shortcutsOpen = !shortcutsOpen; render(); });
+// The partial notice's Details opens the one place that explains it.
+$('overview-why').addEventListener('click', () => { $('overview-more').open = true; $('overview-more-summary').focus(); });
 for (const role of sourceRoles) $(`open-${role}`).addEventListener('click', () => {
   const link = status.sources.links[role];
   return link ? open(link.target) : openSettings(role);

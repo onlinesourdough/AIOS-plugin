@@ -195,6 +195,25 @@ Setup saves the overview again. Results for the current source are in its CI run
 lead's check record, not here. The synthetic browser fixture is not native proof, and this
 layout has not been installed or checked in the app.
 
+That repaired version, `b47dbcf`, was accepted by independent review and passed CI, but
+was not installed. On 2026-10-20 the owner reviewed its browser renders: the cards were
+useful, but connection, pointer, revision, save time, coverage and the shortcut
+disclosure crowded the navigation. A following source candidate leads with the cards,
+keeps only actionable problems and one "Some links may be missing" notice in the main
+view, moves the routine facts into one closed Model details disclosure, and turns
+populated shortcuts into a compact row that does not repeat a model link to the same
+page. The label rule above is unchanged. This candidate's checks, renders and review are
+recorded with its CI run and the lead's check record; it has not been installed.
+
+An independent review of that candidate returned REVISE: its rule for a repeated
+shortcut compared only Notion page identity, so a saved link to a block or a different
+database view on a page shown in the cards was hidden. The repair treats links as the
+same destination only when they are identical apart from Notion's copied-link marker,
+and adds a regression for each reviewer witness. The owner also renamed the two labels:
+the shortcut row is now More links and the closed disclosure is About this overview.
+This repair's checks and review are recorded with its CI run and the lead's check record;
+it has not been installed.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged

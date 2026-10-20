@@ -23,14 +23,14 @@
       </div>
       <button id="open-model" class="btn btn-secondary cursor-interaction" type="button">Open in Notion</button>
     </div>
-    <ul id="overview-facts" class="facts"></ul>
     <div id="overview-notes"></div>
-    <details id="overview-more" class="overview-more" hidden><summary class="cursor-interaction">About this overview</summary><div id="overview-details"></div></details>
     <div id="pointer-change" class="pointer-change" hidden>
       <p id="pointer-text"></p>
       <div class="step-actions"><button id="save-pointer" class="btn btn-primary cursor-interaction" type="button">Save pointer</button></div>
     </div>
+    <p id="overview-partial" class="overview-partial" hidden><span>Some links may be missing.</span> <button id="overview-why" class="link-button cursor-interaction" type="button" aria-controls="overview-more">Details</button></p>
     <div id="overview-groups" class="overview-groups"></div>
+    <details id="overview-more" class="overview-more" hidden><summary id="overview-more-summary" class="cursor-interaction">About this overview</summary><ul id="overview-facts" class="facts"></ul><div id="overview-details"></div></details>
   </section>
 
   <form id="setup" hidden novalidate>
@@ -78,7 +78,7 @@
   </form>
 
   <div id="dashboard" hidden>
-    <h2 id="shortcuts-title" class="shortcuts-title" hidden><button id="shortcuts-toggle" class="disclosure cursor-interaction" type="button" aria-expanded="false" aria-controls="shortcuts-list">Saved shortcuts</button></h2>
+    <h2 id="shortcuts-title" class="shortcuts-title" hidden>More links</h2>
     <div id="shortcuts-list">
     <section aria-labelledby="context-title"><h2 id="context-title">Context</h2>
       <button id="open-context" class="row cursor-interaction" type="button"><span class="row-title">Primary</span><span id="context-meta" class="row-meta"></span></button>

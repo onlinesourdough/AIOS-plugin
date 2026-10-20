@@ -13,9 +13,13 @@ Not released or installed; part of issue #58, which is not complete.
   uses the model's own title once and shows each of its sections as a card. A
   role-labelled row whose page has the same name is shown once; names that differ
   in any meaningful character keep both, and snapshots saved before this change
-  keep their stored names until Setup saves the overview again. The source
-  revision is shown apart from when the snapshot was saved. Earlier Docs, Skills and Memory links remain as Saved shortcuts,
-  collapsed beside the model; a fresh model setup adds none. The overview is
+  keep their stored names until Setup saves the overview again. The main view
+  shows the cards, problems that need action and, when links may be incomplete,
+  one short notice; connection, pointer, source revision, save time and coverage
+  are in a closed About this overview disclosure. Earlier Docs, Skills and Memory
+  links appear as a compact More links row beside the model, without repeating a
+  model link to exactly the same destination (a different view or block stays);
+  a fresh model setup adds none. The overview is
   navigation, not a live view.
 - Setup and Context guidance describes a new Notion home as a private AIOS page
   with an AI Operating Model child and only the Soul, About, Memory and Skills

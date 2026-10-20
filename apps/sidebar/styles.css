@@ -107,15 +107,21 @@ h1:focus, .drawer-head h2:focus { outline: none; }
 .facts { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12px; color: var(--aios-muted); }
 .facts li { display: flex; flex-wrap: wrap; column-gap: 8px; overflow-wrap: anywhere; }
 .fact-label { min-width: 112px; color: var(--aios-text); }
-/* In the overview, facts flow as one wrapping line of short label–value pairs. */
-#overview-facts { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 10px; }
-#overview-facts .fact-label { min-width: 0; }
-#overview-facts .fact-label::after { content: ':'; }
 #overview-notes .hint:first-child { margin-top: 10px; }
-.overview-more { margin-top: 8px; font-size: 12px; color: var(--aios-muted); }
-.overview-more summary { width: fit-content; border-radius: 6px; cursor: pointer; }
+/* One short notice beside the links when they may be incomplete; the specifics
+   are in About this overview. */
+.overview-partial { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; margin: 16px 0 -8px; font-size: 13px; color: var(--aios-muted); }
+.link-button { min-height: 24px; padding: 0 4px; border: 0; border-radius: 6px; background: transparent; color: var(--aios-text); font: inherit; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.link-button:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
+/* About this overview: the single secondary place for connection, pointer,
+   revision, save time, coverage and explanations. Closed by default, below the cards. */
+.overview-more { margin-top: 16px; font-size: 12px; color: var(--aios-muted); }
+.overview-more summary { width: fit-content; padding: 2px 4px; margin-left: -4px; border-radius: 6px; cursor: pointer; }
+.overview-more summary:hover { color: var(--aios-text); }
 .overview-more summary:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
 .overview-more .hint { margin: 6px 0 0; }
+#overview-facts { margin-top: 8px; }
+#overview-facts li { padding: 1px 0; }
 .overview-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-top: 20px; }
 .overview-card { min-width: 0; padding: 10px 8px 8px; border: 1px solid var(--aios-line); border-radius: 12px; }
 .overview-card h3 { margin: 0 8px 4px; font-size: 12px; font-weight: 600; color: var(--aios-muted); overflow-wrap: anywhere; }
@@ -126,13 +132,15 @@ h1:focus, .drawer-head h2:focus { outline: none; }
 .pointer-change { margin-top: 16px; padding: 12px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; }
 .pointer-change p { margin: 0; }
 .pointer-change .step-actions { margin-top: 12px; }
-#dashboard .shortcuts-title { margin: 0 0 4px; font-size: 13px; font-weight: 600; color: var(--aios-muted); }
-.disclosure { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin-left: -8px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; color: inherit; font: inherit; cursor: pointer; }
-.disclosure::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
-.disclosure[aria-expanded="true"]::before { transform: rotate(45deg); }
-.disclosure:not(:disabled):hover, .disclosure:focus-visible { background: var(--aios-hover); color: var(--aios-text); }
-.disclosure:focus-visible { outline: none; box-shadow: 0 0 0 1.5px var(--aios-line-strong); }
-#dashboard[data-secondary="true"] section h2 { margin: 16px 0 4px; font-size: 13px; font-weight: 500; }
+#dashboard .shortcuts-title { margin: 0 0 10px; font-size: 12px; font-weight: 600; color: var(--aios-muted); }
+/* Beside the saved model, More links is one compact wrapping row of chips, each
+   named by its role. Their section headings give way to that role label. */
+#dashboard[data-secondary="true"] #shortcuts-list { display: flex; flex-wrap: wrap; gap: 8px; }
+#dashboard[data-secondary="true"] #shortcuts-list > section { display: contents; }
+#dashboard[data-secondary="true"] #shortcuts-list section h2 { display: none; }
+#dashboard[data-secondary="true"] section .row { width: auto; max-width: 100%; min-height: 32px; margin: 0; padding: 4px 12px; gap: 8px; border: 1px solid var(--aios-line); border-radius: 999px; }
+#dashboard[data-secondary="true"] .row .row-title { font-size: 12px; font-weight: 400; color: var(--aios-muted); }
+#dashboard[data-secondary="true"] .row .row-meta { max-width: none; margin-left: 0; font-size: 13px; color: var(--aios-text); }
 
 .feedback { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; margin-top: 24px; padding: 4px 4px 4px 14px; border-radius: 10px; background: var(--aios-hover); font-size: 13px; overflow-wrap: anywhere; }
 .feedback[data-error="true"] { color: var(--aios-danger); }
