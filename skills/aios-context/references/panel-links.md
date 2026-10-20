@@ -5,7 +5,8 @@ Notion connector owns remote reads and writes. The map contains only a context
 title and source names/links, never documents, skills, memories, credentials,
 permissions or company policy. It is not a context home or synchronization.
 
-These links are optional Saved shortcuts. A fresh setup from an AI Operating
+These links are optional Saved shortcuts, shown beside a saved model's
+overview as More links. A fresh setup from an AI Operating
 Model needs none: Setup uses the selected model, the pointer and the
 [overview](#operating-model-overview), and registers no Docs, Skills or Memory
 role map. Use the steps below only to maintain Saved shortcuts that already
@@ -57,7 +58,7 @@ The panel shows the selected AI Operating Model's own source groups from a
 dated snapshot, never a live read. Refresh it only when the person selects a
 model or asks for a refresh during Setup or Settings work:
 
-1. Fetch only the selected model page through the official Notion connection.
+1. Fetch only the selected model page through the existing Notion connection.
    Do not fetch its linked destinations.
 2. Call `aios_save_model_overview` with the model `target`, its page `title`,
    a `revision` label when the connector reports one (such as last edited

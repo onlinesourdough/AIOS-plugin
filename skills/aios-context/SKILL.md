@@ -2,7 +2,7 @@
 name: aios-context
 description: Manage the chosen context home for setup, relevant retrieval, durable updates or a context audit. Keep independent repository work local.
 metadata:
-  version: "1.8.0"
+  version: "1.9.0"
 ---
 
 # AIOS:context

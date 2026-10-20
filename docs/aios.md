@@ -15,16 +15,18 @@ infrastructure and delivery configuration.
 
 AIOS means AI Operating System: the shared method and your chosen context home.
 The home's **AI Operating Model** is the complete, user-owned contract for where
-context lives and how agents read and maintain it. For a new Notion home it is
-an ordinary child of a private **AIOS** page, beside only the useful Soul,
-About, Memory and Skills destinations. Existing workspaces keep their own
-structure and names; an existing guide is reused by identity, not by title.
-Another connected agent can follow the model without installing AIOS.
+context lives and how agents read and maintain it. Setup follows Notion's
+official setup guide, recording the version it adopted apart from the model's
+own revision. For a new Notion setup the model is a page in a private document
+database; a small AIOS home page can link to it as navigation. Soul, Spaces and
+imports are optional. Existing workspaces keep their own structure and names;
+an existing guide is reused by identity where it is, not by title. Another
+connected agent can follow the model without installing AIOS.
 
 In Codex, open **AIOS** in the sidebar. It shows a dated overview of the
 selected model's own source groups, saved from Setup, and saves the host
 pointer only when you choose Save pointer. Earlier Docs, Skills and Memory links
-remain as optional Saved shortcuts. Clicks open destinations or save links
+remain as optional More links. Clicks open destinations or save links
 directly; they never send a chat message. A saved pointer or link does not
 prove remote access, native Skills or Memory, or that an agent loaded the model.
 
@@ -35,8 +37,8 @@ Audience and Space are not access control.
 
 [Context](../skills/aios-context/SKILL.md) owns the common home contract and selects
 one provider. The host keeps a short pointer to the model; the agent reads it
-once per session for context-dependent work, plus a selected Soul, then only
-relevant sources and personal methods. Notion is preferred for solo founders,
+once per session for context-dependent work, plus a Soul only if the model
+lists it as standing context, then only relevant sources and personal methods. Notion is preferred for solo founders,
 business leaders and small teams. Memory stays one canonical store; native
 Memory and Skills are used only as the current connection actually supports.
 Start with one useful workflow in an existing workspace; no wholesale migration

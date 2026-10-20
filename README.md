@@ -69,43 +69,42 @@ one useful task with you. Installing the plugin alone changes none of this.
 
 ## How it fits together
 
-For a new Notion home, Setup creates a private page named **AIOS**. Its child,
-the **AI Operating Model**, tells connected agents where your information lives
-and how to read and maintain it. The other pages hold collaboration preferences,
-a short profile, durable memory and your own methods, created only when useful.
+**AIOS** is the plugin and your home. Your **AI Operating Model** is the one
+guide you approve: where your information lives and how agents read and
+maintain it. Setup follows Notion's official setup guide, records which version
+it used, and keeps your model's own revision separate. For a new Notion setup
+the model is a page in a private document database, and a small AIOS home page
+can link to it; an existing guide stays where it is. Nothing is moved just to
+fit a diagram.
 
 ```mermaid
 flowchart TB
-  Host["Agent host<br>Codex · Claude · other connected agents"]
-  Instructions["Persistent host instructions<br>A short pointer to the model"]
-  Plugin["AIOS plugin<br>Reusable methods and setup"]
-  Host --> Instructions
-  Instructions --> Model
-  Plugin -. supports .-> Model
-  subgraph Vault["AIOS"]
-    direction TB
-    Model["AI Operating Model<br>Routes and working rules"]
-    Soul["Soul<br>Collaboration preferences"]
-    About["About<br>Short owner profile"]
-    Memory["Memory<br>Facts, decisions and lessons"]
-    Skills["Skills<br>Personal and team methods"]
-    Model --> Soul
-    Model --> About
-    Model --> Memory
-    Model --> Skills
-  end
-  Model --> Work["Existing work systems<br>Tasks · Projects · GitHub"]
-  Model --> Outputs["Existing knowledge and outputs<br>Docs · project files · artifacts"]
+  Setup["AIOS Setup"] -. "uses upstream recipe" .-> Upstream["Official Notion setup guide"]
+  Setup --> Model["AI Operating Model: approved rules and routes"]
+  Host["Short persistent host pointer"] --> Model
+  Home["AIOS home in Notion: navigation"] --> Model
+  Model --> Context["Selected About, Memory and relevant Skills"]
+  Model --> Work["Existing Tasks, Projects, Docs and Meetings"]
+  Model -. "explicit source groups" .-> Panel["Plugin dashboard: dated overview and links"]
 ```
 
-This layout is what the setup methods describe for a new Notion home. Whether
-your Notion connection supports native Memory and Skills, and how a given app
-follows the pointer, are checked during setup rather than assumed. Existing
-workspaces keep their structures and names; Memory, About or Skills can stay
-where they already live and be linked from the model.
+Arrows show references and responsibilities, not containment or shared access.
+Soul, Spaces and imports are optional. Setup reuses your existing Tasks,
+Projects, Skills and meeting notes before creating anything, and uses Notion's
+own database types when something is really missing. Whether your connection
+supports native Memory and Skills, and how a given app follows the pointer, are
+checked during setup rather than assumed.
+
+Your skill pages stay where they are; in Notion you enable them for yourself in
+**Library**, and that never grants anyone page access. Agents use Notion through
+a connection: in Codex, the official Notion plugin, or a direct connection to
+Notion's hosted MCP server. Setup checks which tools the connection on your
+actual machine can call, reuses one that works, and offers the direct
+connection only when a needed tool such as skill discovery is missing.
 
 Agents read the model once per session for work that uses your context, plus
-Soul if you chose one, then only the sources the task needs. Independent
+Soul only if the model lists it as standing context, then only the sources the
+task needs. Independent
 repository work starts from its own instructions instead. Lessons belong in
 Memory; artifacts stay with the documents or projects that own them; task
 systems keep live status. Another connected agent can follow the same model

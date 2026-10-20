@@ -214,6 +214,27 @@ the shortcut row is now More links and the closed disclosure is About this overv
 This repair's checks and review are recorded with its CI run and the lead's check record;
 it has not been installed.
 
+The dashboard at `2488495` was later installed on the owner's Mac. From one save of the
+same retained export, with no new Notion read, its native panel showed the model's three
+groups and eleven links, the partial notice and About this overview; More links was
+correctly absent because every saved link was already in the model's cards. That was one
+dark native panel at 1200 by 1221 pixels with a synthetic pointer; other native widths,
+trusted keyboard and assistive-technology use, a full useful task and release were not
+checked. On 2026-10-20 the owner's official Codex Notion
+connection read pages but did not offer the enabled-skills tools in that chat, although
+its app metadata listed them; a separately signed-in direct connection to Notion's hosted
+MCP offered them and returned the selected MCP skills, and the owner's direct connection
+on another host later completed skill discovery too. The cause is not known, so this is
+evidence about particular connections, not a rule about the plugin. A following source
+change brings Setup, Context, Manage Skills and Update guidance in line with the accepted
+#58 architecture and #65 native-database requirements: the AIOS home as navigation, the
+model's placement and setup-guide version, optional Soul and Spaces, native database types
+and My Tasks, Meetings and plan limits, Library and skill enablement, and the connection
+check on the execution host. Its qualification is tracked in #58 and the draft pull
+request; no check result for it is recorded here. These are method sources; no Notion
+database, Library setting, sign-in, Memory save, meeting setting or fresh-session use has
+been exercised for them.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged

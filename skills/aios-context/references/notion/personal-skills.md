@@ -32,9 +32,12 @@ For creation or promotion to Current, use the approved owner's mapping and the
    upload/download tools when actually exposed; advertised account access alone
    is not callable capability. Preserve descriptions, owners, scope, source
    versions, child references and files.
-   Reuse an existing native Skills home. For an authorized new collection, use
-   the supported canonical Skills database type, preserving its native fields;
-   add only useful owner metadata. A Docs Type tag alone is not this collection.
+   Reuse an existing native Skills home, resolved by identity. For an authorized
+   new collection, use the supported native Skills type (`database_type:
+   "skills"` where the connection offers it, under the
+   [native database contract](schema-and-templates.md#native-databases-and-meetings)),
+   preserving its native fields; add only useful owner metadata. A Docs Type tag
+   or a database named Skills alone is not this collection.
    On relocation, move the existing pages rather than duplicate their methods.
    Verify property mapping, native status, automatic-use policy, children and
    attachments, then repair guide/view routes before retiring the old view.
@@ -59,13 +62,32 @@ For creation or promotion to Current, use the approved owner's mapping and the
 
 ## Discovery and execution
 
+The real sequence is: an existing skill source page → native skill designation
+→ visibility in Notion's Library → enabled for the person and the intended
+surface → discovered when the connection can call discovery → loaded when
+relevant → executed within the user's request and available tools. Skill pages
+stay in their source; pages created in a native Skills database are designated
+automatically, keeping their descriptions and files. Library is Notion's own
+surface over those sources, reached in the current UI from the sidebar's
+Library menu → Skills; point people there and build no second activation
+interface.
+
 Before claiming native behavior, read the current `notion://docs/skills`
 guidance and the tool catalog the connection actually exposes. Report these as
 separate states: native skill designation, enablement for the selected user,
 automatic-use setting, page access, discovery through the connection, native
 invocation, available references and resources, and a local export or
 execution copy. One does not prove another, and Notion's own documentation does
-not prove what an external connection exposes.
+not prove what an external connection exposes. The `mcp` and `notion_ai`
+surfaces can have different enabled sets, so a count in a Notion AI view does
+not show MCP enablement.
+
+Notion permissions decide who can read, edit or share a skill page, including
+access inherited from a parent, the workspace or a team; a restrictive-looking
+view or a private-sounding label does not remove a broader grant. A connection
+acts only within its signed-in identity's access. Enabling a skill grants
+neither page access nor any extra authority, and each coworker needs their own
+access, sign-in and enablement.
 
 When `notion-get-enabled-skills` is exposed, use it at session start to find
 enabled skills. Enablement is per user and separate from designation. Where a
@@ -81,8 +103,11 @@ establishes only the state it actually shows. “Use automatically” lets the p
 it does not run, schedule or install it in another host. Sessions already
 running keep the skills they started with; do not force a restart or new chat.
 
-When enabled-skill, enablement, download or search tools are absent, say so.
-Ordinary search or fetching the exact skill page and its required references
+When enabled-skill, enablement, download or search tools are absent, say so,
+naming the connection and host; another connection on the same or another host
+may expose them, so follow Setup's
+[connection check](setup.md#connection-for-native-skills-discovery) before
+concluding. Ordinary search or fetching the exact skill page and its required references
 from the model's list still works, but it is a page fallback, not native
 enabled discovery, and it creates no installed skill in Codex or another host. Never fabricate a call or claim
 slash-command discovery for page-only skills. Record which route the owner's

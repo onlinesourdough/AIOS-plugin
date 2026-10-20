@@ -21,18 +21,27 @@ Not released or installed; part of issue #58, which is not complete.
   model link to exactly the same destination (a different view or block stays);
   a fresh model setup adds none. The overview is
   navigation, not a live view.
-- Setup and Context guidance describes a new Notion home as a private AIOS page
-  with an AI Operating Model child and only the Soul, About, Memory and Skills
-  pages the owner chooses, while existing workspaces and guides are reused by
-  identity. Context 1.8.0 adds guidance for one canonical Memory resolved by
-  identity, native creator and editor fields, step-by-step schema readback, and
-  reporting native Skills discovery separately from the exact-page fallback.
+- Setup and Context guidance treats AIOS as the product and home and the AI
+  Operating Model as the one approved guide. Setup follows Notion's official
+  setup guide, records its adopted version apart from the model's revision, and
+  for a new setup stores the model in a private document database, with an
+  optional AIOS home page for navigation; existing guides and sources are reused
+  by identity where they are. Soul, Spaces and imports are optional. Context 1.9.0
+  adds guidance for one canonical Memory resolved by identity, native creator and
+  editor fields, step-by-step schema readback, native Tasks, Projects and Skills
+  database types (reused before created), My Tasks source selection, the Meetings
+  destination and plan limits, Library and per-surface skill enablement, and a
+  connection check on the actual execution host that reuses a working Notion
+  connection and offers Notion's hosted MCP only when skill discovery is missing.
   Whether a connection supports native Memory or Skills is checked, not assumed.
 - The host pointer template is shorter and portable: another connected agent can
   follow the model without AIOS. Existing pointers keep their wording.
-- Check 2.3.0 covers context-home health without changes; Update 2.0.4 no longer
-  advertises optional specialists. Maintain Context 1.4.1 keeps lessons in Memory
-  and changes About, Soul or the model only within their authority.
+- Check 2.3.0 covers context-home health without changes; Update 2.0.5 no longer
+  advertises optional specialists and reconciles a newer upstream setup guide
+  without resetting customized rules. Maintain Context 1.4.1 keeps lessons in
+  Memory and changes About, Soul or the model only within their authority.
+  Manage Skills 1.3.2 routes Notion skills through Library and discovery states;
+  Setup 1.9.1 describes the current dashboard.
 - The README is shorter, with the current install routes and all 22 skills.
 
 ## 0.29.0 — 2026-10-13

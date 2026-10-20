@@ -2,7 +2,7 @@
 name: aios-update
 description: Update or roll back a reviewed AIOS package or a selected System.
 metadata:
-  version: "2.0.4"
+  version: "2.0.5"
 ---
 
 # AIOS:update
@@ -53,7 +53,9 @@ Under existing exact installation authority, use supported native actions for
 only the accepted package/registration changes. Leave owner data and custom
 skills untouched unless a separately reviewed migration explicitly includes
 those paths. A customized operating model, Soul or personal skill is never
-regenerated because a newer template exists. Acquiring a new skill or
+regenerated because a newer template or upstream setup guide exists; reconcile
+a new upstream guide version deliberately, keeping the model's own revision and
+local rules. Acquiring a new skill or
 specialist is a [Manage Skills](../aios-manage-skills/SKILL.md) change. Do not edit caches, native databases or the entire settings file.
 Respect app-control denials and current native permissions.
 

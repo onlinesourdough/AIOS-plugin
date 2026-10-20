@@ -37,6 +37,8 @@ Keep technical identity, provenance and import metadata in page details.
 | Native Skills | Native name, Description and supporting files; Space, Status, Audience, Owner, Key and Source | Personal and team methods |
 | Native Memory | The provider's fields: Type, Source, Last updated by | Durable facts, decisions, corrections and lessons |
 | Existing custom Memory | Title, Space, Status, Key, Evidence and known source date | The same role while it stays canonical |
+| Native Tasks or Projects | The native type's canonical properties, such as status, assignee and due date, plus useful local fields | Actual work; live state stays on the record |
+| Meetings | The workspace's default meeting-notes destination | Meeting notes; AI recording and summaries are separate |
 
 Suggested Docs Type values: Context (reusable facts/constraints), Source (an
 original business reference), Document (a plan, proposal, research or other
@@ -127,6 +129,66 @@ for a useful record relationship, such as Memory's Related docs pointing to the
 Docs a decision affects. Resolve exact page IDs; matching titles or Space names
 is not a foreign-key relationship. Links do not synchronize source systems.
 
+## Native databases and Meetings
+
+Five things stay separate: a database's native type; its page templates and
+default template; native skill designation on a page; a person's enabled skills
+and automatic-use setting; and permissions, connector capabilities and actual
+execution. Evidence for one is not evidence for another.
+
+**Resolve before creating.** Find the existing destination through the model,
+the selected home and relevant schemas, and reuse it by database and data-source
+identity, including a renamed, translated or differently placed one. A similar
+title or matching columns does not prove native type, and fetched schema or
+views may not show it: use supported metadata or the native UI, and when the
+connection cannot establish it, say so and resolve only the ambiguity that
+matters. Preserve ownership and sharing.
+
+**Create only what an authorized setup needs.** When the connection's
+`notion-create-database` accepts a `database_type`, a missing Tasks, Projects or
+Skills database uses `database_type: "tasks"`, `"projects"` or `"skills"`.
+That option replaces a custom `schema`; never pass both. These are type values,
+not shared database IDs: read back the created database, its data source and
+its canonical properties, then add only useful authorized fields. Record the
+returned identities in the model so a rerun reuses them. Do not create a suite
+of empty databases because the types exist. Typed creation is not conversion:
+an existing populated database keeps its rows, IDs, fields, statuses, relations,
+views and sharing, and converting it is a separate, scoped, recoverable step
+used only through a supported in-place path. If none is available, keep the
+approved source and state the limit. An uncertain or partly completed creation
+is inspected before any retry.
+
+**Tasks and My Tasks.** An empty My Tasks is not evidence that the task database
+lacks native type. Check, in order: the source's identity and native state with
+its mapped status, assignee and due-date fields; whether the person selected
+that source under My Tasks (Configure your task sources, or its current
+equivalent), which is separate from database type and views; and whether rows
+meet that person's assignee and active-status filters. Select the existing
+source rather than creating a database, a linked copy or a conversion. Change an
+assignee or status only for the person's intended assignment; never assign,
+reopen or recreate tasks just to fill the view. A solo owner can assign tasks to
+themselves while asking agents to do the work; connecting Codex or Claude Code
+creates no Notion person, and an assignee does not start an agent. Exclude
+trashed records from active counts and never restore one as an incidental fix;
+when a query disagrees with the page or view, reconcile before editing or
+reporting. Verify that the same records then appear with their IDs and fields.
+
+**Meetings.** There is no `meetings` database type. Reuse the workspace's
+default meeting-notes destination, set in Notion's settings (Notion AI, Default
+meetings database, or the current equivalent); if that setting is UI-only,
+explain it and verify it by supported means. A current-user meeting-notes tool
+may exist and may require Notion AI. Storing and opening notes is separate from
+AI recording, transcription and summaries.
+
+**Plans and limits.** Basic setup, context and skills work must stay useful on
+the capabilities the current connection actually has, including Free or
+education plans with an external agent. Check real restrictions rather than
+assuming every tool is available or paid. AI Meeting Notes and AI search may
+need eligible paid access or a limited trial, and a daily cap is not a free
+allowance. An external agent's own subscription is separate. A missing premium
+feature is reported where relevant and never blocks unrelated work or forces an
+upgrade.
+
 ## Native templates for humans and agents
 
 Reuse useful templates. Suggested additions, only where missing:
@@ -146,7 +208,9 @@ Set a sensible default template through supported controls; keep template
 repetition off unless recurring work was explicitly requested.
 
 Database templates are native entries in the New menu, not sample documents
-labelled as templates. Use the UI if the connector cannot create/register them.
+labelled as templates; they are not the database's native type. Resolve template
+IDs from the selected database itself and use its default template where
+appropriate. Use the UI if the connector cannot create/register them.
 Verify registration, defaults and an instantiated record before claiming that
 workflow works. Application may be asynchronous; wait for readback, not merely a
 successful create response. If it remains unpopulated, retain that draft and use

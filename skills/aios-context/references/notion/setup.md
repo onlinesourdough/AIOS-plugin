@@ -5,13 +5,17 @@ Notion holds company knowledge and personal/team skills; the harness supplies to
 and permissions. Code and operational records keep their existing source.
 No server, custom MCP, database service or local owner folder is required.
 
-Read the complete current [Notion setup guide](https://developers.notion.com/prompts/setup)
-and the relevant Skills documentation it links. Before a native Memory or
-Skills operation, also read the current `notion://docs/memory` or
-`notion://docs/skills` resource and the actual tool catalog the connection
-exposes. A guide describes a contract; it is not a callable tool or a grant.
-Record the applied versions and date; a newer remote guide is a review input,
-not authority to replace policy. Claims about native behavior rest on what the
+The official [Notion setup guide](https://developers.notion.com/prompts/setup) is
+the upstream recipe Setup follows. Read it in full during setup or a deliberate
+update, not every session, along with the relevant Skills documentation it
+links; if it cannot be read, say so and do not claim it was followed. Record its
+adopted version and link, and any local deviations, in the model; that is
+separate from the model's own revision. A newer upstream version is a review
+input: reconcile it deliberately and never overwrite customized rules or reset
+an existing setup. Before a native Memory or Skills operation, also read the
+current `notion://docs/memory` or `notion://docs/skills` resource and the
+actual tool catalog the connection exposes. A guide describes a contract; it is
+not a callable tool or a grant. Claims about native behavior rest on what the
 current provider exposes, not on this procedure.
 Use [operating boundaries](operating.md) throughout the setup.
 
@@ -21,10 +25,11 @@ AIOS Setup leads this route. Accept an ordinary request such as
 “Use AIOS Setup to set up my Notion; start at [URL].” Stay in this flow; the owner
 need not invoke Context, Manage Skills or Check separately.
 AIOS and the official Notion plugin are separate. Use native installation,
-enablement and connection status plus available tools; do not create a second MCP, login page,
-token store or connection tracker. If status is unavailable, say unknown and
-try the selected page through the existing tool. An installed plugin is not
-proof of a connection, and a connection is not proof of page access.
+enablement and connection status plus available tools; AIOS ships no Notion
+server, login page, token store or connection tracker. If status is unavailable,
+say unknown and try the selected page through the existing tool. An installed
+plugin is not proof of a connection, and a connection is not proof of page access.
+For native Skills discovery, follow [the connection check](#connection-for-native-skills-discovery).
 
 | Observed state | Next action |
 | --- | --- |
@@ -34,6 +39,51 @@ proof of a connection, and a connection is not proof of page access.
 | Connected, selected page denied or missing | Explain the specific page/access gap. Keep the chosen home; do not reconnect, switch accounts or create a replacement automatically. |
 | Read works, writes unavailable | Continue discovery and prepare the concrete changes; hold writes and report the access needed. |
 | Setup already exists | Check its routes and the requested gap; preserve IDs, wording and the existing pointer. |
+
+### Connection for native Skills discovery
+
+Check the host that will actually do the work: its connected identity and
+workspace, and the tools callable in that chat. A desktop connection says
+nothing about a remote machine's configuration, sign-in or tools. Inspect only
+the relevant host configuration, keep unrelated settings, and never read, copy,
+print or move credentials.
+
+1. **Reuse a working connection.** If the current Notion connection, from the
+   official plugin or an existing direct one, can call
+   `notion-get-enabled-skills` and a read-only call succeeds, use it. Do not add
+   another server, rename a working one or start a new sign-in.
+2. **Name a missing capability precisely.** Plugin metadata, a Connected badge
+   or a successful sign-in does not mean a tool is callable; one connection can
+   read pages while lacking discovery. Ordinary reads stay useful; say exactly
+   which tool is missing on which connection. Do not assume the gap is
+   permanent or diagnose its cause.
+3. **Offer the supported direct path when needed.** Notion's hosted MCP endpoint
+   `https://mcp.notion.com/mcp` can be connected directly. In Codex, within the
+   existing setup authority, that is `codex mcp add <unused-name> --url
+   https://mcp.notion.com/mcp`, then `codex mcp login <name>`; reuse an existing
+   server for that endpoint instead of adding a duplicate. Keep the official
+   plugin and its skills. Notion's CLI and its deprecated local MCP server are
+   not needed for this.
+4. **Sign-in is its own step.** The person approves it in the browser for the
+   intended identity and workspace. Give the exact action when it is pending.
+   Never move tokens between machines, act as another account, enable extra
+   skills or widen access to pass a check.
+5. **Refresh without disruption.** Prefer the host's supported refresh that keeps
+   current work running. Do not stop an app server, restart other agents or ask
+   for a new chat by default; if the host truly needs a later session, say so
+   and leave the timing to the person. A command-line configuration is not
+   proof that an open desktop chat can use the tool.
+6. **Verify in the target chat.** Confirm the identity, that
+   `notion-get-enabled-skills` is callable there, and read its result for the
+   MCP surface. An empty result shows discovery works, not that any skill is
+   enabled. Loading and using a relevant skill is separate proof.
+
+Report each state on its own, with host and time and no credentials:
+connection configured; sign-in pending, denied or done; tool exposed, missing
+or failing; discovery verified or failed; approved fallback in use. None of
+them, nor a saved pointer, is a general "ready". When discovery stays
+unavailable, use the model's exact Skills route as the stated fallback; it is
+not enabled-skill discovery.
 
 The owner signs in through the host; never ask for credentials in chat.
 Check only capabilities needed for this setup and do not write a throwaway page
@@ -67,19 +117,32 @@ Skills, document and work destinations and the host's instruction mechanism by
 reading narrowly; do not harvest chats or build an inventory. Show the concrete
 reuse/create/change decision before writing.
 
-For a new Notion home, create an ordinary private parent page **AIOS** with an
-ordinary child **AI Operating Model** from the [model template](../../assets/notion-aios.md),
-plus only the useful destinations the owner selects: Soul (only from chosen
-collaboration preferences; no placeholder), About, Memory and Skills. The parent
-is navigation; the pointer targets the model. An existing workspace keeps its
-names, IDs, structure, work systems and private/team boundaries. Identify an
-existing guide by role and ID, even if it is titled AIOS, and reuse it; a title
-never proves a missing page or justifies a duplicate. No Documents database is
-created just to hold the guide. Move a resource only when its identity,
+AIOS is the product and the owner's home; the **AI Operating Model** is the
+one approved guide, built from the [model template](../../assets/notion-aios.md),
+and the host pointer targets it directly. For a new setup, follow the upstream
+guide and store the model as a page in an appropriate private document database:
+reuse a suitable private Docs destination, or propose the smallest approved one.
+A small **AIOS** home page can link to the model and to useful context and work;
+it is navigation only, moves nothing and grants no access. Add only the useful
+destinations the owner selects: About, Memory, Skills and, only from chosen
+collaboration preferences, a Soul. An existing workspace keeps its names, IDs,
+structure, root placement, work systems and private/team boundaries. Identify
+an existing guide by role and ID, even if it is titled AIOS or is an ordinary
+page, and reuse it where it is; its location alone is not a defect, and a title
+never proves a missing page or justifies a duplicate. Create a minimal private
+Docs destination only when a new setup genuinely needs one and the owner
+approves it; never create a database merely to match a diagram or to relocate
+an existing guide, and add no empty hierarchy. Move a resource only when its identity,
 meaningful metadata, relations and access survive and the move is authorized;
 otherwise link it in place. Verify provider-controlled native placement.
 Use native Notion skills, not an ordinary database that merely labels pages as
 skills. Preserve existing pages and unknown blocks.
+
+For Tasks, Projects, Skills and Meetings, apply the
+[native database contract](schema-and-templates.md#native-databases-and-meetings):
+reuse the resolved existing destination first, use a supported native type only
+for an authorized missing one, and keep native type, page templates, a person's
+My Tasks sources and Meetings settings apart.
 
 Resolve Memory by exact identity before any write, using the
 [schema contract](schema-and-templates.md#memory-identity-and-provenance). An
@@ -94,12 +157,14 @@ and templates. Prefer full-page databases reached from the existing home;
 inline dashboards are optional, not a setup requirement. Reuse a native Skills
 destination and a memory destination when suitable; add only a missing useful
 destination, not an obligatory database hierarchy or an extra hub.
-Preserve existing scopes within one owner home, such as Spaces for businesses,
-brands and sub-brands or areas of personal life, and reuse their existing
-property (Space, Area or similar). Projects use their native workspaces. There
-is no mandatory common taxonomy, and unscoped records are not implicitly shared.
-Add a scope property and useful views only when work needs one; a separate
-Space database is conditional.
+Spaces are optional. Preserve existing scopes within one owner home, such as
+businesses, brands and sub-brands, teams or areas of personal life, and reuse
+their existing property (Space, Area or similar) and relationships. Record what
+is common and what is specific to a scope, and fetch only what the task needs.
+Projects use their native workspaces. There is no mandatory common taxonomy or
+Spaces database, sources need not share identical fields, and unscoped records
+are not implicitly shared. A Space, Area or Audience label or a filtered view is
+neither a Notion permission boundary nor a Teamspace.
 For properties, hierarchy, native templates and integrity checks, apply the
 [schema contract](schema-and-templates.md) to the existing workspace.
 Split large imports into coherent, independently editable topics with clear
@@ -110,10 +175,16 @@ of everyday navigation. Retire replaced structures only within cleanup authority
 after source mapping, reference repair and verified recovery.
 
 Select accessible owner context with the user or existing task authority.
-Import durable facts with their provenance, source dates and uncertainty;
-import date is not confirmation date. Link live business sources instead of
-replicating them. Do not scan hidden histories, credentials, whole drives or
-unrelated chats. Put detailed artifacts in their actual Docs/project destination.
+Imports cover only named, accessible sources in the approved proposal; running
+Setup does not authorize harvesting conversation history, importing every
+artifact or copying every installed plugin skill into Notion. Import durable
+facts with their provenance, files, source dates and uncertainty, deduplicate
+and verify; import date is not confirmation date. Link live business sources
+instead of replicating them. Do not scan hidden histories, credentials, whole
+drives or unrelated chats. Put detailed artifacts in their actual Docs/project
+destination. The upstream guide's daily loop and optional agent registry are
+not automatic onboarding: a schedule needs the owner's explicit choice and a
+supported host mechanism, and a registry entry proves no access or recall.
 
 Before migrating, verify a recoverable backup and inventory exact sources,
 destinations and machine registrations. Record private mappings outside this
@@ -194,7 +265,9 @@ Skill automatic-use settings do not create scheduled runs.
 Run the authorized [acceptance checks](acceptance.md), including a
 fresh session that retrieves the correct live context and personal skill.
 A saved pointer is configuration; verify separately that a fresh session
-actually follows it. A setup replay with no change writes nothing.
+actually follows it. A setup replay with no change writes nothing: no config,
+connection, skill, instruction or database is added again.
+After any route change, refresh the dashboard overview from the model.
 Import, native discovery and behavioral use are separate claims. Preserve
 earlier versions on failed activation, and complete independent work.
 If the first task needs no personal method, do not invent a skill to pass a test;

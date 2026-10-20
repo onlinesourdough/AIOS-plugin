@@ -6,14 +6,20 @@ and maintain it. Setup fills it from verified sources; the owner need not
 understand database IDs or design the structure. Another connected agent can
 follow it without installing AIOS.
 
-For a new Notion home, place it as an ordinary child page under an ordinary
-private parent page called **AIOS**, beside only the useful Soul, About, Memory
-and Skills destinations the owner selects. The parent is human navigation; the
-host pointer targets this model page. An existing workspace keeps its own
+**AIOS** is the product and the owner's home; the model is their one approved
+guide, and the host pointer targets it directly. For a new setup following the
+official Notion setup guide, store the model as a page in an appropriate private
+document database, reusing a suitable private Docs destination or proposing the
+smallest approved one. A small **AIOS** home page can then link to it and to
+useful context and work. The home is navigation: it moves nothing, sets no
+access and is not a second route map. An existing workspace keeps its own
 structure, names and IDs: reuse its guide by identity, even if it is titled
-AIOS, and link existing Memory, Skills or work systems where they already live.
-No Documents database, template hierarchy, placeholder fact, placeholder Soul or
-Lessons/Artifacts page is required.
+AIOS or is an ordinary page, and link existing Memory, Skills or work systems
+where they already live. Create a minimal private Docs destination only when a
+new setup genuinely needs one and the owner approves it; never create a
+database merely to match a diagram or to relocate an existing guide. No
+template hierarchy, placeholder fact, placeholder Soul or Lessons/Artifacts
+page is required.
 
 The page starts at the next heading. Replace every bracketed instruction or omit
 its row before use; never leave a placeholder as a fact. Put the title in the
@@ -24,12 +30,15 @@ regenerate one.
 
 # AI Operating Model
 
-Where my context lives and how agents use it. Model version: [date or version].
+Where my context lives and how agents use it. Model revision: [date or version].
+Set up with: [official Notion setup guide version and link], with these local
+choices: [deviations, or none].
 
 ## How to use this model
 
 - For work that uses or changes my context, read this page once per session.
-  Also read Soul when it is listed. Then open only the sources the task needs.
+  Read Soul too only if it is listed below as standing context. Then open only
+  the sources the task needs.
 - General questions and independent repositories start from their own inputs;
   they do not preload this context.
 - The current request, system instructions and permissions take precedence.
@@ -39,19 +48,23 @@ Where my context lives and how agents use it. Model version: [date or version].
 
 ## Context sources
 
-- **Soul:** [Soul page mention — only if I chose collaboration preferences]
+- **Soul:** [Soul page mention — optional; omit unless I chose separate collaboration preferences]
 - **About:** [About page mention — a short profile linked to its sources]
 - **Memory:** [Memory mention — native Memory or the existing canonical store]
-- **Skills:** [Skills mention — my personal and team methods]
+- **Skills:** [Skills source mention — my personal and team methods]
 
-Soul holds about 150 words on how I like to collaborate: tone, directness and
-initiative. About is a short summary; detail stays in its linked sources.
-Memory is the one canonical store for durable facts, decisions, corrections and
-lessons. Skills hold reusable methods; shared AIOS methods stay in the plugin.
+Soul, if listed, holds about 150 words on how I like to collaborate: tone,
+directness and initiative; preferences already in About or Memory need no Soul.
+About is a short summary; detail stays in its linked sources. Memory is the one
+canonical store for durable facts, decisions, corrections and lessons. Skill
+pages stay in their source; Notion's Library is where each person enables them.
+Shared AIOS methods stay in the plugin.
 
 ## Work and outputs
 
-- **[Role, such as Tasks]:** [Existing task or project system mention]
+- **[Role, such as Tasks]:** [Existing task database mention]
+- **[Role, such as Projects]:** [Existing project database mention]
+- **[Role, such as Meetings]:** [Default meeting-notes destination, if used]
 - **[Role, such as Documents]:** [Existing knowledge or output destination]
 
 These systems keep their live status, priorities and files. Link them; do not
@@ -60,8 +73,9 @@ project that owns them.
 
 ## Spaces
 
-[Optional. Only Spaces, areas or life areas I already use, with what belongs to
-each. Omit this section if none. Labels and filters do not control access.]
+[Optional. Only Spaces, brands, areas or teams I already use, with what is
+common and what belongs to each. Omit this section if none. Labels, filters and
+views do not control access.]
 
 ## Reading and writing
 
@@ -86,8 +100,9 @@ each. Omit this section if none. Labels and filters do not control access.]
 	- Workspace and account: [verified identity].
 	- Memory identity: [exact native alias or custom store ID; never matched by title].
 	- Queries: [exact data source/view identities and field mappings].
-	- Skills: [native designation and discovery observed, or the page fallback].
-	- Capability limits: [observed missing tools or schema mismatches].
+	- Native databases: [resolved Tasks/Projects/Skills database and template IDs, and how native type was established, or unknown].
+	- Skills: [native designation; discovery on which connection and host, when; or the page fallback].
+	- Capability limits: [observed missing tools, plan limits or schema mismatches].
 	- Recovery: [verified existing backup or recovery route].
 
 </details>
