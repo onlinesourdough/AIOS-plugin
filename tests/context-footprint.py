@@ -19,7 +19,7 @@ JOB_PREFIXES = {
     "human-writing": "Draft ",
     "write-code": "Write ",
     "content": "", "diffusion-studio": "",
-    "aios": "Apply ",
+    "aios": "Bring in ",
     "aios-build-work": "Implement ",
     "aios-check": "Verify ",
     "aios-create-project": "Start ",

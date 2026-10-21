@@ -179,6 +179,23 @@ def validate(root=ROOT, release_tag=None):
                 f"skill description: {path}")
         require("disable-model-invocation" not in fields, f"implicit invocation: {path}")
 
+    # Presentation (#62). The core entry and general methods show an AIOS: label
+    # in their heading and Codex display; Content and Diffusion Studio keep their
+    # own names. Portable names and directories (checked above) and the plugin's
+    # aios namespace stay unchanged. Source metadata only: native display and
+    # invocation need their own evidence.
+    def presentation(skill):
+        heading = re.search(r"^# (.+)$", (skill_root / skill / "SKILL.md").read_text(), re.M).group(1)
+        display = skill_root / skill / "agents/openai.yaml"
+        display = display.is_file() and re.search(r'^  display_name: "([^"]+)"$', display.read_text(), re.M)
+        return heading, display.group(1) if display else None
+    for skill in ("aios", "clarify", "human-writing", "write-code"):
+        heading, display = presentation(skill)
+        require(heading == display and heading.startswith("AIOS:"), f"core skill presentation: {skill}")
+    for skill, label in (("content", "Content"), ("diffusion-studio", "Diffusion Studio")):
+        require(presentation(skill) == (label, label), f"domain skill presentation: {skill}")
+    require(presentation("aios")[0] != "AIOS:aios", "entry skill presentation explains its role")
+
     primary_targets = set(link_targets(skill_root / "aios/SKILL.md"))
     for name in ("content", "human-writing", "write-code", "aios-interview", "aios-setup"):
         require((skill_root / name / "SKILL.md").resolve() in primary_targets,
@@ -565,6 +582,10 @@ def negative_controls():
         data['skills'] = './copied-skills'
         path.write_text(json.dumps(data))
 
+    def prefixed_domain_skill(root):
+        path = root / "skills/content/agents/openai.yaml"
+        path.write_text(path.read_text().replace('display_name: "Content"', 'display_name: "AIOS:content"'))
+
     def implicit_hook(root):
         (root / 'hooks').mkdir()
         (root / 'hooks/hooks.json').write_text('{}')
@@ -588,6 +609,7 @@ def negative_controls():
     rejected(missing_skill_version, "missing metadata.version")
     rejected(unquoted_skill_version, "metadata values must be quoted strings")
     rejected(missing_spec_tracking_route, "Spec contract route missing")
+    rejected(prefixed_domain_skill, "domain skill presentation: content")
 
 
 if __name__ == "__main__":

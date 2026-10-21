@@ -167,10 +167,14 @@ surfaces supplement the project files and native tools that perform the work.
 
 ## Skill names
 
-All skill titles and Codex display names use `AIOS:skill-name`, such as
-`AIOS:content` and `AIOS:build-work`. Each skill declares its canonical name;
-the harness owns its native namespace. Personal methods keep their own names
-and ownership. Renames update the body, callers and native registration together.
+Core AIOS methods show an `AIOS:label` title and Codex display name, such as
+`AIOS:build-work`. The entry skill `aios` shows as `AIOS:context-and-methods`:
+it brings in owner context and AIOS methods only when a task needs them.
+Content and Diffusion Studio keep their own names without an AIOS prefix. Each
+skill declares its canonical name, which these labels do not change; the
+harness owns its native namespace, so Claude still invokes `/aios:content`.
+Personal methods keep their own names and ownership. Renames update the body,
+callers and native registration together.
 
 AIOS supplies one skill library with native installation metadata for several
 agent apps. Install it separately in each app you choose; installation in one

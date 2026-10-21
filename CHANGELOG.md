@@ -43,6 +43,13 @@ Not released or installed; part of issue #58, which is not complete.
   Manage Skills 1.3.2 routes Notion skills through Library and discovery states;
   Setup 1.9.1 describes the current dashboard.
 - The README is shorter, with the current install routes and all 22 skills.
+- Skill labels (issue #62, pending review): the entry skill `aios` now shows as
+  `AIOS:context-and-methods`, with a description and Codex example saying it
+  brings in owner context and AIOS methods only when a task needs them (AIOS
+  2.7.1). Clarify gains its `AIOS:clarify` Codex label (1.0.1). Content and
+  Diffusion Studio drop the `AIOS:` prefix from their heading and Codex label
+  (1.0.2 each). Canonical names, directories, `$aios`-style invocations and
+  Claude's `/aios:` namespace are unchanged, so no caller needs updating.
 
 ## 0.29.0 — 2026-10-13
 

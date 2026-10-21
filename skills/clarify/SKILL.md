@@ -2,7 +2,7 @@
 name: clarify
 description: Explain complex topics with concrete examples and visuals when they help understanding.
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # AIOS:clarify

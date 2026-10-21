@@ -121,7 +121,7 @@ The plugin includes these 22 methods:
 
 | Skill | What it helps with |
 | --- | --- |
-| [AIOS](skills/aios/SKILL.md) | Use relevant owner context and choose methods for the task. |
+| [AIOS: context and methods](skills/aios/SKILL.md) | Bring in your context and the right AIOS method when a task needs them, for example “Use AIOS to plan this week's client work from my business context.” Simple questions and repository work go ahead without it. |
 | [Setup](skills/aios-setup/SKILL.md) | Connect the host and context home, then complete a useful first task. |
 | [Context](skills/aios-context/SKILL.md) | Find the right context sources and adapt the chosen home. |
 | [Maintain Context](skills/aios-maintain-context/SKILL.md) | Save useful facts and corrections in their existing owning records. |

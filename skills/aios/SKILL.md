@@ -1,15 +1,15 @@
 ---
 name: aios
-description: Apply owner context and select relevant AIOS methods for the current task.
+description: Bring in owner context and AIOS methods only when a task needs them.
 metadata:
-  version: "2.7.0"
+  version: "2.7.1"
 ---
 
-# AIOS:aios
+# AIOS:context-and-methods
 
 Use the current task/workspace. Independent repositories use local
-instructions and accepted inputs without personal preload. Native harnesses
-own projects, sessions, tools and permissions.
+instructions and accepted inputs without personal preload. The harness owns
+projects, sessions, tools and permissions.
 
 For needed context in an already-resolved home, follow its approved guide and
 relevant source routes; do not repeat provider selection. A managed file bridge

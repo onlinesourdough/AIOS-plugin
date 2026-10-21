@@ -2,10 +2,10 @@
 name: content
 description: Create, revise or reuse content, configure channel and style defaults, or audit a named content outcome read-only. Use Diffusion Studio for ordinary video editing.
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
-# AIOS:content
+# Content
 
 Own editorial judgment, useful reuse, provenance and final review. Start with
 the requested outcome and resolved caller inputs. Resume from the actual work

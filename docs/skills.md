@@ -1,25 +1,39 @@
 # AIOS skills
 
-AIOS ships 22 native skills. Their titles and Codex display names use
-`AIOS:skill-name`: uppercase `AIOS`, a colon without spaces, and lowercase
-hyphenated names. The display label omits a redundant leading `aios-` from the
-canonical name. Automatic selection uses each skill description; explicit
-invocation uses the canonical name and native namespace. Setup replaces the
-former `aios-onboard` entrypoint with `aios-setup`; update explicit callers on
-adoption. Each
-carries an independent quoted `metadata.version`; see
-[version maintenance](skill-versioning.md). Repository development methods in
-`.agents/skills/` are separate and are not product skills.
+AIOS ships 22 native skills. A skill's name appears on four separate surfaces:
+
+| Surface | Example | Changes how you call it? |
+| --- | --- | --- |
+| Portable `name` in the skill's frontmatter | `aios`, `content` | Yes: it is the canonical name |
+| Markdown heading in `SKILL.md` | `AIOS:context-and-methods`, `Content` | No |
+| Codex `display_name` in `agents/openai.yaml` | `AIOS:context-and-methods`, `Content` | No |
+| Claude plugin-qualified invocation | `/aios:aios`, `/aios:content` | Comes from the plugin namespace and the portable name |
+
+Core AIOS methods use an `AIOS:label` heading and Codex display: uppercase
+`AIOS`, a colon without spaces, and a lowercase hyphenated label, usually the
+canonical name without a leading `aios-`. The entry skill `aios` is labelled
+`AIOS:context-and-methods` because it brings in owner context and chooses AIOS
+methods only when a task needs them. Content and Diffusion Studio are domain
+methods and keep their own names, `Content` and `Diffusion Studio`, without an
+AIOS prefix; while they ship in AIOS, Claude still invokes them through the
+plugin namespace, such as `/aios:content`. Automatic selection uses each skill
+description; explicit invocation uses the canonical name and native namespace,
+which this labelling does not change. Source metadata does not prove what a
+given app displays or that an invocation succeeds; that is checked in the app.
+Setup replaces the former `aios-onboard` entrypoint with `aios-setup`; update
+explicit callers on adoption. Each carries an independent quoted
+`metadata.version`; see [version maintenance](skill-versioning.md). Repository
+development methods in `.agents/skills/` are separate and are not product skills.
 
 | Skill | Responsibility |
 | --- | --- |
 | [AIOS:clarify](../skills/clarify/SKILL.md) | Explain complex topics and decisions with concrete examples and visuals when they help understanding |
-| [AIOS:content](../skills/content/SKILL.md) | Produce and review content with sources, lineage and reuse evidence when needed |
-| [AIOS:diffusion-studio](../skills/diffusion-studio/SKILL.md) | Use optional Diffusion Studio for video production |
+| [Content](../skills/content/SKILL.md) | Produce and review content with sources, lineage and reuse evidence when needed |
+| [Diffusion Studio](../skills/diffusion-studio/SKILL.md) | Use optional Diffusion Studio for video production |
 | [AIOS:human-writing](../skills/human-writing/SKILL.md) | Default prose drafting and editing that preserves facts, uncertainty and the user’s voice |
 | [AIOS:write-code](../skills/write-code/SKILL.md) | Quality and proportionate verification whenever writing or changing code, including scripts and automation; shared criteria for read-only code review |
 | [AIOS:context](../skills/aios-context/SKILL.md) | Select and maintain the chosen context-home contract; route setup, retrieval and audit to its provider |
-| [AIOS:aios](../skills/aios/SKILL.md) | Select relevant context and methods for the current task |
+| [AIOS:context-and-methods](../skills/aios/SKILL.md) (`aios`) | Bring in owner context and choose AIOS methods only when a task needs them; ordinary questions, small edits and independent repository work proceed directly. Example: "Use AIOS to plan this week's client work from my business context." |
 | [AIOS:interview](../skills/aios-interview/SKILL.md) | Explore context, challenge assumptions and find direction when requested or materially needed at the start; no routine interruption of execution |
 | [AIOS:build-work](../skills/aios-build-work/SKILL.md) | Implement and verify accepted work through in-scope fixes and Review |
 | [AIOS:check](../skills/aios-check/SKILL.md) | Inspect installation, discovery, owner format and context-home health without changes |

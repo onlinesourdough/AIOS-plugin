@@ -235,6 +235,18 @@ request; no check result for it is recorded here. These are method sources; no N
 database, Library setting, sign-in, Memory save, meeting setting or fresh-session use has
 been exercised for them.
 
+A next source change for #62 relabels skills without renaming them: the entry skill shows
+as `AIOS:context-and-methods`, Clarify gains its `AIOS:clarify` Codex label, and Content
+and Diffusion Studio drop the `AIOS:` prefix. The package validator now checks these
+headings and Codex labels and rejects a prefixed domain skill. On 2026-10-21 the package
+validator against `c6432c5` passed, including its negative controls, one of which
+re-prefixes Content and is rejected. The skill-version and documentation rehearsals
+passed with 7 tests each, the context-footprint check passed (byte estimates, not runtime
+telemetry) and the whitespace check was clean. A text search found the old labels only in
+the validator's deliberate rejection and its test fixture. Independent review is pending.
+Canonical names and invocations are unchanged in source; what fresh Codex and Claude
+sessions display, and that invocations still work, has not been checked in either app.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged
