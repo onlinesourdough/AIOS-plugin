@@ -83,6 +83,15 @@ claude plugin uninstall osm@online-sourdough --scope user
 claude plugin list --json
 ```
 
+To replace `aios@online-sourdough`, follow the
+[switch procedure](migration.md#switch-from-aios-to-osm). Disable the old
+package before the restart and fresh-session check, and keep it restorable:
+
+```sh
+claude plugin disable aios@online-sourdough --scope user
+claude plugin enable aios@online-sourdough --scope user   # rollback only
+```
+
 Use the original scope for lifecycle commands. Remove the marketplace with
 `claude plugin marketplace remove online-sourdough` only when that registration
 is no longer needed. Preserve user context and unrelated settings. Bridge

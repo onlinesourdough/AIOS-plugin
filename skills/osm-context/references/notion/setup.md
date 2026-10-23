@@ -123,7 +123,7 @@ transactional data. Cleanup of unrelated clutter is a separate scope.
 ## Establish ongoing use
 
 Create or update one short entry using the packaged
-[AIOS page](../../assets/notion-aios.md). Keep the familiar
+[OSM page](../../assets/notion-osm.md). Keep the familiar
 layout: where Docs, Skills and Memory are, where business topics are covered,
 what Spaces mean, how to start work
 and where results go. Fill the customer-specific links, Space map, sources,

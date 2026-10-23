@@ -25,8 +25,9 @@ operations. A source checkout is not an installed release.
   update or reinstall operation targeting the reviewed ref.
 - An `aios@online-sourdough` package (0.29.x or earlier) is the same method under
   its previous identity. Updating it never installs `osm`; follow
-  [identity migration](../osm-setup/references/migration.md) to install `osm`,
-  verify it, then remove `aios`. Owner data and bridges stay as they are.
+  [switch procedure](../osm-setup/references/migration.md#switch-from-aios-to-osm):
+  install and read back `osm`, disable `aios` before fresh-session acceptance,
+  and keep `aios` restorable. Owner data and bridges stay as they are.
 - An OSM 0.1.x package changes identity as well as method content. Follow
   [identity migration](../osm-setup/references/migration.md); updating the old
   selector does not install the new one automatically.

@@ -13,8 +13,9 @@ models, tools and permissions.
 
 The method was previously released as AIOS. OSM 0.30.0 renames the plugin to
 `osm` and its method skills to `osm-*` ([migration](https://github.com/onlinesourdough/OSM-plugin/issues/76)).
-If you have `aios@online-sourdough`, install `osm@online-sourdough`, start a
-fresh chat, then remove `aios`; see [Earlier names](docs/osm.md#earlier-names).
+If you have `aios@online-sourdough`, install `osm@online-sourdough`, disable
+`aios` before your fresh chat, and remove it once OSM works; see
+[Earlier names](docs/osm.md#earlier-names).
 Your context stays in its existing home with its existing names. Earlier
 OSM 0.1.x releases are a retired, different package; do not install them.
 
@@ -290,7 +291,7 @@ For a new or messy workspace, explicitly use the plugin's **Set up** skill or as
 > the first useful task and reuse what I already have.
 
 Setup guides the Notion connection when missing, identifies useful existing databases and fills the
-bundled [AIOS page](skills/osm-context/assets/notion-aios.md)
+bundled [OSM page](skills/osm-context/assets/notion-osm.md)
 with your links, Spaces and working agreements. It checks where Offers, Demand
 and Operations are covered and asks only about gaps that affect the first task.
 After verifying the entry, it adds the short instruction at the appropriate app

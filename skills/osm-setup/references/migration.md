@@ -21,7 +21,7 @@ Inspect configured bridges and the actual source and target roots. Classify:
 | Package `osm` 0.1.x, or `osm-onboard` | Retired OSM 0.1.x; its `osm`, `osm-check` and `osm-maintain-context` share names but not bodies with 0.30.0 |
 | Legacy `.aios/CONTEXT.md`, `.aios/MEMORY.md` and registries | Template-era owner layout; inspect the complete relevant map before assigning a format |
 | Package `osm` 0.30.0 or later from onlinesourdough/OSM-plugin (or its earlier AIOS-plugin name) | Current package; update in place |
-| Package `aios` 0.29.x or earlier from that repository | Current package under its previous identity; install `osm`, verify, then remove `aios` |
+| Package `aios` 0.29.x or earlier from that repository | Current package under its previous identity; [switch to `osm`](#switch-from-aios-to-osm) |
 | A skill named `aios`, `aios-*`, `osm` or `osm-*` without proved provenance | Unknown ownership or a custom method; preserve it and resolve collision before activation |
 | Both old and new homes, markers or registrations | Compare identities and accepted evidence; do not select or overwrite by name or timestamp |
 
@@ -79,11 +79,38 @@ different releases are different sources.
 A verified old Method package may be disabled/removed through its supported
 native registration control under adoption authority. `aios@online-sourdough`
 and `osm@online-sourdough` are different selectors: updating `aios` never
-installs `osm`. Install `osm`, read back its version and source, start a fresh
-session, then remove `aios` with its native control. Until then both are active
-and their skills overlap. Both sidebars use the same saved links and bridge
-under the same lock, so the data stays consistent. Retain the prior release/ref as recovery. Never delete a package
+installs `osm`. Retain the prior release/ref as recovery. Never delete a package
 cache or owner folder manually to force a native uninstall.
+
+### Switch from aios to osm
+
+Work at an idle boundary for the affected app, with no task relying on the old
+methods. Owner data, bridges and saved panel links need no change.
+
+1. Record the current `aios` registration: source, version, scope and the
+   reviewed ref you would restore. Keep that source available as rollback.
+2. Stage or install `osm@online-sourdough` from the reviewed immutable source.
+   Read back its source and version (0.30.0 or later) before acceptance.
+3. Disable `aios` through the app's supported control before acceptance, so
+   one source remains effective for each declared name:
+   - Claude Code: `claude plugin disable aios@online-sourdough --scope user`
+     (use the original scope).
+   - Codex: set only `plugins."aios@online-sourdough".enabled` to `false`
+     through Codex's version-checked native configuration API
+     (`config/value/write`). Do not edit `config.toml`, caches or the
+     configuration database wholesale.
+   - Without a supported disable control, remove `aios` with its scoped native
+     removal at this idle boundary, keeping the tested rollback source.
+4. In a fresh session, verify each declared `osm` skill and the single OSM
+   sidebar server are discovered once, unrelated skills are unchanged, and an
+   ordinary owner request uses the intended route.
+5. After acceptance, retire the disabled `aios` registration with its native
+   removal only when no other active session, workspace or profile still
+   depends on it. Keep the previous release/ref recoverable.
+
+If acceptance fails, disable `osm` the same way, re-enable `aios` (or reinstall
+it from the retained source), and read back version and discovery in a fresh
+session. A staged installation alongside an enabled `aios` is not acceptance.
 
 For legacy global `aios` or `osm` skills, prove the owning source before changing a
 registration. Remove or repoint only the specifically authorized redundant

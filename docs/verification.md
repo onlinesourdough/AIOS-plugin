@@ -1,5 +1,16 @@
 # Verification
 
+After lead Review on 2026-10-23, the candidate renames the new-customer Notion
+template to `notion-osm.md` (page **OSM**, no operating-system framing) and
+makes the `aios` → `osm` switch disable `aios` before fresh-session acceptance,
+with rollback by disabling `osm` and re-enabling `aios`. `validate.py --baseline
+b3bb4d4 --release-tag v0.30.0` passed with new template and switch-procedure
+guards and three negative controls, as did the documentation, onboarding,
+skill-version, footprint, layout and continuity rehearsals and entry-routing
+fixture preparation. Runtime bytes did not change, so the sidebar build and unit
+tests were not rerun. Native disable/enable and fresh-session acceptance remain
+the lead's native checks.
+
 On 2026-10-23 the OSM 0.30.0 identity candidate (`0a04d0b` on
 `feat/osm-identity-62`, from `main` `b3bb4d4`) passed with Node 22.22.3 and
 Python 3.14.5: `npm ci --ignore-scripts`, build, 85 sidebar unit tests and the

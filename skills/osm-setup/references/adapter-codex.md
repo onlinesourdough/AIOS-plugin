@@ -32,6 +32,11 @@ create a personal marketplace for this repo distribution. Start a fresh task
 and verify the declared package skills are discoverable once. Use the
 [identity migration](migration.md) before replacing an older Method selector or
 legacy/global registration; a matching skill name does not establish ownership.
+To replace `aios@online-sourdough`, follow its
+[switch procedure](migration.md#switch-from-aios-to-osm): disable `aios` by
+writing only `plugins."aios@online-sourdough".enabled = false` through Codex's
+version-checked `config/value/write` API before the fresh task, and write
+`true` to restore it. Do not edit `config.toml` or caches directly.
 
 Only for an authorized personal default-home change, use ~/.codex/AGENTS.md
 (respect configured CODEX_HOME). Client setup follows the shared scope rule.

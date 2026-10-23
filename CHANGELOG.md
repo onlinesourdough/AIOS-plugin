@@ -13,12 +13,13 @@
   brings in owner context and methods only when a task needs them.
 - The Codex sidebar MCP server, its tools (`osm_*`), UI resource and titles use
   OSM. The overview is now `docs/osm.md`.
-- Upgrade: install `osm@online-sourdough`, start a fresh chat, then remove
-  `aios@online-sourdough` with your app's plugin controls. Updating `aios`
+- Upgrade: install `osm@online-sourdough` and read back its version, disable
+  `aios@online-sourdough` through the app's supported control before
+  fresh-session acceptance, then retire `aios` once nothing depends on it. If
+  acceptance fails, disable `osm` and re-enable `aios`. Updating `aios`
   never installs `osm`. Owner data needs no migration: `AIOS.md`,
   `AIOS_FORMAT`, `~/.AIOS`, the `<!-- AIOS:BEGIN -->` block and saved Codex
-  panel links keep their names and stay readable. Roll back by reinstalling
-  the previous `aios` release.
+  panel links keep their names and stay readable.
 - OSM 0.30.0 is not the retired OSM 0.1.x package, although three skill names
   match. Identity migration now classifies packages by source and version.
 

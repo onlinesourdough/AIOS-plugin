@@ -1,4 +1,4 @@
-# Adapting the AIOS page
+# Adapting the OSM page
 
 This is the shared starting layout for one customer-owned page. Setup fills it
 from verified sources; the customer need not understand database IDs or design
@@ -10,11 +10,12 @@ The page starts at the next heading. Replace every bracketed instruction or
 omit its optional row before use. Put the title in the page title property.
 Keep connection details inside one collapsed toggle. If this page already
 exists, reconcile only needed changes; preserve its identity, icons, local
-wording and agreements. Plugin updates never overwrite customer pages.
+wording and agreements. Plugin updates never overwrite customer pages. An
+existing page keeps its own title, even if that is AIOS.
 
-# AIOS
+# OSM
 
-Your AI operating system. Start here to find what we know, how we work and what we have decided.
+Our context home for The Onlinesourdough Method (OSM). Start here to find what we know, how we work and what we have decided.
 
 ## Find what you need
 

@@ -29,8 +29,8 @@ A saved link does not prove remote access or complete business onboarding.
 For help organizing a new or messy workspace, explicitly invoke **Set up** or
 ask for OSM Setup. That skill checks access, reuses useful destinations and
 helps with the first task. Personal and Team skills retain actual permissions;
-Audience and Space are not access control. The Notion entry is called **AIOS**
-by default; customer names remain theirs.
+Audience and Space are not access control. A new Notion entry is called **OSM**
+by default; existing entries and customer names remain theirs.
 
 [Context](../skills/osm-context/SKILL.md) owns the common home contract and selects
 one provider. The host keeps a short pointer to an approved entry; the agent reads
@@ -175,9 +175,14 @@ OSM 0.30.0 is the method previously released as AIOS (`aios`, 0.29.0 and
 earlier). It is distinct from the retired OSM 0.1.x packages. Your context home
 keeps its existing names: `AIOS.md`, `AIOS_FORMAT`, `~/.AIOS`, the
 `<!-- AIOS:BEGIN -->` instruction block and saved Codex panel links. Updating
-needs no owner-data migration. Install `osm@online-sourdough`, start a fresh
-chat, then remove `aios@online-sourdough` with your app's plugin controls. To
-roll back, reinstall the previous `aios` release; your context is unchanged.
+needs no owner-data migration. At a quiet moment, install `osm@online-sourdough`
+and check its version, then disable `aios@online-sourdough` with your app's
+supported plugin control (in Claude Code, `claude plugin disable`) before
+starting a fresh chat, so only one copy of each skill is active. Remove `aios`
+once OSM works and nothing still uses it. If OSM fails, disable it and enable
+`aios` again; your context is unchanged. Setup's
+[switch procedure](../skills/osm-setup/references/migration.md#switch-from-aios-to-osm)
+has the details for each app.
 
 OSM supplies one skill library with native installation metadata for several
 agent apps. Install it separately in each app you choose; installation in one

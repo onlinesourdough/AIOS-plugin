@@ -400,6 +400,36 @@ def validate(root=ROOT, release_tag=None):
             "needs no owner-data\nmigration" in identity,
             "package identity classification")
 
+    # The bundled Notion page is new-customer product copy; existing pages keep theirs.
+    notion_page = skill_root / "osm-context/assets/notion-osm.md"
+    require(notion_page.is_file() and not (skill_root / "osm-context/assets/notion-aios.md").exists(),
+            "new Notion page template")
+    page = notion_page.read_text()
+    require(page.startswith("# Adapting the OSM page\n") and "\n# OSM\n" in page and
+            "The Onlinesourdough Method" in page and "\n# AIOS\n" not in page and
+            not re.search(r"operating\s+system", page, re.I),
+            "new Notion page template")
+    # One effective source during acceptance: disable aios before the fresh session.
+    switch = identity.split("### Switch from aios to osm", 1)
+    require(len(switch) == 2 and all(step in switch[1] for step in (
+                "Disable `aios` through the app's supported control before acceptance",
+                "`claude plugin disable aios@online-sourdough --scope user`",
+                '`plugins."aios@online-sourdough".enabled` to `false`',
+                "`config/value/write`", "keeping the tested rollback source",
+                "only when no other active session, workspace or profile",
+                "disable `osm` the same way, re-enable `aios`")),
+            "aios to osm switch procedure")
+    for relative in ("README.md", "CHANGELOG.md", "docs/osm.md", "docs/native-installation.md",
+                     "skills/osm-setup/references/migration.md", "skills/osm-update/SKILL.md",
+                     "skills/osm-setup/references/adapter-codex.md",
+                     "skills/osm-setup/references/adapter-claude.md"):
+        current = (root / relative).read_text()
+        if relative == "CHANGELOG.md":
+            current = current.split("\n## ", 2)[1]
+        require(not re.search(r"then\s+remove\s+`aios|both\s+are\s+active|codex\s+plugin\s+disable",
+                              current, re.I),
+                f"aios to osm switch procedure: {relative}")
+
     parity = (skill_root / "osm-setup/references/legacy-parity.md").read_text()
     parity_rows = {}
     parity_names = []
@@ -617,6 +647,22 @@ def negative_controls():
         path.write_text(path.read_text().replace(
             "never a reason to remove a current 0.30.0+ registration", "a legacy package"))
 
+    def retired_brand_template(root):
+        path = root / "skills/osm-context/assets/notion-osm.md"
+        path.write_text(path.read_text().replace("\n# OSM\n", "\n# OSM\n\nYour AI operating system.\n"))
+
+    def overlapping_acceptance(root):
+        path = root / "docs/osm.md"
+        path.write_text(path.read_text() + "\nInstall osm, start a fresh chat, then remove `aios`.\n")
+
+    def disable_after_acceptance(root):
+        path = root / "skills/osm-setup/references/migration.md"
+        path.write_text(path.read_text().replace(
+            "Disable `aios` through the app's supported control before acceptance", "Later, remove `aios`"))
+
+    rejected(retired_brand_template, "new Notion page template")
+    rejected(overlapping_acceptance, "aios to osm switch procedure: docs/osm.md")
+    rejected(disable_after_acceptance, "aios to osm switch procedure")
     rejected(retired_skill_copy, "skill inventory")
     rejected(renamed_bridge_marker, "owner bridge markers")
     rejected(dropped_legacy_bridge_route, "legacy bridge route")

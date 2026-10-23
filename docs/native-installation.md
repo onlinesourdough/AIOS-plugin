@@ -37,7 +37,7 @@ gemini extensions install https://github.com/onlinesourdough/OSM-plugin --ref RE
 Claude Code can install from a local checkout at the selected ref:
 
 ```sh
-claude plugin marketplace add /absolute/path/to/reviewed/AIOS-Plugin
+claude plugin marketplace add /absolute/path/to/reviewed/OSM-plugin
 claude plugin install osm@online-sourdough --scope user
 ```
 
@@ -48,6 +48,15 @@ than rewriting the canonical skill files. Native project/local scopes are
 available in some apps; use the same scope for later updates and removal.
 
 ## Update, rollback and removal
+
+Moving from `aios@online-sourdough` (0.29.x or earlier) to `osm` is a new
+selector, not an update. Install and read back `osm`, then disable `aios`
+through the app's supported control before fresh-session acceptance: Claude
+Code `claude plugin disable aios@online-sourdough --scope user`; Codex, only
+`plugins."aios@online-sourdough".enabled = false` through its version-checked
+`config/value/write` API, never a wholesale config or cache edit. Retire `aios` after acceptance when
+nothing depends on it; on failure, disable `osm` and re-enable `aios`. See the
+[switch procedure](../skills/osm-setup/references/migration.md#switch-from-aios-to-osm).
 
 Finish the active task before updating its methods. For a Codex marketplace
 that follows a branch:
