@@ -55,8 +55,12 @@ new credential or chat in the panel. Destinations are not fetched for icons.
 Only explicit structure counts: a heading followed by a list of page,
 database or Markdown links. Each item either starts with the reference and has
 at most a short annotation, or starts with a bold role label ending in one
-colon (`**Role:**` or `**Role**:`) followed directly by the reference, then any
-explanation. A labelled link is named by its role, plus the reference's own
+colon (`**Role:**` or `**Role**:`, or the current Notion fetch's `<b>Role:</b>`
+or `<b>Role</b>:`) followed directly by the reference, then any explanation.
+References are Markdown links, typed mentions such as `<mention-page>`, or the
+generic `<mention url>`, paired or self-closed. User mentions and unknown tags
+are never documents; a label in another HTML element, such as `<strong>`, is
+counted as left out. A labelled link is named by its role, plus the reference's own
 text when it has any. A role label of any length is recognized; only its shown
 name is cut to 100 characters. Other references later in that row, such as a Related
 mention, are not routes. Prose, policy, evidence, code and quoted links

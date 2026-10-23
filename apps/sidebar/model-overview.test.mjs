@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { deriveOverview, readOverview, overviewView, LIMITS } from './model-overview.mjs';
-import { ownerModel, teamModel, mixedModel, modelTarget } from './model-fixtures.mjs';
+import { ownerModel, teamModel, mixedModel, modelTarget, nativeModel } from './model-fixtures.mjs';
 
 const page = n => `https://app.notion.com/p/${String(n).padStart(32, '0')}`;
 const titles = overview => overview.groups.map(group => [group.title, group.links.map(link => link.title)]);
@@ -145,6 +145,51 @@ test('a role label with an extra colon after the bold, or after a plain label, i
   assert.deepEqual(valid.groups, [{ title: 'Roles', links: [{ title: 'Role A', target: notion(1) }, { title: 'Role B', target: notion(2) }] },
     { title: 'Children', links: [{ title: 'Example child', target: notion(4) }] }]);
   assert.equal(valid.state, 'ready'); assert.equal(valid.partial, false); assert.equal(valid.skipped, 0);
+});
+
+// The current official Notion fetch writes labels as <b>role:</b> and references
+// as generic <mention url>, paired or self-closed. Same grammar, other syntax.
+test('the native fetch shape with HTML bold labels and generic mentions yields its labelled Home', () => {
+  const overview = deriveOverview(nativeModel);
+  assert.equal(overview.state, 'ready'); assert.equal(overview.partial, false); assert.equal(overview.skipped, 0);
+  assert.deepEqual(overview.groups, [{ title: 'Home', links: [
+    { title: 'OSM · OSM', target: page(61), label: 'OSM' }, { title: 'Memory', target: page(62) },
+    { title: 'Skills · Skills library', target: page(63) }, { title: 'Docs · Docs', target: page(64), label: 'Docs' },
+    { title: 'Tasks · Tasks', target: page(65), label: 'Tasks' }] }]);
+  const targets = overview.groups.flatMap(group => group.links.map(link => link.target));
+  for (const n of [70, 71, 72]) assert.ok(!targets.includes(page(n)), `prose, tail or user mention ${n} is not a route`);
+  assert.deepEqual(deriveOverview(nativeModel), overview, 'the same text always gives the same overview');
+});
+
+test('HTML bold labels keep the exactly-one-colon and leading-reference rules', () => {
+  for (const [name, row] of [
+    ['two colons inside the bold', `- <b>Role::</b> <mention url="${notion(1)}">Role</mention>`],
+    ['a colon within the label text', `- <b>Ro:le:</b> <mention url="${notion(1)}" />`],
+    ['one colon inside and one after the bold', `- <b>Role:</b>: <mention url="${notion(1)}" />`],
+    ['two colons after the bold', `- <b>Role</b>:: <mention url="${notion(1)}" />`],
+    ['no colon at all', `- <b>Role</b> <mention url="${notion(1)}" />`],
+    ['another HTML wrapper', `- <strong>Role:</strong> <mention url="${notion(1)}" />`],
+    ['a generic mention without a url', `- <b>Role:</b> <mention>Role</mention>`],
+  ]) malformedLabel(name, row);
+  // Prose before the reference, or the reference only in the tail, is an ordinary item.
+  const prose = deriveOverview(['## Roles', `- <b>Role:</b> see <mention url="${notion(1)}">Role</mention>`,
+    `- Read <mention url="${notion(2)}" /> before you start.`, '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n'));
+  const targets = prose.groups.flatMap(group => group.links.map(link => link.target));
+  assert.ok(!targets.includes(notion(1)) && !targets.includes(notion(2)), 'prose mentions are not routes');
+});
+
+test('user and unknown mention tags are never documents; an unsafe generic mention is counted', () => {
+  for (const row of [`- <mention-user url="${notion(1)}">Person</mention-user>`, `- <b>Role:</b> <mention-user url="${notion(1)}" />`,
+    `- <mention-pagex url="${notion(1)}">Role</mention-pagex>`, `- <b>Role:</b> <mentions url="${notion(1)}" />`]) {
+    const overview = deriveOverview(['## Roles', row, '## Children', `<page url="${notion(4)}">Example child</page>`].join('\n'));
+    assert.ok(!overview.groups.flatMap(group => group.links.map(link => link.target)).includes(notion(1)), `${row}: not a route`);
+  }
+  const unsafe = deriveOverview(['## Roles', `- <b>Role:</b> <mention url="javascript:alert(1)">Role</mention>`, `- <mention url="${notion(2)}">Two</mention>`].join('\n'));
+  assert.deepEqual(unsafe.groups, [{ title: 'Roles', links: [{ title: 'Two', target: notion(2) }] }]);
+  assert.equal(unsafe.skipped, 1);
+  // Typed mentions and Markdown labels keep working beside the native forms.
+  const both = deriveOverview(['## Mixed forms', `- **Role A:** <mention-page url="${notion(1)}"/>`, `- <b>Role B:</b> <mention url="${notion(2)}" />`].join('\n'));
+  assert.deepEqual(both.groups, [{ title: 'Mixed forms', links: [{ title: 'Role A', target: notion(1) }, { title: 'Role B', target: notion(2) }] }]);
 });
 
 test('a role label longer than the display bound is still a route; only its shown name is cut', () => {

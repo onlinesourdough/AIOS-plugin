@@ -1,6 +1,6 @@
 # The Onlinesourdough Method
 
-OSM version: 0.30.1-setup-preview.1
+OSM version: 0.30.1-setup-preview.2
 
 The Onlinesourdough Method (OSM) supplies portable context and skills to help an AI assistant work from an
 owner's relevant context and carry a task from a small request to a reviewed

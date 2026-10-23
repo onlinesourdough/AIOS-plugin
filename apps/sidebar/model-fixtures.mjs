@@ -78,3 +78,27 @@ export const mixedModel = `<content>
 ## Team
 - [Team docs](${page(42)})
 </content>`;
+
+// The current official Notion fetch shape for role-labelled rows: HTML bold
+// labels and generic <mention url> references, paired or self-closed, inside the
+// native <page>/<content> wrapper. Sanitized: invented page identities and
+// labels only, no owner text. Prose mentions and a user mention stay out.
+export const nativeTarget = page(60);
+export const nativeModel = `Here is the result of "view" for the Page with URL ${nativeTarget} as of 2026-10-23T09:00:00.000Z:
+<page url="${nativeTarget}">
+<properties>
+{"title":"AI Operating Model"}
+</properties>
+<content>
+For work that uses my context, read this once per session; see <mention url="${page(70)}">Policy</mention> first.
+## Home
+- <b>OSM:</b> <mention url="${page(61)}">OSM</mention>
+- <b>Memory:</b> <mention url="${page(62)}" />
+- <b>Skills</b>: <mention url="${page(63)}">Skills library</mention> — personal and team methods
+- <b>Docs:</b> <mention-page url="${page(64)}">Docs</mention-page>
+- **Tasks:** [Tasks](${page(65)})
+## Rules
+- <b>Note:</b> keep private records private; ask <mention url="${page(71)}">Owner notes</mention> first.
+- Approver: <mention-user url="${page(72)}">Person</mention-user> reviews changes.
+</content>
+</page>`;

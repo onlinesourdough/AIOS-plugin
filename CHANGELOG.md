@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.30.1-setup-preview.2 — unreleased preview
+
+Not a release; #58 and #60 holds remain. A correctness fix for the preview's
+overview reader, found by an end-to-end naming check.
+
+- The overview now reads the current official Notion fetch form of a labelled
+  source row: `<b>Role:</b>` or `<b>Role</b>:` labels and generic
+  `<mention url>` references, paired or self-closed. Before, such rows were not
+  recognized: a model written only this way gave `unsupported`, and a refresh
+  replaced the earlier overview's links. Markdown labels and typed mentions work
+  as before. The exactly-one-colon and leading-reference rules, link checks and
+  bounds are unchanged. User mentions and unknown tags are never documents; a
+  label in another HTML element is counted as left out, so the overview is
+  marked partial instead of looking complete.
+- Context 2.1.1: pass the fetched text exactly as returned, without rewriting
+  it to fit the overview, and do not retry with edited text after `unsupported`.
+
 ## 0.30.1-setup-preview.1 — unreleased preview
 
 Not a release and not production. This is the Setup and model-first preview

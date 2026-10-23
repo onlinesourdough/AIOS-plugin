@@ -62,7 +62,9 @@ model or asks for a refresh during Setup or Settings work:
    Do not fetch its linked destinations.
 2. Call `osm_save_model_overview` with the model `target`, its page `title`,
    a `revision` label when the connector reports one (such as last edited
-   time) and `content` exactly as fetched. Always set `complete` yourself;
+   time) and `content` exactly as fetched, including Notion's `<page>` and
+   `<content>` wrapper, `<b>` labels and `<mention>` references. Never rewrite,
+   normalize or convert it to fit the overview. Always set `complete` yourself;
    never rely on the tool's default. Pass `complete: true` only when the fetch
    reports all of its completeness signals and they show nothing missing:
    `truncated` false, `unknown_block_count` 0 and `unknown_block_ids` empty.
@@ -72,13 +74,15 @@ model or asks for a refresh during Setup or Settings work:
    `true` means only that those signals reported nothing missing. If the read
    failed, pass `outcome` `no_access`, `not_found` or `disconnected` instead;
    this replaces the earlier overview.
-3. OSM keeps only headings followed by lists of page or database references.
+3. OSM keeps only headings followed by lists of page or database references,
+   in Markdown or the current Notion fetch form (`<b>Role:</b> <mention url>`).
    Prose, policy, evidence and quoted links are ignored, and the text is
    discarded. A result of `ambiguous` lists sections: ask the person once which
    to show and call again with `sections`. Later refreshes keep that choice;
    `changed` reports chosen sections that disappeared; `[]` clears the choice.
    `unsupported` means no explicit source list; report it rather than guess or
-   rewrite the model.
+   rewrite the model. A failed or `unsupported` refresh replaces the earlier
+   overview; do not retry with edited text.
 4. Tell the person to refresh the panel and review it. Saving the pointer is
    their explicit panel action; this tool never changes it.
 

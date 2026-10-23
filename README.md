@@ -12,7 +12,7 @@ If you have `aios@online-sourdough`, install `osm@online-sourdough`, disable
 Your context stays in its existing home with its existing names. Earlier
 OSM 0.1.x releases are a retired, different package; do not install them.
 
-This source is `0.30.1-setup-preview.1`: the unreleased Setup and model-first
+This source is `0.30.1-setup-preview.2`: the unreleased Setup and model-first
 preview from issue #58, renamed for OSM. It is not a release; production is
 OSM 0.30.0.
 

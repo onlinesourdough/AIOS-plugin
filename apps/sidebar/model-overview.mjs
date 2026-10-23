@@ -16,9 +16,14 @@ export const cleanLabel = (value, max = LIMITS.label) => String(value ?? '').rep
 const plain = text => cleanLabel(decode(text.replace(/<([a-z-]+)\b[^>]*\/>/g, '').replace(/<([a-z-]+)\b[^>]*>([^<]*)<\/\1>/g, '$2')
   .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_`~]/g, '')));
 
+// Typed references, and the generic <mention url> of current Notion fetches. The
+// tag name must end at whitespace, / or >, so mention-user or an unknown suffix
+// such as mention-pagex is never read as a document.
+const referenceTags = '(?:mention-page|mention-database|mention-data-source|mention|page|database|data-source)(?=[\\s/>])';
+const referenceTag = new RegExp(`^<(${referenceTags})([^>]*?)(?:\\/>|>([^<]*)<\\/\\1>)`);
 // A reference must open the list item or stand alone on its line.
 function leadingReference(text) {
-  let match = text.match(/^<(mention-page|mention-database|mention-data-source|page|database|data-source)\b([^>]*?)(?:\/>|>([^<]*)<\/\1>)/);
+  let match = text.match(referenceTag);
   if (match) {
     const url = match[2].match(/\burl="([^"]*)"/)?.[1];
     return url === undefined ? null : { title: match[3] ?? '', url, rest: text.slice(match[0].length) };
@@ -34,21 +39,29 @@ const annotation = rest => /^\s*$/.test(rest) || /^\s*(?:[—–:·|(]|-\s)/.tes
 // tail may explain the role in prose; references in that tail are related or
 // incidental and never routes. A label of any length is recognized; only its
 // displayed name is cut to the usual label bound.
+// Current Notion fetches write the same bold label as <b>role:</b> or <b>role</b>:.
+const boldLabel = text => {
+  const markdown = text.match(/^(\*\*|__)([^*_:\n]+?)(:?)\1(:?)[ \t]*/);
+  if (markdown) return { length: markdown[0].length, text: markdown[2], inside: markdown[3], after: markdown[4] };
+  const html = text.match(/^<b>([^<>:\n]+?)(:?)<\/b>(:?)[ \t]*/);
+  return html && { length: html[0].length, text: html[1], inside: html[2], after: html[3] };
+};
 function labelledReference(text) {
-  const label = text.match(/^(\*\*|__)([^*_:\n]+?)(:?)\1(:?)[ \t]*/);
-  if (!label || label[3] === label[4]) return null;
-  const role = cleanLabel(decode(label[2]));
-  const reference = leadingReference(text.slice(label[0].length));
+  const label = boldLabel(text);
+  if (!label || label.inside === label.after) return null;
+  const role = cleanLabel(decode(label.text));
+  const reference = leadingReference(text.slice(label.length));
   return reference && role ? { ...reference, role } : null;
 }
 // A row that looks like a source but does not fit the grammar: it starts with a
 // reference, or with a bold or plain label, and any run of colons, directly
 // followed by one. It is never turned into a route; it only marks the overview
-// as missing something.
-const referenceStart = /^(?:<(?:mention-page|mention-database|mention-data-source|page|database|data-source)\b|\[[^\]\n]*\]\()/;
+// as missing something. A label wrapped in any single HTML element, such as
+// <strong>, is reported this way too rather than silently ignored.
+const referenceStart = new RegExp(`^(?:<${referenceTags}|\\[[^\\]\\n]*\\]\\()`);
 function sourceLike(text) {
   if (referenceStart.test(text)) return true;
-  return [/^(\*\*|__)[^\n]+?\1[: \t]*/, /^[^:<>[\]*_\n]+:[: \t]*/]
+  return [/^(\*\*|__)[^\n]+?\1[: \t]*/, /^<([a-z]+)>[^<>\n]*<\/\1>[: \t]*/, /^[^:<>[\]*_\n]+:[: \t]*/]
     .some(label => { const prefix = text.match(label)?.[0]; return Boolean(prefix) && referenceStart.test(text.slice(prefix.length)); });
 }
 

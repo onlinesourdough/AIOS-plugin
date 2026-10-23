@@ -1,5 +1,28 @@
 # Verification
 
+On 2026-10-23 an end-to-end naming check on the owner's Codex, which runs
+`0.30.1-setup-preview.1` (`2d34543`), found the cached overview still naming the
+old AIOS root. A native refresh from the current model, through the official
+Notion fetch and `osm_save_model_overview`, returned `unsupported` and replaced
+the earlier overview's 11 links. The model, Notion, the pointer and saved
+shortcuts were unchanged. The lead reported the cause: the current fetch writes
+labelled rows as `<b>Role:</b> <mention url="…">Name</mention>` or with a
+self-closed `<mention url="…" />`, and the reader, unchanged from `c6432c5`,
+knew only Markdown bold labels and typed mentions. A sanitized fixture of that
+shape, with invented page identities, failed before the fix: an all-native Home
+gave `unsupported`, and with one Markdown row beside it the native rows were
+silently dropped from a `ready`, complete overview. `0.30.1-setup-preview.2`
+extends the existing grammar to `<b>` labels and generic mentions. New tests
+cover the native Home, colon and leading-reference negatives, user and unknown
+mention tags, another HTML wrapper, a mention without a link and an unsafe link.
+With Node 22.22.3 and Python 3.14.5, the fixture shows the five Home links
+after the fix, and the rebuilt bundled server returned `ready` with those five
+links for it over stdio. 157 sidebar unit tests and the smoke passed, as did
+`validate.py` with `--baseline` `2d34543`, `169b129` and `c6432c5`, the
+maintained rehearsals and fixture preparation. Restoring the owner's overview
+through a native refresh, the same 11 targets with OSM labels, and the Codex UI
+remain the lead's native checks.
+
 On 2026-10-23, `feat/osm-setup-preview-58` merged the PR #64 Setup preview
 (`c6432c5`, base `e9f4d2d`) into OSM production candidate `169b129`, as version
 `0.30.1-setup-preview.1`. This is naming-only adoption of an unreleased #58
