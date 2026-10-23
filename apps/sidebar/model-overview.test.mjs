@@ -231,6 +231,15 @@ test('any other multi-line page shape is counted as left out, never a route or a
   // An unclosed tag never swallows the following section.
   const unclosed = deriveOverview(childRows(childPage(notion(1), 'Title'), ['## Valid', ...valid]));
   assert.deepEqual(unclosed.groups.map(group => group.title), ['Valid']); assert.equal(unclosed.skipped, 1);
+  // A malformed open page must not expose its body as navigation. Recover at
+  // the next model heading, or consume the remaining block if there is none.
+  const unclosedBody = childPage(notion(1), 'Title', `- [Nested body](${notion(2)})`);
+  const recovered = deriveOverview(childRows(unclosedBody, ['## Valid', ...valid]));
+  assert.deepEqual(recovered.groups.map(group => group.title), ['Valid']);
+  assert.ok(!shown(recovered).includes(notion(2))); assert.equal(recovered.skipped, 1);
+  const remainder = deriveOverview(childRows(unclosedBody));
+  assert.equal(remainder.state, 'unsupported'); assert.deepEqual(remainder.groups, []);
+  assert.equal(remainder.skipped, 1);
   const unsafe = deriveOverview(childRows(childPage('javascript:alert(1)', 'Title', '</page>'), ['## Valid', ...valid]));
   assert.deepEqual(unsafe.groups.map(group => group.title), ['Valid']); assert.equal(unsafe.skipped, 1);
 });
@@ -244,6 +253,17 @@ test('a three-line page in a code fence, a quotation or prose is never navigatio
     const overview = deriveOverview(text);
     assert.ok(!shown(overview).includes(notion(1)), text);
     assert.equal(overview.state, 'unsupported', text);
+  }
+});
+
+test('recovering an unclosed page ignores headings and close tags inside fenced examples', () => {
+  for (const run of ['```', '~~~~']) {
+    const overview = deriveOverview(childRows(childPage(notion(1), 'Title',
+      run, '# Example heading', '</page>', `- [Example link](${notion(2)})`, run),
+      ['## Valid', `<page url="${notion(4)}">Example child</page>`]));
+    assert.deepEqual(overview.groups.map(group => group.title), ['Valid']);
+    assert.deepEqual(shown(overview), [notion(4)]);
+    assert.equal(overview.skipped, 1); assert.equal(overview.partial, true);
   }
 });
 

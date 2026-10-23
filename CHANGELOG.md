@@ -10,8 +10,10 @@ preview's overview reader, found by a native refresh of the current model.
   one-line form. Before, it was counted as left out and its section dropped.
   Only that exact shape counts: blank lines, markup in the title, a nested
   body, an extra attribute or a close at another depth are counted as left out,
-  their lines up to the close are not read, and an unclosed tag never hides a
-  later section. Code, quotations and prose stay excluded.
+  their lines up to the close are not read. An unclosed tag hides its own
+  section's remainder, counted once, up to the next heading outside a code
+  fence or the end. Later sections remain; code, quotations and prose stay
+  excluded, including fenced headings and close tags during recovery.
 
 ## 0.30.1-setup-preview.2 — unreleased preview
 

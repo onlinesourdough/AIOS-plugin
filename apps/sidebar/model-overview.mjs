@@ -77,20 +77,27 @@ function shortLabel(target) {
 
 // The current fetch writes a standalone child page as three lines at one tab
 // depth: <page url="…">, its plain title, then </page>. Only that exact shape is
-// a reference. Any other block opened this way is counted once, and its lines up
-// to a close at the same depth before the next heading are skipped rather than
-// read as model structure. An unclosed tag never hides a later section.
+// a reference. Any other block opened this way is counted once and skipped to
+// its close at the same depth, the next heading outside a fence, or the end.
+// An unclosed tag hides its own section's remainder, never a later section.
+const fenceMarker = raw => raw.match(/^(\t*)( {0,3})(`{3,}|~{3,})(.*)$/);
+const closesFence = (marker, fence) => marker && marker[1] === fence.depth && marker[3][0] === fence.run[0] && marker[3].length >= fence.run.length && !marker[4].trim();
+const opensFence = marker => marker && !(marker[3][0] === '`' && marker[4].includes('`'));
 const pageOpen = /^(\t*)<page url="([^"<>]*)">[ \t]*$/;
 function childPage(lines, index) {
   const open = lines[index].match(pageOpen);
   if (!open) return null;
-  let end = -1;
-  for (let next = index + 1; next < lines.length && !/^\s*#{1,6}\s/.test(lines[next]); next++) {
+  let end = -1, next = index + 1, fence = null;
+  for (; next < lines.length; next++) {
+    const marker = fenceMarker(lines[next]);
+    if (fence) { if (closesFence(marker, fence)) fence = null; continue; }
+    if (opensFence(marker)) { fence = { depth: marker[1], run: marker[3] }; continue; }
+    if (/^\s*#{1,6}\s/.test(lines[next])) break;
     if (lines[next].replace(/[ \t]+$/, '') === `${open[1]}</page>`) { end = next; break; }
   }
   const title = lines[index + 1]?.trim();
   if (end === index + 2 && title && !/[<>]/.test(title) && !/^(?:`{3,}|~{3,})/.test(title)) return { reference: { title, url: open[2], rest: '' }, next: end };
-  return { reference: null, next: end < 0 ? index : end };
+  return { reference: null, next: end < 0 ? next - 1 : end };
 }
 
 function sectionsOf(content) {
@@ -107,12 +114,12 @@ function sectionsOf(content) {
     // closes only at the tab depth it opened with, on a bare run of its own
     // character at least as long as the opening run. Anything else inside it,
     // including a more deeply indented run, is example text.
-    const marker = raw.match(/^(\t*)( {0,3})(`{3,}|~{3,})(.*)$/);
+    const marker = fenceMarker(raw);
     if (fence) {
-      if (marker && marker[1] === fence.depth && marker[3][0] === fence.run[0] && marker[3].length >= fence.run.length && !marker[4].trim()) fence = null;
+      if (closesFence(marker, fence)) fence = null;
       continue;
     }
-    if (marker && !(marker[3][0] === '`' && marker[4].includes('`'))) { fence = { depth: marker[1], run: marker[3] }; continue; }
+    if (opensFence(marker)) { fence = { depth: marker[1], run: marker[3] }; continue; }
     if (!line || line.startsWith('>')) continue;
     const block = childPage(lines, index);
     if (block) {

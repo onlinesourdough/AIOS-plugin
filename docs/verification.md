@@ -19,7 +19,15 @@ unit tests and the smoke passed; the rebuilt bundled server returned `ready`
 with six links for the fixture; `validate.py` passed with `--baseline`
 `791f033`, `c6432c5` and `169b129`, as did the maintained rehearsals and
 fixture preparation. The owner's native refresh and readback of all 11 links
-remain the lead's checks.
+remain the lead's checks. Independent review also found that an unclosed page
+could expose a nested Markdown link as navigation. A failing regression now
+covers recovery at a later heading and at end of content. The reader skips that
+malformed body to the boundary, counting it once, without rescanning its lines.
+Independent Opus review found a fenced-example regression in that recovery:
+the scan could mistake an example heading for the boundary. A failing test
+reproduced it; the scan now shares the main reader's fence predicates and ignores
+example headings and close tags. All 161 corrected sidebar tests and the stdio
+smoke passed, alongside package validation and the six maintained rehearsals.
 
 On 2026-10-23 an end-to-end naming check on the owner's Codex, which runs
 `0.30.1-setup-preview.1` (`2d34543`), found the cached overview still naming the
