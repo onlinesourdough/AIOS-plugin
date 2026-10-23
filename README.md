@@ -1,10 +1,8 @@
-![AIOS](https://raw.githubusercontent.com/onlinesourdough/AIOS-Plugin/v0.15.1/assets/branding/aios-banner.png)
-
-# AIOS
+# The Onlinesourdough Method
 
 **Business first. Productivity built in.**
 
-AIOS helps your AI assistant plan work, build it, review the result and remember
+The Onlinesourdough Method (OSM) helps your AI assistant plan work, build it, review the result and remember
 useful decisions. Install it in the app you use. The same 22 skills work from
 one shared source, with native packaging for Codex, Pi, Claude Code, Gemini CLI,
 Copilot CLI and Cursor.
@@ -12,6 +10,11 @@ Copilot CLI and Cursor.
 Small requests stay small. Larger tasks get a clear outcome, the relevant
 specialist method and a review before delivery. Your app still provides the
 models, tools and permissions.
+
+The method was previously called AIOS. The released plugin still uses `aios`
+installation identifiers and AIOS labels while the [coordinated migration](https://github.com/onlinesourdough/AIOS-plugin/issues/76)
+is implemented. The commands and native labels below describe that available
+release; an OSM package is not yet published. Your context stays in its existing home.
 
 AIOS supports business work, decisions, content, design and practical automation.
 Its code guidance and verification stay proportional to the task. Projects own
@@ -39,16 +42,16 @@ reports the gap instead of improvising one.
 
 ## Why I built this
 
-I built AIOS to carry useful context, decisions and working methods between AI
-apps, so each conversation can build on the work that came before.
+I built The Onlinesourdough Method to carry useful context, decisions and working
+methods between AI apps, so each conversation can build on the work that came before.
 
-AIOS installs as a native plugin in Codex and Claude Code and adds reusable
+The method installs as a native plugin in Codex and Claude Code and adds reusable
 skills for planning, building, reviewing and writing. It builds on open formats
 such as Agent Skills and on what those apps already provide, so I mostly write
 methods and small adaptations, with little code to maintain.
 
 Your context stays in a home you choose, such as Notion or a repository. The app
-provides the models, tools and permissions; AIOS helps the assistant find and
+provides the models, tools and permissions; the method helps the assistant find and
 maintain the context it needs.
 
 ## Understand complex topics
