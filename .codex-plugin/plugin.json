@@ -1,6 +1,6 @@
 {
-  "name": "aios",
-  "version": "0.29.0",
+  "name": "osm",
+  "version": "0.30.0",
   "description": "Portable context and skills for planning, content and reviewed delivery.",
   "author": {
     "name": "onlinesourdough"
@@ -8,25 +8,25 @@
   "skills": "./skills/",
   "extensions": {
     "com.openai": {
-      "onboardingSkill": "./skills/aios-setup/SKILL.md"
+      "onboardingSkill": "./skills/osm-setup/SKILL.md"
     }
   },
   "interface": {
-    "displayName": "AIOS",
+    "displayName": "OSM",
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
-    "shortDescription": "Your AI operating system",
-    "longDescription": "Open AIOS from the Codex sidebar. Connect the separate official Notion plugin, follow the source setup steps and open Context, Docs, Skills and Memory from your dashboard. Established alternative providers remain supported. Twenty-two shared skills help with writing, code, content and reviewed delivery.",
+    "shortDescription": "The Onlinesourdough Method",
+    "longDescription": "Open The Onlinesourdough Method (OSM) from the Codex sidebar. Connect the separate official Notion plugin, follow the source setup steps and open Context, Docs, Skills and Memory from your dashboard. Established alternative providers remain supported. Twenty-two shared skills help with writing, code, content and reviewed delivery.",
     "developerName": "onlinesourdough",
     "category": "Productivity",
     "capabilities": [
       "Interactive"
     ],
     "defaultPrompt": [
-      "Set up AIOS for my current work."
+      "Set up OSM for my current work."
     ]
   },
-  "repository": "https://github.com/onlinesourdough/AIOS-Plugin",
+  "repository": "https://github.com/onlinesourdough/OSM-plugin",
   "license": "MIT",
   "mcpServers": "./.codex-plugin/mcp.json"
 }

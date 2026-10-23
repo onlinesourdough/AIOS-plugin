@@ -8,7 +8,7 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OWNER_ASSETS = ROOT / "skills/aios-setup/assets/owner"
+OWNER_ASSETS = ROOT / "skills/osm-setup/assets/owner"
 
 
 def git(root, *args):
@@ -44,7 +44,7 @@ def assert_layout(owner):
 
 
 def main():
-    with tempfile.TemporaryDirectory(prefix="aios-layout-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="osm-layout-") as temporary:
         fixture = Path(temporary)
         owner = fixture / "account/.AIOS"
         shutil.copytree(OWNER_ASSETS, owner)

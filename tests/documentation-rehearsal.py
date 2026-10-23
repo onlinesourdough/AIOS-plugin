@@ -10,12 +10,12 @@ from package_documentation import SOURCE_PATH, check
 
 class DocumentationTest(unittest.TestCase):
     def setUp(self):
-        temporary = tempfile.TemporaryDirectory(prefix="aios-documentation-")
+        temporary = tempfile.TemporaryDirectory(prefix="osm-documentation-")
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.overview = self.root / SOURCE_PATH
         self.overview.parent.mkdir()
-        self.overview.write_text("# AIOS\n\nAIOS version: 0.10.1\n\nLocal overview.\n")
+        self.overview.write_text("# The Onlinesourdough Method\n\nOSM version: 0.10.1\n\nLocal overview.\n")
         (self.root / ".codex-plugin").mkdir()
         (self.root / ".codex-plugin/plugin.json").write_text('{"version":"0.10.1"}')
         self.package = {"version": "0.10.1", "files": [SOURCE_PATH]}
@@ -42,8 +42,10 @@ class DocumentationTest(unittest.TestCase):
             check(self.root)
 
     def test_overview_drift_missing_and_repeated_labels(self):
-        for document in ("# AIOS\n", "# AIOS\n\nAIOS version: 0.9.0\n",
-                         "# AIOS\n\nAIOS version: 0.10.1\nAIOS version: 0.10.1\n"):
+        for document in ("# The Onlinesourdough Method\n",
+                         "# The Onlinesourdough Method\n\nOSM version: 0.9.0\n",
+                         "# The Onlinesourdough Method\n\nOSM version: 0.10.1\nOSM version: 0.10.1\n",
+                         "# AIOS\n\nAIOS version: 0.10.1\n"):
             with self.subTest(document=document):
                 self.overview.write_text(document)
                 with self.assertRaisesRegex(ValueError, "overview version"):

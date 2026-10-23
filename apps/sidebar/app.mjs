@@ -5,10 +5,10 @@ import { createPicker } from './picker.mjs';
 import { pageIcon, notionPageId } from './page-icons.mjs';
 import { sourceLabel } from './source-label.mjs';
 
-const app = new App({ name: 'aios', version: __AIOS_VERSION__ }, { availableDisplayModes: ['fullscreen'] });
+const app = new App({ name: 'osm', version: __OSM_VERSION__ }, { availableDisplayModes: ['fullscreen'] });
 const $ = id => document.getElementById(id);
 const connectUrl = 'https://chatgpt.com/apps/notion/asdk_app_69c18c28f1188191bf5b8445c4ab0a2e';
-const repositoryUrl = 'https://github.com/onlinesourdough/AIOS-plugin';
+const repositoryUrl = 'https://github.com/onlinesourdough/OSM-plugin';
 const slotLabels = { docs: 'Docs', personalSkills: 'Personal', teamSkills: 'Team', memory: 'Personal', teamMemory: 'Team' };
 const stepRoles = [[], ['docs'], ['personalSkills', 'teamSkills'], ['memory', 'teamMemory']];
 const connectable = ['not_connected', 'disabled', 'unavailable'];
@@ -34,8 +34,8 @@ async function loadSelectedIcons() {
   loadingIcons = true;
   const generation = iconGeneration;
   try {
-    const result = await app.callServerTool({ name: 'aios_notion_icons', arguments: { targets: targets.map(([, target]) => target) } });
-    const values = result?._meta?.['aios/icons']?.icons;
+    const result = await app.callServerTool({ name: 'osm_notion_icons', arguments: { targets: targets.map(([, target]) => target) } });
+    const values = result?._meta?.['osm/icons']?.icons;
     if (generation !== iconGeneration || result?.isError || !Array.isArray(values)) return;
     for (const item of values) {
       const id = notionPageId(item.target);
@@ -45,8 +45,8 @@ async function loadSelectedIcons() {
   finally { loadingIcons = false; render(); }
 }
 async function loadPages(query) {
-  const result = await app.callServerTool({ name: 'aios_notion_pages', arguments: { query } });
-  const data = result?._meta?.['aios/pages'];
+  const result = await app.callServerTool({ name: 'osm_notion_pages', arguments: { query } });
+  const data = result?._meta?.['osm/pages'];
   if (result?.isError) throw new Error(result.content?.find(item => item.type === 'text')?.text || 'Could not load Notion pages.');
   if (!Array.isArray(data?.pages)) throw new Error('Could not load Notion pages.');
   const pages = data.pages.filter(page => typeof page.title === 'string' && page.title.length <= 100 && classifyTarget(page.target)?.kind === 'notion');
@@ -117,10 +117,10 @@ function render() {
   const dashboard = status.context.state === 'configured' && !onboarding;
   const locked = saving || refreshing;
   $('loading').hidden = true;
-  $('heading').textContent = dashboard ? 'AIOS' : 'Get started';
+  $('heading').textContent = dashboard ? 'OSM' : 'Get started';
   $('setup').hidden = dashboard; $('dashboard').hidden = !dashboard;
   $('settings').hidden = !dashboard; $('settings').disabled = locked;
-  $('version').textContent = `v${__AIOS_VERSION__}`;
+  $('version').textContent = `v${__OSM_VERSION__}`;
   renderConnection(dashboard, locked);
   if (dashboard) renderDashboard(locked); else renderSetup(locked);
   if (settingsOpen) renderSettings(locked);
@@ -211,7 +211,7 @@ function renderSettings(locked) {
 
 function apply(result) {
   if (result?.isError) throw new Error(result.content?.find(c => c.type === 'text')?.text || 'Could not complete the request.');
-  const value = result?._meta?.['aios/status'], timestamp = readStatus(value);
+  const value = result?._meta?.['osm/status'], timestamp = readStatus(value);
   if (timestamp === null) throw new Error('Could not read setup. Refresh to try again.');
   if (timestamp < checkedAt) return false;
   checkedAt = timestamp; status = value;
@@ -240,7 +240,7 @@ async function refresh() {
   if (refreshing || saving) return;
   ++iconGeneration; icons.clear(); requestedIcons.clear();
   refreshing = true; feedback(''); render();
-  try { apply(await app.callServerTool({ name: 'aios_status', arguments: {} })); }
+  try { apply(await app.callServerTool({ name: 'osm_status', arguments: {} })); }
   catch {
     checkedAt = Math.max(checkedAt + 1, Date.now());
     if (status) status = { ...status, notion: { state: 'unknown' } };
@@ -260,12 +260,12 @@ function current() {
   render(); return false;
 }
 async function writeContext(target, title) {
-  const result = await app.callServerTool({ name: 'aios_save_context', arguments: { target, expectedRevision: draft.contextRevision } });
+  const result = await app.callServerTool({ name: 'osm_save_context', arguments: { target, expectedRevision: draft.contextRevision } });
   if (!apply(result)) throw new Error('Your context changed. Refresh before trying again.');
   fillDraft(); // The new context's own map; earlier source edits never carry over.
   if (title && !draft.title) {
     try {
-      const named = await app.callServerTool({ name: 'aios_save_sources', arguments: {
+      const named = await app.callServerTool({ name: 'osm_save_sources', arguments: {
         target: draft.contextTarget, expectedContextRevision: draft.contextRevision,
         expectedRevision: draft.sourcesRevision, title, links: linksPayload(draft),
       } });
@@ -279,7 +279,7 @@ async function saveDraft() {
   if (!current()) return false;
   saving = true; feedback(''); render();
   try {
-    const result = await app.callServerTool({ name: 'aios_save_sources', arguments: {
+    const result = await app.callServerTool({ name: 'osm_save_sources', arguments: {
       target: draft.contextTarget, expectedContextRevision: draft.contextRevision,
       expectedRevision: draft.sourcesRevision, title: draft.title, links: linksPayload(draft),
     } });
@@ -378,8 +378,8 @@ async function switchContext(value, title) {
 function reload() { fillDraft(); feedback(''); render(); }
 
 app.ontoolresult = result => {
-  if (result?._meta?.['aios/pages'] || ['pages', 'icons'].includes(result?._meta?.['aios/kind'])) return;
-  try { apply(result); if (result?._meta?.['aios/view'] === 'settings') openSettings(); }
+  if (result?._meta?.['osm/pages'] || ['pages', 'icons'].includes(result?._meta?.['osm/kind'])) return;
+  try { apply(result); if (result?._meta?.['osm/view'] === 'settings') openSettings(); }
   catch (error) {
     checkedAt = Math.max(checkedAt + 1, Date.now());
     status = { ...(status || { context: { state: 'unavailable' }, sources: { state: 'unavailable', links: {} } }), notion: { state: 'unknown' } };
@@ -434,4 +434,4 @@ try {
   if (context?.displayMode === 'inline' && context.availableDisplayModes?.includes('fullscreen')) {
     try { await app.requestDisplayMode({ mode: 'fullscreen' }); } catch { /* Host owns placement. */ }
   }
-} catch { $('loading').hidden = true; feedback('Open AIOS from the Codex sidebar.', true); }
+} catch { $('loading').hidden = true; feedback('Open OSM from the Codex sidebar.', true); }

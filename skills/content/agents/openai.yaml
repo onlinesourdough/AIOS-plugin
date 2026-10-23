@@ -1,4 +1,4 @@
 interface:
-  display_name: "AIOS:content"
+  display_name: "Content"
   short_description: "Create, reuse and review content with provenance"
   default_prompt: "Use $content to revise this draft for its intended audience."

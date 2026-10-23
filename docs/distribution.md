@@ -1,9 +1,9 @@
-# Review and release AIOS
+# Review and release OSM
 
 Revision: 2026-10-11
 
 The release unit is this repository root: the native manifests, `.app.json`, `package.json`, `gemini-extension.json`, `assets/`, `LICENSE`,
-`README.md`, the single `skills/` source, `runtime/sidebar` and `docs/aios.md`. The overview
+`README.md`, the single `skills/` source, `runtime/sidebar` and `docs/osm.md`. The overview
 is package documentation, read only when needed. Other documentation, tests and
 the optional specialist shelf remain author material, not product skills.
 This repository carries no local generic lifecycle skills.
@@ -40,7 +40,7 @@ are separate actions and require their own applicable authority.
 
 A source version on `main` is a candidate until its reviewed tag and GitHub
 Release exist. Promote the exact reviewed main-branch commit after the checks
-above. Bump every native package declaration together, update `docs/aios.md`,
+above. Bump every native package declaration together, update `docs/osm.md`,
 and add the matching `## VERSION` entry in CHANGELOG. Run the release check:
 
 ```sh
@@ -52,7 +52,7 @@ Replace both placeholders with the actual reviewed versions. Under the accepted
 release authority, create and push only that version tag:
 
 ```sh
-git tag -a vVERSION REVIEWED_COMMIT -m "AIOS VERSION"
+git tag -a vVERSION REVIEWED_COMMIT -m "OSM VERSION"
 git push origin refs/tags/vVERSION
 ```
 
@@ -81,20 +81,20 @@ or replacement of instructions already read into an active conversation.
 A published release makes the reviewed package available to plugin users; it
 does not replace their local installations. They refresh/update through their
 app, then start a fresh conversation with the installed version. A new chat
-alone does not download an update. AIOS provides no background updater.
+alone does not download an update. OSM provides no background updater.
 
 Owner-data continuity is a separate, explicit Sync operation. Plugin releases
 never upload, restore or migrate an owner's home.
 
 ## Local documentation
 
-`docs/aios.md` is the version-matched overview included in every native package.
-The AIOS skill's documentation route reads only the needed overview or method
+`docs/osm.md` is the version-matched overview included in every native package.
+The OSM skill's documentation route reads only the needed overview or method
 reference. Package validation checks its regular file, package inventory and
 single version label; release validation also checks the tag and changelog.
 Content review establishes accuracy; matching numbers alone do not prove prose.
 
-AIOS no longer exports documentation for the Resources domain. The package
+OSM no longer exports documentation for the Resources domain. The package
 contains its own references and needs no documentation server, installer hook,
 custom CLI or background updater. Customer sources and owner data stay with
 their existing owners. The Resources rollback is delivered through that

@@ -1,4 +1,4 @@
-# AIOS
+# OSM
 
 Revision: 2026-10-11
 
@@ -12,7 +12,7 @@ This file is the complete repository contract. Any contributor or harness can
 follow it; no plugin, skill library or orchestration tool is required to
 develop this repository. Contributors may use their own harness methods. The
 owner's Factory project uses Factory as one optional method; it is not
-required. Using the installed AIOS plugin or its skills to exercise the
+required. Using the installed OSM plugin or its skills to exercise the
 product is optional product testing, never a precondition for authoring.
 
 Read [README.md](README.md) for product context when needed, then only the
@@ -29,7 +29,7 @@ Keep one writer per overlapping change and verify the selected checkout first.
 - `apps/sidebar` is the Codex sidebar source. `runtime/sidebar` is its
   reproducible build; never edit it by hand.
 - Native manifests (`.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`,
-  `gemini-extension.json`), `package.json` and `docs/aios.md` keep one
+  `gemini-extension.json`), `package.json` and `docs/osm.md` keep one
   consistent identity and version. See [distribution](docs/distribution.md).
 - `.agents/skills/` is the [repository specialist shelf](.agents/skills/README.md).
 - `tests/` and the remaining `docs/` are author material, excluded from the npm

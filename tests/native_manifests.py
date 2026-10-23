@@ -24,9 +24,9 @@ def validate_native(root, require):
     require('apps' not in codex and not (root / '.app.json').exists(),
             'Notion must remain a separate plugin, with no embedded app binding')
     require(codex['extensions'] == {'com.openai': {
-                'onboardingSkill': './skills/aios-setup/SKILL.md'}},
+                'onboardingSkill': './skills/osm-setup/SKILL.md'}},
             'onboarding must use the packaged Setup skill')
-    setup = root / 'skills/aios-setup/SKILL.md'
+    setup = root / 'skills/osm-setup/SKILL.md'
     require(setup.is_file() and not setup.is_symlink(), 'missing packaged Setup skill')
     for native in (codex, claude, cursor, gemini, package):
         require(all(native[k] == codex[k] for k in ('name', 'version', 'description')),
@@ -43,7 +43,7 @@ def validate_native(root, require):
             all(entry[k] == codex[k] for k in ('name', 'version', 'description')),
             'Claude marketplace source/version')
     require(codex['mcpServers'] == './.codex-plugin/mcp.json' and
-            read('.codex-plugin/mcp.json') == {'mcpServers': {'aios': {
+            read('.codex-plugin/mcp.json') == {'mcpServers': {'osm': {
                 'command': 'node', 'args': ['./runtime/sidebar/server.cjs'], 'cwd': '.'}}},
             'unexpected sidebar command or server')
     for name in ('server.cjs', 'index.html', 'THIRD-PARTY-NOTICES.md'):

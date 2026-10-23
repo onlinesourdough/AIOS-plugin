@@ -2,10 +2,10 @@
 name: content
 description: Create, revise or reuse content, configure channel and style defaults, or audit a named content outcome read-only. Use Diffusion Studio for ordinary video editing.
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
-# AIOS:content
+# Content
 
 Own editorial judgment, useful reuse, provenance and final review. Start with
 the requested outcome and resolved caller inputs. Resume from the actual work
@@ -14,10 +14,10 @@ learning only for a current decision. Use project-local `content/` as needed,
 preserving existing files and identities. Skill files are immutable methods;
 work data, learning, media and caches belong outside the installed package.
 
-Use [human-writing](../human-writing/SKILL.md) for prose. A short standalone
+Use [human-writing](../osm-human-writing/SKILL.md) for prose. A short standalone
 piece needs the requested draft/revision and an editorial read, without an
 obligatory graph, editor, brief or production folder. Substantive work reuses
-the accepted [shared lifecycle](../aios/references/lifecycle.md).
+the accepted [shared lifecycle](../osm/references/lifecycle.md).
 
 Read only the detail needed:
 

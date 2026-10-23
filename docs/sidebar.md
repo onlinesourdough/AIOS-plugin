@@ -29,8 +29,8 @@ setup, Settings and the dashboard. Icons already supplied by the page listing
 are reused. Missing icons are read only for selected destinations, in batches
 of at most six, and cached for the current panel until Refresh. Existing saved
 maps work without a migration or a navigation write. The official fetch tool
-returns a page/database response; AIOS checks its identity, extracts only the
-icon metadata and discards the rest before returning to the UI. AIOS does not
+returns a page/database response; OSM checks its identity, extracts only the
+icon metadata and discards the rest before returning to the UI. OSM does not
 persist these responses; the Codex host owns its own logging. Opening a connected
 panel can start the temporary transport for this read, even without a page search. Search results
 are not individually fetched. Unsupported custom/uploaded icons and failed
@@ -38,7 +38,7 @@ icon reads retain a usable text label; no arbitrary external image host is loade
 Icon failure does not affect the connection badge or saved source choices.
 
 A chat-bubble button beside Settings, in setup and on the dashboard, opens the
-AIOS GitHub repository through the host link route. A failed open shows a
+OSM GitHub repository through the host link route. A failed open shows a
 message with the link; clicking again retries. There is no feedback form, draft,
 email or sending from the panel.
 Settings groups Docs under Context and notes that a context switch applies
@@ -55,9 +55,9 @@ body text and controls continue to use the Codex theme.
 The official Notion plugin/account stays separate. Native CLI inventory and
 public app/installed metadata determine installation, enablement and connection.
 Unknown is not Connected; Connected does not prove page access. Refresh checks
-that metadata. AIOS has no Notion server, credential store or custom OAuth.
+that metadata. OSM has no Notion server, credential store or custom OAuth.
 
-AIOS MCP serves this panel and stores only navigation labels/links. Its app-only
+OSM MCP serves this panel and stores only navigation labels/links. Its app-only
 page picker calls an allowlist of read-only Notion tools through the documented
 Codex app-server protocol. It creates one temporary in-memory transport context,
 never a model turn or persisted conversation, and closes it after a minute idle.
@@ -85,22 +85,22 @@ Codex runs the packaged Node.js 22+ stdio server. Page selection requires Codex
 CLI 0.161.0+ supporting the documented direct MCP tool call. No consumer npm, Docker, hosted
 service or telemetry. The UI may load built-in icons from www.notion.so; no
 external font service is used. Source: apps/sidebar. Locked bundles:
-runtime/sidebar. Resource: ui://aios/home-v5. Tools:
+runtime/sidebar. Resource: ui://osm/home-v1. Tools:
 
-- aios_open: read-only global app entry; status and links are UI metadata.
-- aios_status: app-only read-only refresh.
-- aios_notion_icons: app-only bounded icon reads for selected destinations.
-- aios_notion_pages: app-only bounded read-only navigation listing/search; UI metadata only.
-- aios_settings: app-only native settings entry, opening the same drawer.
-- aios_save_context: app-only owned AGENTS pointer save.
-- aios_sources: explicit model read of the context and navigation with revisions.
-- aios_save_sources: app/model navigation replacement, scoped to current context.
+- osm_open: read-only global app entry; status and links are UI metadata.
+- osm_status: app-only read-only refresh.
+- osm_notion_icons: app-only bounded icon reads for selected destinations.
+- osm_notion_pages: app-only bounded read-only navigation listing/search; UI metadata only.
+- osm_settings: app-only native settings entry, opening the same drawer.
+- osm_save_context: app-only owned AGENTS pointer save.
+- osm_sources: explicit model read of the context and navigation with revisions.
+- osm_save_sources: app/model navigation replacement, scoped to current context.
 
-The context-hub mark identifies AIOS. `assets/branding/aios-icon.svg` is the
+The context-hub mark identifies OSM. `assets/branding/aios-icon.svg` is the
 source of `assets/icon.png` (the Codex `composerIcon` and `logo`):
 `rsvg-convert -w 512 -h 512 assets/branding/aios-icon.svg -o assets/icon.png`.
 The sidebar mark is one SVG with the same geometry and no `theme` field, sent
-both as the `aios_open` tool icon, which hosts read first, and as the server icon.
+both as the `osm_open` tool icon, which hosts read first, and as the server icon.
 It is monochrome: it paints only with `currentColor` and sets no colour of its
 own, so the host can colour it like its other sidebar icons. Earlier candidates
 that set their own greys looked wrong in the native sidebar. MCP SDK 1.31's `McpServer` drops
@@ -108,9 +108,9 @@ tool icons, so the server sets its own `tools/list` handler through the SDK's
 public low-level server; it lists the registered tools unchanged apart from that
 icon.
 
-The short pointer lives in CODEX_HOME/AGENTS.md. Installing AIOS alone does not
+The short pointer lives in CODEX_HOME/AGENTS.md. Installing OSM alone does not
 choose a context. Saving the primary Context during setup, or confirming a
-Context switch in Settings, automatically writes its managed AIOS block there,
+Context switch in Settings, automatically writes its managed context block (AIOS markers) there,
 keeping unrelated instructions; normal setup needs no manual copy. A fresh chat
 verifies that Codex discovers the instructions; Notion connection and page
 access still need their own check. Pointer saves keep unrelated
@@ -144,7 +144,7 @@ presence in setup and dashboard, the exact repository link, and a failed open
 with a visible retryable message. Synthetic host results are distinct from
 native installed-runtime adoption and do not prove new-account OAuth.
 
-Page-picker proof includes a real read-only Notion listing and AIOS search via
+Page-picker proof includes a real read-only Notion listing and OSM search via
 Codex 0.161.0, zero-turn transport inspection, title/URL validation, disabled
 connection, prompt rejection, timeout cleanup, stale searches and explicit
 context-switch confirmation. Test fixtures use invented page identities. The
@@ -162,7 +162,7 @@ labelled scenario/theme/error controls. Setup and dashboard are separate fixture
 refreshing either does not alter real instructions or company sources. Source-link
 open requests are recorded, not sent to fictional destinations.
 Opt in to actual read-only Notion page browsing with
-`AIOS_PREVIEW_LIVE_NOTION=1 npm run preview --prefix apps/sidebar`. Its visible
+`OSM_PREVIEW_LIVE_NOTION=1 npm run preview --prefix apps/sidebar`. Its visible
 label distinguishes live Notion from sample data. No preview writes to Notion
 or to the owner's Codex instructions.
 

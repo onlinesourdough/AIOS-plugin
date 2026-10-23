@@ -42,7 +42,7 @@ Explicit `setup` clones official upstream, adds/fetches the fork and detaches
 at the exact pin. It refuses a mismatched existing checkout, then uses `npm ci`
 and the pinned desktop workspace’s declared `package` command. Public build
 values come from `apps/web/.env.example` into that process; no credential or
-`.env` copy enters AIOS. This is a manual action, never an installation hook.
+`.env` copy enters OSM. This is a manual action, never an installation hook.
 All installs, builds and generated state stay with the external application.
 
 `open` checks the boundary, starts the packaged hidden Electron host only when

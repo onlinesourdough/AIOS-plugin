@@ -86,7 +86,7 @@ export class NotionPages {
     const executable = await this.command(); current(); this.executable = executable;
     if (await this.plugin({ command: executable }) !== 'enabled') throw new Error('Enable the official Notion plugin in Codex first.');
     current();
-    const cwd = await mkdtemp(join(tmpdir(), 'aios-notion-pages-'));
+    const cwd = await mkdtemp(join(tmpdir(), 'osm-notion-pages-'));
     if (generation !== this.generation) { await rm(cwd, { recursive: true, force: true }); throw unavailable(); }
     this.cwd = cwd;
     const child = this.child = this.launch(this.executable, ['app-server', '--stdio'], { cwd, stdio: ['pipe', 'pipe', 'ignore'], windowsHide: true });
@@ -116,7 +116,7 @@ export class NotionPages {
         if (response.error) request.reject(unavailable()); else request.resolve(response.result);
       }
     });
-    await this.call('initialize', { clientInfo: { name: 'aios-notion-pages', version: '1.0.0' }, capabilities: { experimentalApi: true } });
+    await this.call('initialize', { clientInfo: { name: 'osm-notion-pages', version: '1.0.0' }, capabilities: { experimentalApi: true } });
     current();
     this.send({ method: 'initialized', params: {} });
     const config = (await this.call('config/read', { includeLayers: false, cwd: this.cwd }))?.config;

@@ -63,5 +63,5 @@ jobs:
         run: |
           if ! gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
             gh release create "$RELEASE_TAG" --verify-tag --prerelease \
-              --title "AIOS ${RELEASE_TAG#v}" --generate-notes
+              --title "OSM ${RELEASE_TAG#v}" --generate-notes
           fi

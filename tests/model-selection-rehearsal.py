@@ -7,16 +7,18 @@ import json
 from pathlib import Path
 import subprocess
 
+from skill_metadata import RENAMED_SKILLS
+
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ROOT / "tests/fixtures/model-selection-cases.json"
 SOURCES = [
-    "skills/aios-select-model/SKILL.md",
-    "skills/aios-select-model/references/measurement.md",
-    "skills/aios/references/continuation.md",
-    "skills/aios/references/lifecycle.md",
-    "skills/aios-spec-work/SKILL.md",
-    "skills/aios-build-work/SKILL.md",
-    "skills/aios-orchestrate-workers/SKILL.md",
+    "skills/osm-select-model/SKILL.md",
+    "skills/osm-select-model/references/measurement.md",
+    "skills/osm/references/continuation.md",
+    "skills/osm/references/lifecycle.md",
+    "skills/osm-spec-work/SKILL.md",
+    "skills/osm-build-work/SKILL.md",
+    "skills/osm-orchestrate-workers/SKILL.md",
 ]
 FIELDS = {
     "id": {"type": "string"},
@@ -38,6 +40,13 @@ FIELDS = {
 }
 
 
+def baseline_path(relative):
+    """Map a current source to its pre-0.30.0 skill folder for older baselines."""
+    parts = relative.split("/")
+    parts[1] = RENAMED_SKILLS.get(parts[1], parts[1])
+    return "/".join(parts)
+
+
 def prepare(destination, baseline):
     destination.mkdir(parents=True, exist_ok=True)
     snippets = []
@@ -46,12 +55,15 @@ def prepare(destination, baseline):
         if baseline:
             result = subprocess.run(["git", "show", f"{baseline}:{relative}"], cwd=ROOT,
                                     text=True, capture_output=True)
-            if result.returncode and relative == "skills/aios/references/continuation.md":
+            if result.returncode and baseline_path(relative) != relative:
+                result = subprocess.run(["git", "show", f"{baseline}:{baseline_path(relative)}"],
+                                        cwd=ROOT, text=True, capture_output=True)
+            if result.returncode and relative == "skills/osm/references/continuation.md":
                 # Before shared ownership, the same conditional procedure lived here.
                 result = subprocess.run(["git", "show", f"{baseline}:skills/aios-select-model/references/continuation.md"],
                                         cwd=ROOT, text=True, capture_output=True)
             if result.returncode:
-                if relative.startswith("skills/aios-select-model/") or relative.endswith("/continuation.md"):
+                if relative.startswith("skills/osm-select-model/") or relative.endswith("/continuation.md"):
                     continue  # Selection did not exist in the baseline.
                 raise RuntimeError(result.stderr)
             content = result.stdout
@@ -60,7 +72,7 @@ def prepare(destination, baseline):
         hashes[relative] = hashlib.sha256(content.encode()).hexdigest()
         snippets.append(f"SOURCE {relative}\n{content}")
     cases = json.loads(CASES.read_text())
-    prompt = """You are independently exercising the attached AIOS instructions on synthetic tasks.
+    prompt = """You are independently exercising the attached OSM instructions on synthetic tasks.
 Treat each case independently. Use only the supplied instructions and runtime facts;
 do not call tools, access files, read personal context or execute any case.
 The fixtures describe the hypothetical runtime, not the evaluator's own tools.

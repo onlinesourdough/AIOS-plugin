@@ -1,7 +1,7 @@
 # Read-only content audit
 
 State the requested scope: repository/workspace, one named outcome, or both.
-Do not silently scan every production. Reuse shared AIOS Review for generic
+Do not silently scan every production. Reuse shared OSM Review for generic
 repository health; inspect the applicable local instructions, methods, scripts,
 tests and Git state. Run only checks known to be read-only, with any disposable
 test evidence outside the installed package and actual work data.

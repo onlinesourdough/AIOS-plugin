@@ -97,7 +97,7 @@ test('reads only the exact routing block and rejects ambiguous legacy instructio
 });
 
 test('the shipped context bridge round-trips web, Unix and Windows locations', async () => {
-  const bridge = await readFile(new URL('../../skills/aios-context/assets/bridge.md', import.meta.url), 'utf8');
+  const bridge = await readFile(new URL('../../skills/osm-context/assets/bridge.md', import.meta.url), 'utf8');
   for (const target of ['https://app.notion.com/p/example', 'https://example.com/context.', '/work/my vault', '/work/company.', 'C:\\Work\\Knowledge']) {
     const saved = bridge.replace('<verified-context-entry-url-or-absolute-path>', target);
     assert.deepEqual(parseContextRoute(saved), { state: 'configured', ...classifyTarget(target) });
@@ -105,7 +105,7 @@ test('the shipped context bridge round-trips web, Unix and Windows locations', a
 });
 
 test('route read does not fall back to another home; bounded files only', async (t) => {
-  const folder = await mkdtemp(join(tmpdir(), 'aios-route-'));
+  const folder = await mkdtemp(join(tmpdir(), 'osm-route-'));
   t.after(() => rm(folder, { recursive: true, force: true }));
   assert.equal((await readContextRoute({ codexHome: folder })).state, 'missing');
   await writeFile(join(folder, 'AGENTS.md'), block('https://example.com'));

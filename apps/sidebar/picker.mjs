@@ -36,7 +36,7 @@ export function createPicker({ id, label, optional = true, menuLabel = 'Saved so
   const retry = node('button', { type: 'button', className: 'btn btn-ghost', hidden: true }, 'Retry');
   const menu = node('div', { className: 'menu', hidden: true }, search, list, searchStatus, retry);
   const link = node('input', { id: `${id}-link`, className: 'form-control', type: 'text', maxLength: 2048, autocomplete: 'off', placeholder });
-  const name = node('input', { id: `${id}-name`, className: 'form-control', type: 'text', maxLength: 100, autocomplete: 'off', placeholder: 'Shown in AIOS' });
+  const name = node('input', { id: `${id}-name`, className: 'form-control', type: 'text', maxLength: 100, autocomplete: 'off', placeholder: 'Shown in OSM' });
   const note = node('p', { className: 'editor-note', hidden: true });
   const error = node('p', { className: 'editor-error', hidden: true });
   const cancel = node('button', { type: 'button', className: 'btn btn-ghost' }, 'Cancel');

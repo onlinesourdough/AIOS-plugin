@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "aios": {
+    "osm": {
       "command": "node",
       "args": ["./runtime/sidebar/server.cjs"],
       "cwd": "."

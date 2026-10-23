@@ -113,7 +113,7 @@ export async function readNotionConnection({ launch = spawn, timeoutMs = 12000, 
           if (finished) break;
         }
       });
-      send('initialize', { clientInfo: { name: 'aios-sidebar', version: '1.0' }, capabilities: { experimentalApi: true } }, 1);
+      send('initialize', { clientInfo: { name: 'osm-sidebar', version: '1.0' }, capabilities: { experimentalApi: true } }, 1);
     });
   } catch {
     return { state: 'unknown', connectUrl: NOTION_CONNECT_URL };

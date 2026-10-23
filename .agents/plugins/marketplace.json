@@ -5,7 +5,7 @@
   },
   "plugins": [
     {
-      "name": "aios",
+      "name": "osm",
       "source": {
         "source": "local",
         "path": "./"

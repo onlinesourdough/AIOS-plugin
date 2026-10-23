@@ -11,7 +11,7 @@ from hashlib import sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OWNER_ASSETS = ROOT / "skills/aios-setup/assets/owner"
+OWNER_ASSETS = ROOT / "skills/osm-setup/assets/owner"
 EXACT = {
     ".gitignore", "AIOS.md", "AIOS_FORMAT", "MEMORY.md", "CONNECTIONS.md",
     "projects/README.md", "systems/README.md",
@@ -235,7 +235,7 @@ def expect_stop(operation, marker):
 
 
 def main():
-    with tempfile.TemporaryDirectory(prefix="aios-continuity-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="osm-continuity-") as temporary:
         fixture = Path(temporary)
         source = fixture / "source/.AIOS"
         shutil.copytree(OWNER_ASSETS, source)

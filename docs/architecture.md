@@ -1,9 +1,9 @@
 # Architecture
 
-AIOS combines portable owner context with Agent Skills for planning, content
+OSM combines portable owner context with Agent Skills for planning, content
 and reviewed delivery. Native manifests load one root `skills/`
 directory. Focused helpers belong to their skills and run only for a selected
-task; AIOS has no model runner, background service or permission system.
+task; OSM has no model runner, background service or permission system.
 
 | Boundary | Responsibility |
 | --- | --- |
@@ -46,15 +46,15 @@ such as Power BI and its Windows Desktop workflow. Its repository owns its
 requirements, dependencies, proof and recovery. A script or a long skill alone
 does not require a System. Create Project establishes the appropriate workspace
 and context. A selected repository template is an optional seed; it does not add
-a second project identity or copy AIOS phases. Create System is retired;
+a second project identity or copy OSM phases. Create System is retired;
 reusable methods use Manage Skills. Project Foundation was retired in 0.28.0;
 substantial software engineering foundations use a separately selected method,
 such as [Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation),
-or the gap is reported. AIOS ships no replacement engineering contract.
+or the gap is reported. OSM ships no replacement engineering contract.
 
 [Factory](https://github.com/arcitai/factory) is a separate package of
 Foundation, AgentOps and ADLC methods for T3 Code and native coding agents.
-The operator may use it with an AIOS-assisted project under the project's
+The operator may use it with an OSM-assisted project under the project's
 accepted scope. Neither package depends on or installs the other; there is no
 runtime integration, shared credential store or automatic software handoff. The
 selected execution environment owns its controls.
@@ -64,16 +64,16 @@ selected execution environment owns its controls.
 Owner context is selected when the work needs it. Independent repository work
 starts from local instructions and accepted inputs, including repositories
 nested beneath an owner home. No parent instruction file preloads personal data.
-Native project discovery does not depend on an AIOS registry. Existing useful
+Native project discovery does not depend on an OSM registry. Existing useful
 source indexes can remain ordinary context.
 
 New file owner homes use `AIOS_FORMAT` 2, without mandatory project or system indexes.
 The package also reads format 1. Package versions and owner-data formats are
 separate; installation never migrates data. An authorized cleanup preserves
 existing data and rollback evidence before changing the format marker. See
-[data compatibility](../skills/aios-setup/references/data-format.md).
+[data compatibility](../skills/osm-setup/references/data-format.md).
 
-[Context](../skills/aios-context/SKILL.md) selects the provider and owns the common
+[Context](../skills/osm-context/SKILL.md) selects the provider and owns the common
 home contract. A small host pointer supplies fresh-session discovery; the entry
 identifies authoritative sources, Spaces, personal methods and maintenance scope.
 Notion is the preferred concrete setup for solo founders and small teams. Other
@@ -102,35 +102,39 @@ Risky Changes applies to consequential changes, without creating routine gates.
 
 Clarify is an included explanation method, separate from visual design. The
 Global Skills and Skills Atlas repositories are retained as public archives.
-Shape Offer and the former guardrail implementation are not included in AIOS.
+Shape Offer and the former guardrail implementation are not included in OSM.
 Explicit protection requests use native harness controls and reviewed maintained
 capabilities; installation and actual active protection are verified separately.
 
 ## Documentation and native installation
 
-The product repository owns AIOS documentation. Its approved overview at
-`docs/aios.md` ships in the native package and states the matching package
-version. The primary AIOS skill points to a small
-[documentation route](../skills/aios/references/documentation.md), which selects
+The product repository owns OSM documentation. Its approved overview at
+`docs/osm.md` ships in the native package and states the matching package
+version. The primary OSM skill points to a small
+[documentation route](../skills/osm/references/documentation.md), which selects
 only the local overview or method reference needed for a question. Including a
 file in the package does not preload it into conversation context.
 
 Current releases, changed external facts and gaps in local documentation use the
-[canonical source route](../skills/aios/references/canonical-sources.md).
+[canonical source route](../skills/osm/references/canonical-sources.md).
 The installed version stays distinct from upstream `main` and newer releases.
 Private source reads use already-authorized access. Local documentation and
 methods remain usable without that access or website availability.
 
-There is no separate public AIOS documentation export or Resources runtime.
+There is no separate public OSM documentation export or Resources runtime.
 The [release procedure](distribution.md#release-and-adoption) checks package,
 overview and tag versions together before publishing a GitHub Release. Customer
-documentation remains in its source system; AIOS retains only useful pointers,
+documentation remains in its source system; OSM retains only useful pointers,
 unique facts or explicit gaps. Private owner continuity remains a separate flow.
 
-The technical plugin identity remains `aios`. Earlier OSM packages already
-required an identity migration to AIOS; renaming it back would change native
-registrations and invocation names without improving distribution. The README
-distinguishes the shared AIOS plugin from the owner's personal AIOS home.
+The technical plugin identity is `osm` from 0.30.0; earlier releases used `aios`.
+The rename covers package, skill, MCP and display names only. Persisted owner
+state keeps its names so earlier builds and existing homes stay readable:
+`AIOS.md`, `AIOS_FORMAT`, `~/.AIOS`, the `<!-- AIOS:BEGIN -->` bridge block, its
+`.aios-lock` and `backups/aios-context`, and Codex panel links under
+`CODEX_HOME/aios/panel`. Retired OSM 0.1.x packages are a different source;
+installations are classified by source and version, never by name. The README
+distinguishes the shared OSM plugin from the owner's personal context home.
 
 Codex, Pi, Claude Code, Gemini CLI, Copilot CLI and Cursor have native metadata
 for the same source. Installation affects only the chosen harness. It creates

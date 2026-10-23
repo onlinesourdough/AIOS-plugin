@@ -11,7 +11,7 @@ const lock = JSON.parse(await readFile(join(source, 'package-lock.json'), 'utf8'
 if ([author.version, lock.version, lock.packages[''].version].some((value) => value !== version)) throw new Error('Sidebar version drift');
 const out = resolve(process.argv[2] || join(root, 'runtime/sidebar'));
 await mkdir(out, { recursive: true });
-const options = { absWorkingDir: source, bundle: true, minify: true, metafile: true, define: { __AIOS_VERSION__: JSON.stringify(version) } };
+const options = { absWorkingDir: source, bundle: true, minify: true, metafile: true, define: { __OSM_VERSION__: JSON.stringify(version) } };
 const app = await build({ ...options, entryPoints: ['app.mjs'], platform: 'browser', format: 'esm', write: false });
 const css = await build({ ...options, entryPoints: ['styles.css'], loader: { '.woff2': 'dataurl' }, write: false });
 const server = await build({ ...options, entryPoints: ['server.mjs'], platform: 'node', format: 'cjs', target: 'node22', outfile: join(out, 'server.cjs') });
@@ -37,4 +37,4 @@ for (const path of [...packageRoots].sort()) {
   notices += `\n## ${info.name} ${info.version}\n\n${license}\n`;
 }
 await writeFile(join(out, 'THIRD-PARTY-NOTICES.md'), notices);
-console.log(`Built AIOS ${version} sidebar (no consumer npm install).`);
+console.log(`Built OSM ${version} sidebar (no consumer npm install).`);

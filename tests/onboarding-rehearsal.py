@@ -27,7 +27,7 @@ def require(condition, message):
 
 class OnboardingTest(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix="aios-onboarding-")
+        self.temp = tempfile.TemporaryDirectory(prefix="osm-onboarding-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
         for name in (".codex-plugin", ".claude-plugin", ".cursor-plugin", "skills", "runtime", ".agents/plugins"):
@@ -45,7 +45,7 @@ class OnboardingTest(unittest.TestCase):
         validate_native(self.root, require)
 
     def test_no_shadowing_manifest(self):
-        (self.root / "plugin.json").write_text('{"name":"aios"}')
+        (self.root / "plugin.json").write_text('{"name":"osm"}')
         with self.assertRaisesRegex(AssertionError, "shadows"):
             validate_native(self.root, require)
 
@@ -61,7 +61,7 @@ class OnboardingTest(unittest.TestCase):
             validate_native(self.root, require)
 
     def test_missing_onboarding_body(self):
-        (self.root / "skills/aios-setup/SKILL.md").unlink()
+        (self.root / "skills/osm-setup/SKILL.md").unlink()
         with self.assertRaisesRegex(AssertionError, "missing packaged Setup"):
             validate_native(self.root, require)
 
@@ -71,7 +71,7 @@ class OnboardingTest(unittest.TestCase):
             validate_native(self.root, require)
 
     def test_sidebar_must_be_bundled_and_explicit(self):
-        self.edit('.codex-plugin/mcp.json', lambda d: d['mcpServers']['aios'].update(command='npx'))
+        self.edit('.codex-plugin/mcp.json', lambda d: d['mcpServers']['osm'].update(command='npx'))
         with self.assertRaisesRegex(AssertionError, 'unexpected sidebar'):
             validate_native(self.root, require)
 
@@ -102,23 +102,23 @@ def native_check():
         raise TimeoutError(method)
 
     try:
-        request(1, "initialize", {"clientInfo": {"name": "aios-onboarding-check", "version": "1.0"},
+        request(1, "initialize", {"clientInfo": {"name": "osm-onboarding-check", "version": "1.0"},
                                   "capabilities": {"experimentalApi": True}})
         process.stdin.write('{"method":"initialized","params":{}}\n')
         process.stdin.flush()
         detail = request(2, "plugin/read", {
             "marketplacePath": str(ROOT / ".agents/plugins/marketplace.json"),
-            "pluginName": "aios",
+            "pluginName": "osm",
         })["plugin"]
-        require(not detail["apps"], "AIOS must not embed Notion or another connector")
+        require(not detail["apps"], "OSM must not embed Notion or another connector")
         setup = detail.get("onboardingSkill")
         require(setup and setup["enabled"] and
-                Path(setup["path"]) == ROOT / "skills/aios-setup/SKILL.md",
+                Path(setup["path"]) == ROOT / "skills/osm-setup/SKILL.md",
                 "Codex did not expose the selected Setup entry; check plugin enablement")
         expected_skills = len(list((ROOT / "skills").glob("*/SKILL.md")))
-        require(len(detail["skills"]) == expected_skills and detail["mcpServers"] == ["aios"] and not detail["hooks"],
+        require(len(detail["skills"]) == expected_skills and detail["mcpServers"] == ["osm"] and not detail["hooks"],
                 "Unexpected native inventory")
-        print(f"PASS: Codex recognizes separate providers, Setup, {expected_skills} skills and the declared AIOS sidebar server; no hooks")
+        print(f"PASS: Codex recognizes separate providers, Setup, {expected_skills} skills and the declared OSM sidebar server; no hooks")
     finally:
         selector.close()
         process.terminate()

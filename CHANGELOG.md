@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.30.0 — 2026-10-23
+
+- Rename AIOS to The Onlinesourdough Method (OSM). The plugin identity is now
+  `osm` (`osm@online-sourdough`); the marketplace stays `online-sourdough`. The
+  20 method skills move from `aios`, `aios-*`, `clarify`, `human-writing` and
+  `write-code` to `osm` and `osm-*`, each with a major version bump that keeps
+  its history (for example Update 2.0.3 → 3.0.0). Content and Diffusion Studio
+  keep their names and get patch bumps (1.0.2) for their own titles. Update any
+  explicit callers, such as `/osm:osm-setup` or `$osm-context`.
+- The `osm` entry shows as `OSM:context-and-methods` and stays optional: it
+  brings in owner context and methods only when a task needs them.
+- The Codex sidebar MCP server, its tools (`osm_*`), UI resource and titles use
+  OSM. The overview is now `docs/osm.md`.
+- Upgrade: install `osm@online-sourdough` and read back its version, disable
+  `aios@online-sourdough` through the app's supported control before
+  fresh-session acceptance, then retire `aios` once nothing depends on it. If
+  acceptance fails, disable `osm` and re-enable `aios`. Updating `aios`
+  never installs `osm`. Owner data needs no migration: `AIOS.md`,
+  `AIOS_FORMAT`, `~/.AIOS`, the `<!-- AIOS:BEGIN -->` block and saved Codex
+  panel links keep their names and stay readable.
+- OSM 0.30.0 is not the retired OSM 0.1.x package, although three skill names
+  match. Identity migration now classifies packages by source and version.
+
 ## 0.29.0 — 2026-10-13
 
 - Remove the Design, Review Design and OpenPencil Workbench skills
