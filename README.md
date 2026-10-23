@@ -1,10 +1,8 @@
-![AIOS](https://raw.githubusercontent.com/onlinesourdough/AIOS-Plugin/v0.15.1/assets/branding/aios-banner.png)
-
-# AIOS
+# The Onlinesourdough Method
 
 **Business first. Productivity built in.**
 
-AIOS helps your AI assistant plan work, build it, review the result and remember
+The Onlinesourdough Method (OSM) helps your AI assistant plan work, build it, review the result and remember
 useful decisions. Install it in the app you use. The same 22 skills work from
 one shared source, with native packaging for Codex, Pi, Claude Code, Gemini CLI,
 Copilot CLI and Cursor.
@@ -13,7 +11,14 @@ Small requests stay small. Larger tasks get a clear outcome, the relevant
 specialist method and a review before delivery. Your app still provides the
 models, tools and permissions.
 
-AIOS supports business work, decisions, content, design and practical automation.
+The method was previously called AIOS. The released plugin still uses `aios`
+installation identifiers and AIOS labels while the [coordinated migration](https://github.com/onlinesourdough/AIOS-plugin/issues/76)
+is implemented. The commands and native labels below describe that available
+release. No package with the new OSM identifiers has been published yet. Earlier
+OSM 0.1.x releases are a retired legacy identity; do not install them. Your context
+stays in its existing home.
+
+The method supports business work, decisions, content, design and practical automation.
 Its code guidance and verification stay proportional to the task. Projects own
 their source, engineering standards, design and delivery configuration.
 
@@ -25,7 +30,7 @@ environment.
 
 [Factory](https://github.com/arcitai/factory) is a separate package of
 engineering methods for T3 Code and native coding agents: Foundation, AgentOps
-and the ADLC methods such as implement and review. AIOS and Factory are
+and the ADLC methods such as implement and review. The method and Factory are
 independent; neither depends on nor installs the other. The project carries its
 accepted scope and relevant sources between them, while the selected environment
 owns tools, access and execution protection.
@@ -39,16 +44,16 @@ reports the gap instead of improvising one.
 
 ## Why I built this
 
-I built AIOS to carry useful context, decisions and working methods between AI
-apps, so each conversation can build on the work that came before.
+I built The Onlinesourdough Method to carry useful context, decisions and working
+methods between AI apps, so each conversation can build on the work that came before.
 
-AIOS installs as a native plugin in Codex and Claude Code and adds reusable
+The method installs as a native plugin in Codex and Claude Code and adds reusable
 skills for planning, building, reviewing and writing. It builds on open formats
 such as Agent Skills and on what those apps already provide, so I mostly write
 methods and small adaptations, with little code to maintain.
 
 Your context stays in a home you choose, such as Notion or a repository. The app
-provides the models, tools and permissions; AIOS helps the assistant find and
+provides the models, tools and permissions; the method helps the assistant find and
 maintain the context it needs.
 
 ## Understand complex topics
@@ -65,7 +70,7 @@ and tools the agent can operate**. Skills guide the work and pass useful results
 to each other. The project holds the brief, sources, working files and reviewed
 outputs. A workbench adds a visual production environment when the task needs it.
 
-AIOS includes the Agentic Content System as connected methods in this plugin.
+The plugin includes the Agentic Content System as connected methods.
 You work with them in your existing Codex task and workspace. The agent selects
 the relevant steps; a small request does not need a full production process or
 an external editor.
@@ -341,7 +346,7 @@ detail. It adds no separate approval step.
 
 ## What is shared
 
-The **AIOS plugin** is onlinesourdough's shared method. **Your AIOS home**,
+**The Onlinesourdough Method** supplies shared skills. **Your context home**,
 selected through Context, contains your context and personal skills. They have separate
 owners, locations and update paths.
 
