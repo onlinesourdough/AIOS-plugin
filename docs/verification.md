@@ -1,5 +1,20 @@
 # Verification
 
+On 2026-10-23 the OSM 0.30.0 identity candidate (`0a04d0b` on
+`feat/osm-identity-62`, from `main` `b3bb4d4`) passed with Node 22.22.3 and
+Python 3.14.5: `npm ci --ignore-scripts`, build, 85 sidebar unit tests and the
+bundled stdio smoke; `validate.py --baseline b3bb4d4 --release-tag v0.30.0`,
+including rename lineage and the new compatibility negative controls; the
+documentation, onboarding, layout, continuity, skill-version and footprint
+rehearsals; model-selection, intent-trial and entry-routing fixture preparation;
+and Claude CLI inline discovery in a temporary config. A second build after
+commit left no `runtime/sidebar` diff. New unit tests read a 0.29.0
+`AIOS:BEGIN` block and `CODEX_HOME/aios/panel` links without migration. Codex
+`plugin/read` in an empty temporary `CODEX_HOME` returned no enabled Setup entry,
+because nothing was installed there. Native install, upgrade from `aios`, Codex
+UI, fresh-session model behavior and owner adoption are not verified by these
+source checks.
+
 On 2026-10-17 the owner checked `1d719a2` in the installed Codex sidebar: the centred
 geometry is accepted, but its own greys looked lighter than the neighbouring icons in the
 light theme and too dark in the dark theme. The next candidate keeps the geometry, packaged
