@@ -14,7 +14,7 @@ task; OSM has no model runner, background service or permission system.
 | Project workspace | Local requirements, working files, outputs, proof and recovery; Git is selected when useful |
 | Optional System | A separately maintained specialist with its own dependencies or operational needs |
 | Native manifests | Package identity and discovery over the same 22 skills |
-| Codex sidebar | A host-managed local MCP App for numbered source setup and a dashboard; stores private navigation names/links, with no company-content copy or chat handoff |
+| Codex sidebar | A host-managed local MCP App for numbered source setup, a dashboard and a dated overview of the selected operating model; stores private navigation names/links and the overview's derived groups/links, with no company-content copy or chat handoff |
 
 ## Work and methods
 
@@ -25,10 +25,9 @@ an installed design method if the host provides one, otherwise direct work or a
 reported missing method. There is no chain configuration language, mandatory
 department model or fixed sequence between design and content. Short writing uses human-writing directly.
 
-The README presents the connected content workflow as the **Agentic Content
-System**. It combines context, skills, project artifacts and selected tools,
-using this plugin's methods without a separate installation of the former ACS
-repository. The design skills were retired in 0.29.0. Diffusion Studio is an
+The connected content workflow combines context, skills, project artifacts and
+selected tools, using this plugin's methods without a separate installation of
+the former ACS repository. The design skills were retired in 0.29.0. Diffusion Studio is an
 optional external workbench. Its native interface owns production, with browser
 surfaces where supported: local design/application previews and Diffusion's
 limited read-only companion. The current Diffusion companion does not support media elements.
@@ -80,8 +79,10 @@ Notion is the preferred concrete setup for solo founders and small teams. Other
 selected homes retain native structures and require verified tools and acceptance.
 Source systems retain their operational records and access control.
 
-Docs, Skills and Memory establish a context foundation. An operating model also
-needs workflows, responsibility, review points and evidence of useful outcomes.
+The owner's AI Operating Model is the complete read/write contract for their
+home; Soul, About, Memory and Skills are destinations it names only when useful.
+Another connected agent can follow it without installing OSM. Useful operation
+also needs workflows, responsibility, review points and evidence of outcomes.
 Start from one real workflow and add context where it improves that work. This
 package does not provision an ERP, data integration service or runtime memory engine.
 
