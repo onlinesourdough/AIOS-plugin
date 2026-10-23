@@ -1,4 +1,4 @@
 interface:
-  display_name: "AIOS:diffusion-studio"
+  display_name: "Diffusion Studio"
   short_description: "Operate the pinned external video editor"
   default_prompt: "Use $diffusion-studio to check video editing readiness."

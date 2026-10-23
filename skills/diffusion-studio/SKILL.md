@@ -2,10 +2,10 @@
 name: diffusion-studio
 description: Check or operate the pinned external Diffusion Studio for ordinary video edits, captions, audio, assets and supervised export. Audits stay read-only; setup and launch need action authority.
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
-# AIOS:diffusion-studio
+# Diffusion Studio
 
 Use the reviewed external Diffusion fork for ordinary recorded long-form,
 shorts, cuts/trims, audio/music, captions, overlays/assets and supervised export.
