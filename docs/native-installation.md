@@ -1,8 +1,8 @@
 # Native installation
 
-AIOS packages the same shared skills for several agent apps. The installed
+OSM packages the same shared skills for several agent apps. The installed
 manifest and overview identify its version and declared skill inventory.
-Install through the selected app's package manager. No AIOS installer program
+Install through the selected app's package manager. No OSM installer program
 runs, and no other app is configured as a side effect. Owner setup is a separate
 conversation.
 
@@ -13,7 +13,7 @@ without changing repository visibility.
 
 ## Choose a source and scope
 
-Use one AIOS source per app. Read the existing registration before adding one.
+Use one OSM source per app. Read the existing registration before adding one.
 Preserve unrelated plugins, personal skills, settings and instruction files.
 If the marketplace name already points elsewhere, resolve that conflict rather
 than replacing it. A matching skill name alone does not establish ownership.
@@ -22,27 +22,27 @@ For a fixed version, replace `REVIEWED_REF` with an existing reviewed tag or
 immutable commit. Do not use a version number as though its Git tag exists.
 
 ```sh
-codex plugin marketplace add onlinesourdough/AIOS-Plugin --ref REVIEWED_REF
-codex plugin add aios@online-sourdough
+codex plugin marketplace add onlinesourdough/OSM-plugin --ref REVIEWED_REF
+codex plugin add osm@online-sourdough
 ```
 
 ```sh
-pi install git:github.com/onlinesourdough/AIOS-Plugin@REVIEWED_REF
+pi install git:github.com/onlinesourdough/OSM-plugin@REVIEWED_REF
 ```
 
 ```sh
-gemini extensions install https://github.com/onlinesourdough/AIOS-Plugin --ref REVIEWED_REF
+gemini extensions install https://github.com/onlinesourdough/OSM-plugin --ref REVIEWED_REF
 ```
 
 Claude Code can install from a local checkout at the selected ref:
 
 ```sh
 claude plugin marketplace add /absolute/path/to/reviewed/AIOS-Plugin
-claude plugin install aios@online-sourdough --scope user
+claude plugin install osm@online-sourdough --scope user
 ```
 
-Codex and Claude use `aios@online-sourdough` as their installation identity.
-Claude's explicit skill calls are namespaced, such as `/aios:human-writing`.
+Codex and Claude use `osm@online-sourdough` as their installation identity.
+Claude's explicit skill calls are namespaced, such as `/osm:osm-human-writing`.
 Other apps may expose names differently; use their actual discovery rather
 than rewriting the canonical skill files. Native project/local scopes are
 available in some apps; use the same scope for later updates and removal.
@@ -54,21 +54,21 @@ that follows a branch:
 
 ```sh
 codex plugin marketplace upgrade online-sourdough
-codex plugin add aios@online-sourdough
+codex plugin add osm@online-sourdough
 codex plugin list --marketplace online-sourdough --json
 ```
 
 A pinned Codex marketplace continues to follow its configured ref. To change
 that ref, record its old source for recovery, remove only that marketplace
 registration and add the same source with the new reviewed ref. Then install
-its AIOS entry and verify the version. The installed plugin remains separate
+its OSM entry and verify the version. The installed plugin remains separate
 from marketplace registration. Do not remove unrelated marketplaces or edit
 Codex's cache or configuration database.
 
 Pi can replace a pin through another native `pi install` of the same repository
 at the new ref. Use `pi list` to verify the exact registered source. For an
 unpinned source, `pi update --extension SOURCE` updates only that package;
-`pi update --extensions` updates all packages and is not the AIOS-only command.
+`pi update --extensions` updates all packages and is not the OSM-only command.
 
 Claude updates its marketplace and then the plugin at the original scope.
 Gemini and Copilot have native named-package update commands. Cursor manages
@@ -84,7 +84,7 @@ and verify the installed version, source and declared skills.
 For a released version, select an existing tag from GitHub Releases and verify
 the installed manifest against that release. A fixed pin does not advance when
 upstream publishes a newer release. A tracking registration still needs the
-app's native update to adopt it; AIOS adds no updater or background sync.
+app's native update to adopt it; OSM adds no updater or background sync.
 Some apps refresh discovery between turns or provide reload controls, but an
 update cannot erase instructions already read into a conversation. Do not
 promise immediate adoption by every active session or another installed app.
@@ -105,7 +105,7 @@ the plugin.
 
 | File | Native role |
 | --- | --- |
-| `docs/aios.md` | Version-matched local overview, selected through the AIOS documentation route |
+| `docs/osm.md` | Version-matched local overview, selected through the OSM documentation route |
 | `.codex-plugin/plugin.json` | Codex identity, interface and native Setup skill |
 | `.app.json` | Optional official Notion connection managed by Codex |
 | `.agents/plugins/marketplace.json` | Codex repository marketplace |
@@ -128,8 +128,8 @@ connection checks use its signed-in Codex CLI. The panel has no hosted service
 or consumer dependency-install step. Other client manifests still expose skills
 only. See [sidebar setup and recovery](sidebar.md).
 
-[Context](../skills/aios-context/SKILL.md) resolves the chosen home independently
-of installation. Use its [short host pointer](../skills/aios-context/assets/bridge.md)
+[Context](../skills/osm-context/SKILL.md) resolves the chosen home independently
+of installation. Use its [short host pointer](../skills/osm-context/assets/bridge.md)
 for a verified context entry URL or path. Notion is preferred for small teams;
 existing alternative homes keep their mappings. No provider failure falls back
 to `~/.AIOS`. Only a selected managed file home uses the file setup/default-root

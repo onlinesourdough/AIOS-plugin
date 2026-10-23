@@ -11,12 +11,12 @@ Small requests stay small. Larger tasks get a clear outcome, the relevant
 specialist method and a review before delivery. Your app still provides the
 models, tools and permissions.
 
-The method was previously called AIOS. The released plugin still uses `aios`
-installation identifiers and AIOS labels while the [coordinated migration](https://github.com/onlinesourdough/AIOS-plugin/issues/76)
-is implemented. The commands and native labels below describe that available
-release. No package with the new OSM identifiers has been published yet. Earlier
-OSM 0.1.x releases are a retired legacy identity; do not install them. Your context
-stays in its existing home.
+The method was previously released as AIOS. OSM 0.30.0 renames the plugin to
+`osm` and its method skills to `osm-*` ([migration](https://github.com/onlinesourdough/OSM-plugin/issues/76)).
+If you have `aios@online-sourdough`, install `osm@online-sourdough`, start a
+fresh chat, then remove `aios`; see [Earlier names](docs/osm.md#earlier-names).
+Your context stays in its existing home with its existing names. Earlier
+OSM 0.1.x releases are a retired, different package; do not install them.
 
 The method supports business work, decisions, content, design and practical automation.
 Its code guidance and verification stay proportional to the task. Projects own
@@ -38,8 +38,8 @@ owns tools, access and execution protection.
 AIOS 0.28.0 retires its Project Foundation skill. To prepare a new or existing
 software project for reliable engineering, use
 [Factory Foundation](https://github.com/arcitai/factory/tree/main/foundation/factory-foundation)
-directly in Codex or Claude; T3 Code is not required for that. AIOS does not
-install it or copy its content. Without a selected foundation method, AIOS
+directly in Codex or Claude; T3 Code is not required for that. OSM does not
+install it or copy its content. Without a selected foundation method, OSM
 reports the gap instead of improvising one.
 
 ## Why I built this
@@ -58,7 +58,7 @@ maintain the context it needs.
 
 ## Understand complex topics
 
-[Clarify](skills/clarify/SKILL.md) explains a difficult topic or decision from
+[Clarify](skills/osm-clarify/SKILL.md) explains a difficult topic or decision from
 your question and knowledge level. It uses a concrete example and a visual
 when seeing a relationship helps. Ordinary explanations stay in the conversation;
 a diagram, interactive visual or reusable file is selected only when useful.
@@ -80,9 +80,9 @@ an external editor.
 From an idea or source material to useful, reviewed content and its adaptations:
 
 **Intent and sources → [Content](skills/content/SKILL.md) +
-[Human Writing](skills/human-writing/SKILL.md) → production →
+[Human Writing](skills/osm-human-writing/SKILL.md) → production →
 [final content review](skills/content/references/final-review.md) →
-[authorized delivery](skills/aios-ship-work/SKILL.md).**
+[authorized delivery](skills/osm-ship-work/SKILL.md).**
 
 Content owns the audience, angle, evidence, voice, production and reuse. Working
 material lives in the project's `content/` folder when needed. A substantial
@@ -93,7 +93,7 @@ piece is reviewed for its own purpose. A short article can remain a simple file.
 workbench: recorded video editing, cuts, audio, captions, overlays and export.
 The selected video workflow uses the reviewed external application and its
 agent interface. Writing and editorial work need no Studio installation.
-AIOS includes the operating skill and helper; the editor is installed separately
+OSM includes the operating skill and helper; the editor is installed separately
 when authorized and needed. Final export inspection remains part of content review.
 
 ### Visual design
@@ -102,7 +102,7 @@ AIOS 0.29.0 no longer bundles design skills. For visual direction and assets,
 use an installed design method if your app provides one; otherwise the assistant
 does the work directly or reports the missing method. Existing projects keep
 their `DESIGN.md` and `design/` folder unchanged. For a visible UI change, Build's
-[review handoff](skills/aios-build-work/references/review-handoff.md) still
+[review handoff](skills/osm-build-work/references/review-handoff.md) still
 compares a real baseline and candidate capture of the same state, viewport and data.
 
 ### Workbenches and the built-in browser
@@ -137,13 +137,13 @@ step, not a requirement to repeat work or use every skill.
 
 | What you want to do | Skills and handoffs | What you get |
 | --- | --- | --- |
-| Think through an idea, agent or automation | [Interview](skills/aios-interview/SKILL.md) → [Spec](skills/aios-spec-work/SKILL.md) when execution needs a contract | Shared understanding, challenged assumptions, decisions and a useful next action |
-| Complete substantive work | Spec → [Build](skills/aios-build-work/SKILL.md) → [Review](skills/aios-review-work/SKILL.md) → Ship for authorized delivery | A defined outcome, implemented result, current verification and delivery readback |
-| Start a project for content, learning, business or software | [Create Project](skills/aios-create-project/SKILL.md) → the relevant work methods | A useful workspace, context and simple structure; Git and templates are optional |
-| Set up or move your AIOS home | [Setup](skills/aios-setup/SKILL.md) leads onboarding through the chosen [Context](skills/aios-context/SKILL.md) procedure, using Maintain Context and Check where needed | A usable home, relevant context, verified chosen connections and a first useful result |
-| Keep useful context current | Maintain Context → the selected provider; [Git Sync](skills/aios-maintain-context/references/sync.md) only for an explicitly selected managed AIOS file home | Relevant facts and source pointers; optional scoped backup or restore |
-| Create or change a skill | [Manage Skills](skills/aios-manage-skills/SKILL.md) → native authoring or installation → verification, using Check for discovery when relevant | One maintained capability with a known source, placement and recovery path |
-| Update or recover a package or specialist | [Update](skills/aios-update/SKILL.md) → native adoption or specialist maintenance → Check where applicable | A selected revision with observed installation state and a recovery route |
+| Think through an idea, agent or automation | [Interview](skills/osm-interview/SKILL.md) → [Spec](skills/osm-spec-work/SKILL.md) when execution needs a contract | Shared understanding, challenged assumptions, decisions and a useful next action |
+| Complete substantive work | Spec → [Build](skills/osm-build-work/SKILL.md) → [Review](skills/osm-review-work/SKILL.md) → Ship for authorized delivery | A defined outcome, implemented result, current verification and delivery readback |
+| Start a project for content, learning, business or software | [Create Project](skills/osm-create-project/SKILL.md) → the relevant work methods | A useful workspace, context and simple structure; Git and templates are optional |
+| Set up or move your context home | [Setup](skills/osm-setup/SKILL.md) leads onboarding through the chosen [Context](skills/osm-context/SKILL.md) procedure, using Maintain Context and Check where needed | A usable home, relevant context, verified chosen connections and a first useful result |
+| Keep useful context current | Maintain Context → the selected provider; [Git Sync](skills/osm-maintain-context/references/sync.md) only for an explicitly selected managed AIOS file home | Relevant facts and source pointers; optional scoped backup or restore |
+| Create or change a skill | [Manage Skills](skills/osm-manage-skills/SKILL.md) → native authoring or installation → verification, using Check for discovery when relevant | One maintained capability with a known source, placement and recovery path |
+| Update or recover a package or specialist | [Update](skills/osm-update/SKILL.md) → native adoption or specialist maintenance → Check where applicable | A selected revision with observed installation state and a recovery route |
 
 Interview starts when requested, or when material uncertainty at the start makes
 the direction unclear. A new project or agent alone does not trigger it. During
@@ -153,12 +153,12 @@ interview waits for an appropriate opening. Setup and Spec reuse accepted answer
 When you think aloud, Interview can first restate your goal and the underlying
 problem in its own words, then resolve the few questions that change the next
 action. You can ask for just that understanding. For an unresolved solution
-choice, Spec can select a [small local trial](skills/aios-spec-work/references/local-trials.md):
+choice, Spec can select a [small local trial](skills/osm-spec-work/references/local-trials.md):
 visual variations on an available canvas/preview, a runnable UI interaction, or a
 sample workflow. Clear work proceeds directly; neither step is a fixed ritual.
 
-Setup replaces `aios-onboard` with the canonical name `aios-setup`. Update explicit
-shortcuts and callers when adopting this version. Existing homes resume from
+Setup is `osm-setup`; it replaced `aios-onboard` and, in 0.30.0, `aios-setup`.
+Update explicit shortcuts and callers when adopting this version. Existing homes resume from
 known facts without another foundation interview; owner formats are unchanged.
 Final content review and continuity Sync are procedures within their owning
 skills, not additional public skills.
@@ -167,23 +167,23 @@ skills, not additional public skills.
 
 | Skill | When it contributes |
 | --- | --- |
-| [AIOS](skills/aios/SKILL.md) | Selects relevant owner context and methods; independent repositories start with local instructions |
-| [Write Code](skills/write-code/SKILL.md) | Supplies implementation and review criteria for code of any size, including scripts and automation |
+| [OSM](skills/osm/SKILL.md) | Selects relevant owner context and methods; independent repositories start with local instructions |
+| [Write Code](skills/osm-write-code/SKILL.md) | Supplies implementation and review criteria for code of any size, including scripts and automation |
 | Human Writing | Drafts or revises prose directly, or supports another method's writing |
-| [Select Model](skills/aios-select-model/SKILL.md) | Assesses model and reasoning suitability when the remaining work warrants it |
-| [Orchestrate Workers](skills/aios-orchestrate-workers/SKILL.md) | Coordinates a justified delegation while the caller retains acceptance |
-| [Risky Changes](skills/aios-risky-changes/SKILL.md) | Adds representative proof and recovery planning when real-world consequences warrant them |
-| [Triage Improvement](skills/aios-triage-improvement/SKILL.md) | Turns a concrete underlying problem into a scoped, deduplicated improvement action under existing authority |
+| [Select Model](skills/osm-select-model/SKILL.md) | Assesses model and reasoning suitability when the remaining work warrants it |
+| [Orchestrate Workers](skills/osm-orchestrate-workers/SKILL.md) | Coordinates a justified delegation while the caller retains acceptance |
+| [Risky Changes](skills/osm-risky-changes/SKILL.md) | Adds representative proof and recovery planning when real-world consequences warrant them |
+| [Triage Improvement](skills/osm-triage-improvement/SKILL.md) | Turns a concrete underlying problem into a scoped, deduplicated improvement action under existing authority |
 
 These built-in systems are assembled from skills, project artifacts and selected
 tools. Separately maintained specialist Systems, such as Power BI, can add their
-own dependencies and upkeep. Neither form requires a new AIOS runtime, project
+own dependencies and upkeep. Neither form requires a new OSM runtime, project
 registry or background agent. The [skill index](docs/skills.md) lists all 22
 public entrypoints.
 
 ## Install in your app
 
-AIOS is open source under the MIT license. Install directly from this public
+OSM is open source under the MIT license. Install directly from this public
 GitHub repository; no invitation is required. Your app uses its normal Git
 setup. Never paste access tokens into a chat.
 
@@ -194,35 +194,35 @@ Choose one of the routes below. These commands follow the repository's current
 ### Codex
 
 ```sh
-codex plugin marketplace add onlinesourdough/AIOS-Plugin
-codex plugin add aios@online-sourdough
+codex plugin marketplace add onlinesourdough/OSM-plugin
+codex plugin add osm@online-sourdough
 ```
 
-Once the marketplace is available, you can also install AIOS from Codex's plugin
+Once the marketplace is available, you can also install OSM from Codex's plugin
 browser. Start a fresh task after installation.
 
 ### Pi
 
 ```sh
-pi install git:github.com/onlinesourdough/AIOS-Plugin
+pi install git:github.com/onlinesourdough/OSM-plugin
 ```
 
-Start a fresh Pi session. AIOS is a native Pi skill package; it needs no executable extension.
+Start a fresh Pi session. OSM is a native Pi skill package; it needs no executable extension.
 
 ### Claude Code
 
 ```sh
-claude plugin marketplace add onlinesourdough/AIOS-Plugin
-claude plugin install aios@online-sourdough --scope user
+claude plugin marketplace add onlinesourdough/OSM-plugin
+claude plugin install osm@online-sourdough --scope user
 ```
 
 Restart Claude Code. You can use ordinary language or call
-`/aios:aios-setup` and `/aios:human-writing` directly.
+`/osm:osm-setup` and `/osm:osm-human-writing` directly.
 
 ### Gemini CLI
 
 ```sh
-gemini extensions install https://github.com/onlinesourdough/AIOS-Plugin
+gemini extensions install https://github.com/onlinesourdough/OSM-plugin
 ```
 
 Review Gemini's installation prompt, then start a fresh session. The extension
@@ -232,8 +232,8 @@ tasks can use the helpers supplied with their skills.
 ### Copilot CLI
 
 ```sh
-copilot plugin marketplace add onlinesourdough/AIOS-Plugin
-copilot plugin install aios@online-sourdough
+copilot plugin marketplace add onlinesourdough/OSM-plugin
+copilot plugin install osm@online-sourdough
 ```
 
 This uses Copilot's documented support for Claude-compatible plugin metadata.
@@ -241,21 +241,21 @@ It has not been tested locally.
 
 ### Cursor and other apps
 
-Cursor supports AIOS's native Cursor plugin format. For private distribution, add
-the repository through a **Teams or Enterprise marketplace**, then install AIOS
-from **Customize**. AIOS is not listed in Cursor's public marketplace, and this
+Cursor supports OSM's native Cursor plugin format. For private distribution, add
+the repository through a **Teams or Enterprise marketplace**, then install OSM
+from **Customize**. OSM is not listed in Cursor's public marketplace, and this
 installation route has not been tested locally. See the
-[Cursor adapter](skills/aios-setup/references/adapter-other.md#cursor).
+[Cursor adapter](skills/osm-setup/references/adapter-other.md#cursor).
 
 OpenCode can reference the skill directory through its native `skills.paths`
 setting. It currently has no equivalent native installer for this instruction
 package, so we do not describe that route as plug and play. See the
-[compatibility guide](skills/aios-setup/references/adapter-other.md#opencode).
+[compatibility guide](skills/osm-setup/references/adapter-other.md#opencode).
 
 ## Your context home
 
-[AIOS Setup](skills/aios-setup/SKILL.md) leads onboarding from connection to a
-first useful task. [AIOS Context](skills/aios-context/SKILL.md) owns the selected
+[OSM Setup](skills/osm-setup/SKILL.md) leads onboarding from connection to a
+first useful task. [OSM Context](skills/osm-context/SKILL.md) owns the selected
 home, relevant retrieval, maintenance routing and context checks. A short host instruction
 points to one context entry; that entry routes to only the sources a task needs.
 The plugin holds shared methods. Your chosen home holds company facts, decisions
@@ -268,7 +268,7 @@ sub-brands within one home. Start with a real workflow, even in a messy workspac
 classify only the context it needs. No local mirror, hosted server or daily task
 is required. Maintenance happens during useful work.
 
-After installing AIOS in Codex, open **AIOS** in the sidebar. New setups show
+After installing OSM in Codex, open **OSM** in the sidebar. New setups show
 four revisitable sections: Notion, Context/Docs, Skills and Memory. Personal and
 Team destinations are optional and visible in both Skills and Memory. Continue
 saves progress and Finish opens the dashboard. An existing context opens there
@@ -278,7 +278,7 @@ Settings opens a separate drawer. With Notion connected, choose Context, Docs,
 Skills and Memory from searchable page dropdowns. The initial list shows favorites
 and top-level private/shared pages; search finds other accessible pages. Direct
 link entry remains available for other providers or a known destination.
-There are no panel chat calls, hidden agents or new Notion credentials. AIOS's
+There are no panel chat calls, hidden agents or new Notion credentials. OSM's
 local MCP owns the panel and navigation metadata, using Codex's direct tool-call
 protocol for the page picker. Company information stays in Notion, accessed
 through the separate official connector. The picker requires Codex CLI 0.161.0+
@@ -286,11 +286,11 @@ with that protocol; an unavailable search reports an error rather than inventing
 
 For a new or messy workspace, explicitly use the plugin's **Set up** skill or ask:
 
-> Use AIOS Setup to set up my Notion. Start here: [page link]. Help me choose
+> Use OSM Setup to set up my Notion. Start here: [page link]. Help me choose
 > the first useful task and reuse what I already have.
 
 Setup guides the Notion connection when missing, identifies useful existing databases and fills the
-bundled [AIOS page](skills/aios-context/assets/notion-aios.md)
+bundled [AIOS page](skills/osm-context/assets/notion-aios.md)
 with your links, Spaces and working agreements. It checks where Offers, Demand
 and Operations are covered and asks only about gaps that affect the first task.
 After verifying the entry, it adds the short instruction at the appropriate app
@@ -330,15 +330,15 @@ After installation, try:
 - “Build the agreed change and review the result.”
 - “Turn these sources into a finished article.”
 - “Make this draft easier to understand without losing its meaning.”
-- “Set up AIOS for my work. My current focus is …”
+- “Set up OSM for my work. My current focus is …”
 
 You can use the shared work methods immediately. Setting up your personal
-context is a separate conversation: AIOS reuses an existing home or helps you
+context is a separate conversation: OSM reuses an existing home or helps you
 choose the home that fits your work. Notion is preferred; existing alternatives
 and managed file homes remain available. No owner
 home or global instruction edit is required just to install the plugin.
 
-The bundled [human-writing](skills/human-writing/SKILL.md) skill is the default
+The bundled [human-writing](skills/osm-human-writing/SKILL.md) skill is the default
 for substantial writing and editing across formats: articles, blogs, reports,
 emails, web copy and more. It makes the meaning easy to follow, keeps the text
 as short as understanding allows, and preserves your voice, facts and necessary
@@ -352,7 +352,7 @@ owners, locations and update paths.
 
 ```mermaid
 flowchart TB
-    upstream["onlinesourdough / AIOS-Plugin<br/>Reviewed GitHub releases"]
+    upstream["onlinesourdough / OSM-plugin<br/>Reviewed GitHub releases"]
     installed["Each app's local plugin installation<br/>Shared skills + references + overview"]
     agent["Your agent in Codex, Pi or another app<br/>Reads relevant sources when needed"]
     personal["Your selected context home<br/>Personal skills + source pointers"]
@@ -370,7 +370,7 @@ flowchart TB
 
 | What | Where it belongs | How it moves or updates |
 | --- | --- | --- |
-| Shared AIOS skills, supporting files and overview | The selected app's plugin installation/cache | Install or update through that app. A fixed tag/commit stays fixed until another is selected. |
+| Shared OSM skills, supporting files and overview | The selected app's plugin installation/cache | Install or update through that app. A fixed tag/commit stays fixed until another is selected. |
 | Your facts, memory and source pointers | The selected home and its authoritative sources | Use that provider's verified tools. Managed file homes can use optional scoped Git Sync. |
 | Skills you create and own | The chosen home's personal-method destination and supporting resources | Read page-based methods when needed. Native installation/export is a separate verified step; managed file homes may use reviewed Sync. |
 | Other installed plugins and shared skill libraries | Their native installation or their own source | Their own update route. They do not become personal skills just because a folder is named `skills`. |
@@ -378,7 +378,7 @@ flowchart TB
 | Sessions, app settings, credentials and caches | The native app or credential store | Outside owner Sync. Reconnect/configure the destination app through its supported setup. |
 
 **For file homes, when does owner Sync happen?** When you explicitly request continuity work,
-for example “Sync my AIOS to my private GitHub repository,” under the agreed
+for example “Sync my OSM context home to my private GitHub repository,” under the agreed
 account, remote, branch, direction and file scope. Existing standing permission
 is reused. Plugin installation, ordinary conversations and local edits do not
 start a background upload. A local home without Git is fully supported.
@@ -387,12 +387,12 @@ For file context, Setup helps choose a new home or restore and a continuity dest
 Creating a private repository and the first upload need that action's approval.
 On another machine, install the plugin in the chosen app, restore the approved
 owner files into an absent or empty home, then register personal skills there.
-Existing homes are preserved. See the [Sync procedure](skills/aios-maintain-context/references/sync.md).
+Existing homes are preserved. See the [Sync procedure](skills/osm-maintain-context/references/sync.md).
 
-Installing AIOS in one app activates it there. It does not install into your
+Installing OSM in one app activates it there. It does not install into your
 other apps, hide their skills, change your model or connect accounts.
 
-If you want AIOS in another app, install it there too. Both can use the same
+If you want OSM in another app, install it there too. Both can use the same
 owner home when you choose it. The plugin supplies methods; your home holds
 your context and personal skills. Updates and removal leave that data intact.
 Git backup and persistent routing to a custom home are optional setup choices.
@@ -402,7 +402,7 @@ Git backup and persistent routing to a custom home are optional setup choices.
 **Spaces hold context:** the relevant facts and source links for a business,
 brand or area of work. **Skills hold methods:** the process, standards and
 judgment your assistant uses. **Your app owns projects:** open the workspace
-and continue the task there. AIOS needs no second project register.
+and continue the task there. OSM needs no second project register.
 
 Content is included; visual design uses an installed design method if the host
 provides one, otherwise direct work. The assistant chains the relevant skills from
@@ -413,16 +413,16 @@ the project uses them. Existing work stays intact.
 
 The [project template](https://github.com/onlinesourdough/Agentic-Project-Template)
 starts a new independent repository from an idea. It supplies local requirements
-and verification while AIOS supplies shared methods. The
+and verification while OSM supplies shared methods. The
 [system template](https://github.com/onlinesourdough/Agentic-System-Template)
 is for an optional specialist with its own maintenance needs. Power BI is one
 example: it serves a narrower audience and its Desktop workflow needs Windows,
-so it is not bundled with AIOS.
+so it is not bundled with OSM.
 
 Small helpers for content validation travel with the skills. Diffusion Studio
 remains an optional tool, installed through its own supported setup when a task
 needs it. The small Codex sidebar runtime
-starts and stops with the host; AIOS adds no independently running service,
+starts and stops with the host; OSM adds no independently running service,
 install hook or separate tools gateway. Your app keeps control of tool access.
 
 ## Update or remove
@@ -432,12 +432,12 @@ work before changing its methods.
 
 | App | Update | Remove |
 | --- | --- | --- |
-| Codex | Refresh the AIOS marketplace, then reinstall its AIOS entry; see the guide below for pinned sources | `codex plugin remove aios@online-sourdough` |
-| Pi | `pi update --extension git:github.com/onlinesourdough/AIOS-Plugin` for a tracking install | `pi remove git:github.com/onlinesourdough/AIOS-Plugin` |
-| Claude Code | `claude plugin marketplace update online-sourdough`, then `claude plugin update aios@online-sourdough --scope user` | `claude plugin uninstall aios@online-sourdough --scope user` |
-| Gemini CLI | `gemini extensions update aios` | `gemini extensions uninstall aios` |
-| Copilot CLI | `copilot plugin marketplace update online-sourdough`, then `copilot plugin update aios@online-sourdough` | `copilot plugin uninstall aios@online-sourdough` |
-| Cursor | Refresh the selected marketplace and manage AIOS in Customize | Remove AIOS in Customize |
+| Codex | Refresh the OSM marketplace, then reinstall its OSM entry; see the guide below for pinned sources | `codex plugin remove osm@online-sourdough` |
+| Pi | `pi update --extension git:github.com/onlinesourdough/OSM-plugin` for a tracking install | `pi remove git:github.com/onlinesourdough/OSM-plugin` |
+| Claude Code | `claude plugin marketplace update online-sourdough`, then `claude plugin update osm@online-sourdough --scope user` | `claude plugin uninstall osm@online-sourdough --scope user` |
+| Gemini CLI | `gemini extensions update osm` | `gemini extensions uninstall osm` |
+| Copilot CLI | `copilot plugin marketplace update online-sourdough`, then `copilot plugin update osm@online-sourdough` | `copilot plugin uninstall osm@online-sourdough` |
+| Cursor | Refresh the selected marketplace and manage OSM in Customize | Remove OSM in Customize |
 
 Pinned versions and local sources need their own update selection. In Pi, use
 the exact registered source from `pi list` when removing a pinned install.
@@ -447,18 +447,18 @@ is not removed by the package manager.
 
 ## More
 
-The [AIOS overview](docs/aios.md) ships with the plugin and states the
-version it describes. The AIOS skill's [documentation route](skills/aios/references/documentation.md)
+The [OSM overview](docs/osm.md) ships with the plugin and states the
+version it describes. The OSM skill's [documentation route](skills/osm/references/documentation.md)
 selects only the local topic needed for a question. These references are not
-loaded into every session. AIOS has no documentation or skill runtime on the
+loaded into every session. OSM has no documentation or skill runtime on the
 Resources domain. Selective reading saves context whether the file is local or
 remote; hosting alone does not reduce the tokens of content actually read.
-Remote skill distribution was considered in [issue #12](https://github.com/onlinesourdough/AIOS-Plugin/issues/12)
+Remote skill distribution was considered in [issue #12](https://github.com/onlinesourdough/OSM-plugin/issues/12)
 and closed as not planned; it is not an active roadmap commitment.
 
 Read about the [22 skills](docs/skills.md), [architecture](docs/architecture.md),
 [verification](docs/verification.md), [recovery](docs/recovery.md) and
-[version history](CHANGELOG.md). GitHub [Releases](https://github.com/onlinesourdough/AIOS-Plugin/releases)
+[version history](CHANGELOG.md). GitHub [Releases](https://github.com/onlinesourdough/OSM-plugin/releases)
 lists published releases. The [release procedure](docs/distribution.md#release-and-adoption)
 validates a reviewed version tag before publishing its matching release.
 Contributors start with [AGENTS.md](AGENTS.md).

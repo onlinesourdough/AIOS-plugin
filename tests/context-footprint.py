@@ -15,93 +15,93 @@ MANIFEST = ROOT / "tests/fixtures/context-footprint-legacy.json"
 MAX_SKILL_BODY_BYTES = 8192
 MAX_DESCRIPTION_BYTES = 240
 JOB_PREFIXES = {
-    "clarify": "Explain ",
-    "human-writing": "Draft ",
-    "write-code": "Write ",
+    "osm-clarify": "Explain ",
+    "osm-human-writing": "Draft ",
+    "osm-write-code": "Write ",
     "content": "", "diffusion-studio": "",
-    "aios": "Bring in ",
-    "aios-build-work": "Implement ",
-    "aios-check": "Verify ",
-    "aios-create-project": "Start ",
-    "aios-maintain-context": "Curate ",
-    "aios-manage-skills": "Manage ",
-    "aios-setup": "Set up, resume or move ",
-    "aios-context": "Manage ",
-    "aios-interview": "Interview ",
-    "aios-orchestrate-workers": "Prepare, launch, coordinate and recover ",
-    "aios-risky-changes": "Assess ",
-    "aios-review-work": "Review ",
-    "aios-select-model": "Choose ",
-    "aios-ship-work": "Deliver ",
-    "aios-spec-work": "Specify or revise ",
-    "aios-triage-improvement": "Triage ",
-    "aios-update": "Update selected optional ",
+    "osm": "Bring in ",
+    "osm-build-work": "Implement ",
+    "osm-check": "Verify ",
+    "osm-create-project": "Start ",
+    "osm-maintain-context": "Curate ",
+    "osm-manage-skills": "Manage ",
+    "osm-setup": "Set up, resume or move ",
+    "osm-context": "Manage ",
+    "osm-interview": "Interview ",
+    "osm-orchestrate-workers": "Prepare, launch, coordinate and recover ",
+    "osm-risky-changes": "Assess ",
+    "osm-review-work": "Review ",
+    "osm-select-model": "Choose ",
+    "osm-ship-work": "Deliver ",
+    "osm-spec-work": "Specify or revise ",
+    "osm-triage-improvement": "Triage ",
+    "osm-update": "Update selected optional ",
 }
 CURRENT_NEUTRAL_SCAFFOLD = (
-    "skills/aios-setup/assets/bridge.md",
-    "skills/aios-setup/assets/owner/.gitignore",
-    "skills/aios-setup/assets/owner/AIOS.md",
-    "skills/aios-setup/assets/owner/AIOS_FORMAT",
-    "skills/aios-setup/assets/owner/CONNECTIONS.md",
-    "skills/aios-setup/assets/owner/MEMORY.md",
-    "skills/aios-setup/assets/owner/context/README.md",
-    "skills/aios-setup/assets/owner/skills/README.md",
+    "skills/osm-setup/assets/bridge.md",
+    "skills/osm-setup/assets/owner/.gitignore",
+    "skills/osm-setup/assets/owner/AIOS.md",
+    "skills/osm-setup/assets/owner/AIOS_FORMAT",
+    "skills/osm-setup/assets/owner/CONNECTIONS.md",
+    "skills/osm-setup/assets/owner/MEMORY.md",
+    "skills/osm-setup/assets/owner/context/README.md",
+    "skills/osm-setup/assets/owner/skills/README.md",
 )
 CURRENT_JOURNEYS = {
     "independent-local-negative-preload": (),
     "owner-business-route": (
-        "skills/aios/SKILL.md",
-        "skills/aios-context/SKILL.md",
-        "skills/aios-context/references/providers.md",
-        "skills/aios/references/routing.md",
+        "skills/osm/SKILL.md",
+        "skills/osm-context/SKILL.md",
+        "skills/osm-context/references/providers.md",
+        "skills/osm/references/routing.md",
     ),
     "spec-ready": (
         # Historical file bridge resolves the owner home; no new provider decision.
-        "skills/aios/SKILL.md",
-        "skills/aios/references/routing.md",
-        "skills/aios-spec-work/SKILL.md",
-        "skills/aios-select-model/SKILL.md",
-        "skills/aios/references/lifecycle.md",
-        "skills/aios-spec-work/references/readiness.md",
+        "skills/osm/SKILL.md",
+        "skills/osm/references/routing.md",
+        "skills/osm-spec-work/SKILL.md",
+        "skills/osm-select-model/SKILL.md",
+        "skills/osm/references/lifecycle.md",
+        "skills/osm-spec-work/references/readiness.md",
     ),
     "worker-build": (
         # Historical file bridge resolves the owner home; no new provider decision.
-        "skills/aios/SKILL.md",
-        "skills/aios/references/routing.md",
-        "skills/aios-build-work/SKILL.md",
-        "skills/write-code/SKILL.md",
-        "skills/aios-select-model/SKILL.md",
-        "skills/aios-orchestrate-workers/SKILL.md",
-        "skills/aios/references/lifecycle.md",
+        "skills/osm/SKILL.md",
+        "skills/osm/references/routing.md",
+        "skills/osm-build-work/SKILL.md",
+        "skills/osm-write-code/SKILL.md",
+        "skills/osm-select-model/SKILL.md",
+        "skills/osm-orchestrate-workers/SKILL.md",
+        "skills/osm/references/lifecycle.md",
     ),
     "installation-check-basic": (
-        "skills/aios/SKILL.md",
-        "skills/aios-check/SKILL.md",
-        "skills/aios-check/references/checks.md",
+        "skills/osm/SKILL.md",
+        "skills/osm-check/SKILL.md",
+        "skills/osm-check/references/checks.md",
     ),
     "codex-package-and-bridge-pre-verification": (
         # Fixed managed-file package/bridge journey: provider already resolved.
-        "skills/aios-setup/SKILL.md",
-        "skills/aios-setup/references/setup.md",
-        "skills/aios-interview/references/conversation.md",
-        "skills/aios-maintain-context/references/curation.md",
-        "skills/aios-setup/references/adapters.md",
-        "skills/aios-setup/references/adapter-codex.md",
-        "skills/aios-setup/references/codex-tracking-acceptance.md",
-        "skills/aios-setup/references/data-format.md",
+        "skills/osm-setup/SKILL.md",
+        "skills/osm-setup/references/setup.md",
+        "skills/osm-interview/references/conversation.md",
+        "skills/osm-maintain-context/references/curation.md",
+        "skills/osm-setup/references/adapters.md",
+        "skills/osm-setup/references/adapter-codex.md",
+        "skills/osm-setup/references/codex-tracking-acceptance.md",
+        "skills/osm-setup/references/data-format.md",
     ) + CURRENT_NEUTRAL_SCAFFOLD,
     "codex-package-and-bridge-verification": (
         # Fixed managed-file package/bridge journey: provider already resolved.
-        "skills/aios-setup/SKILL.md",
-        "skills/aios-setup/references/setup.md",
-        "skills/aios-interview/references/conversation.md",
-        "skills/aios-maintain-context/references/curation.md",
-        "skills/aios-setup/references/adapters.md",
-        "skills/aios-setup/references/adapter-codex.md",
-        "skills/aios-setup/references/codex-tracking-acceptance.md",
-        "skills/aios-setup/references/data-format.md",
-        "skills/aios-check/references/scenarios.md",
-        "skills/aios-check/references/setup-scenarios.md",
+        "skills/osm-setup/SKILL.md",
+        "skills/osm-setup/references/setup.md",
+        "skills/osm-interview/references/conversation.md",
+        "skills/osm-maintain-context/references/curation.md",
+        "skills/osm-setup/references/adapters.md",
+        "skills/osm-setup/references/adapter-codex.md",
+        "skills/osm-setup/references/codex-tracking-acceptance.md",
+        "skills/osm-setup/references/data-format.md",
+        "skills/osm-check/references/scenarios.md",
+        "skills/osm-check/references/setup-scenarios.md",
     ) + CURRENT_NEUTRAL_SCAFFOLD,
 }
 
@@ -187,21 +187,21 @@ def current_bytes(paths, startup):
 
 
 def validate_routes():
-    adapters = (ROOT / "skills/aios-setup/references/adapters.md").read_text()
+    adapters = (ROOT / "skills/osm-setup/references/adapters.md").read_text()
     required = ("adapter-codex.md", "adapter-codex-desktop.md", "adapter-pi.md",
                 "adapter-portability.md", "adapter-claude.md", "adapter-other.md",
                 "harness-configuration.md")
     require(all(target in adapters for target in required), "adapter route coverage")
     require("exactly one operation route" in adapters, "adapter selective-read rule")
 
-    harness = (ROOT / "skills/aios-setup/references/harness-configuration.md").read_text()
+    harness = (ROOT / "skills/osm-setup/references/harness-configuration.md").read_text()
     required = ("harness-protection.md", "harness-codex.md",
                 "harness-codex-context.md", "harness-codex-computer-use.md",
                 "harness-codex-computer-history.md", "harness-pi.md")
     require(all(target in harness for target in required), "harness route coverage")
     require("exactly the references relevant" in harness, "harness selective-read rule")
 
-    scenarios = (ROOT / "skills/aios-check/references/workflow-scenarios.md").read_text()
+    scenarios = (ROOT / "skills/osm-check/references/workflow-scenarios.md").read_text()
     require("Missing System" in scenarios and "no substitution" in scenarios,
             "negative specialist route")
     require("Lead-local proportionality" in scenarios and "do not load orchestration" in scenarios,
@@ -209,12 +209,12 @@ def validate_routes():
     require("Context footprint parity" in scenarios and
             "a byte reduction fails if effective behavior narrows" in scenarios,
             "behavior-preserving footprint route")
-    setup_scenarios = (ROOT / "skills/aios-check/references/setup-scenarios.md").read_text()
+    setup_scenarios = (ROOT / "skills/osm-check/references/setup-scenarios.md").read_text()
     require("Reference isolation" in setup_scenarios and
             "do not load Pi, desktop, protection" in setup_scenarios,
             "onboarding reference isolation")
 
-    owner_root = ROOT / "skills/aios-setup/assets/owner"
+    owner_root = ROOT / "skills/osm-setup/assets/owner"
     actual_owner_assets = {
         path.relative_to(ROOT).as_posix()
         for path in owner_root.rglob("*") if path.is_file()
@@ -267,44 +267,44 @@ def main():
         estimate = math.ceil(working / 4)
         print(f"{name}|{legacy_journey['stage']}|{legacy}|{working}|{change:.1f}%|~{estimate}")
 
-    owner_index = ROOT / "skills/aios-setup/assets/owner/AIOS.md"
-    owner_memory = ROOT / "skills/aios-setup/assets/owner/MEMORY.md"
+    owner_index = ROOT / "skills/osm-setup/assets/owner/AIOS.md"
+    owner_memory = ROOT / "skills/osm-setup/assets/owner/MEMORY.md"
     print(f"neutral_current_owner_index_memory_bytes={owner_index.stat().st_size + owner_memory.stat().st_size}")
     interview = sum((ROOT / path).stat().st_size for path in (
-        "skills/aios-interview/SKILL.md",
-        "skills/aios-interview/references/owner-context.md",
+        "skills/osm-interview/SKILL.md",
+        "skills/osm-interview/references/owner-context.md",
     ))
     print(f"conditional_owner_interview_extra_bytes={interview}")
     print("NOTE: matched setup routes have an accepted focus and count the shared question procedure; missing foundation adds Interview and its owner-context guide")
     full_setup = current_bytes(CURRENT_JOURNEYS["codex-package-and-bridge-verification"], startup) + interview
     print(f"setup_with_owner_interview_through_verification_bytes={full_setup}")
-    business = ROOT / "skills/aios-context/references/business-context.md"
+    business = ROOT / "skills/osm-context/references/business-context.md"
     print(f"conditional_business_coverage_extra_bytes={business.stat().st_size}")
     print(f"setup_with_business_coverage_and_owner_interview_bytes={full_setup + business.stat().st_size}")
     print("NOTE: business onboarding or a foundation audit adds the coverage reference; matched technical package/bridge journeys and ordinary retrieval do not")
-    measurement = ROOT / "skills/aios-select-model/references/measurement.md"
+    measurement = ROOT / "skills/osm-select-model/references/measurement.md"
     print(f"conditional_model_measurement_extra_bytes={measurement.stat().st_size}")
     print("NOTE: performance-claim/comparison tasks add that reference; no matched legacy measurement path is claimed")
-    trials = ROOT / "skills/aios-spec-work/references/local-trials.md"
+    trials = ROOT / "skills/osm-spec-work/references/local-trials.md"
     print(f"conditional_local_trials_extra_bytes={trials.stat().st_size}")
     print("NOTE: a material unresolved choice adds this reference; ordinary Spec and Build routes do not")
-    handoff = ROOT / "skills/aios/references/continuation.md"
+    handoff = ROOT / "skills/osm/references/continuation.md"
     print(f"conditional_whole_task_handoff_extra_bytes={handoff.stat().st_size}")
     print("NOTE: portable/whole-task transfer adds that reference, not worker orchestration; no matched legacy transfer path is claimed")
-    review_handoff = ROOT / "skills/aios-build-work/references/review-handoff.md"
+    review_handoff = ROOT / "skills/osm-build-work/references/review-handoff.md"
     print(f"conditional_human_review_handoff_extra_bytes={review_handoff.stat().st_size}")
     print("NOTE: substantive human handoff adds this reference; visual capture uses its inline baseline/candidate rule and difficult explanation can add Clarify. The worker-build benchmark stops before handoff; no matched legacy or runtime saving is claimed")
     notion = sum((ROOT / path).stat().st_size for path in (
-        "skills/aios/SKILL.md",
-        "skills/aios-context/SKILL.md",
-        "skills/aios-context/references/providers.md",
-        "skills/aios-context/references/notion/operating.md",
+        "skills/osm/SKILL.md",
+        "skills/osm-context/SKILL.md",
+        "skills/osm-context/references/providers.md",
+        "skills/osm-context/references/notion/operating.md",
     )) + startup
     print(f"conditional_notion_owner_route_bytes={notion}")
-    contract = ROOT / "skills/aios-context/references/home-contract.md"
+    contract = ROOT / "skills/osm-context/references/home-contract.md"
     print(f"conditional_context_setup_contract_extra_bytes={contract.stat().st_size}")
     selection = sum((ROOT / path).stat().st_size for path in (
-        "skills/aios-context/SKILL.md", "skills/aios-context/references/providers.md"))
+        "skills/osm-context/SKILL.md", "skills/osm-context/references/providers.md"))
     print(f"conditional_unresolved_provider_selection_extra_bytes={selection}")
     print(f"conditional_generic_selection_and_design_extra_bytes={selection + contract.stat().st_size}")
     for journey in ("spec-ready", "worker-build"):

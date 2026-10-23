@@ -34,6 +34,12 @@ requires `1.0.0` for initial versioning. Build metadata alone is not a bump.
 Unchanged skills may retain their versions. Review judges whether patch, minor
 or major is appropriate; a file comparison cannot infer compatibility.
 
+A renamed skill keeps its history. `RENAMED_SKILLS` in `tests/skill_metadata.py`
+maps each current name to its previous one (OSM 0.30.0: `aios*`, `clarify`,
+`human-writing` and `write-code` to `osm*`). When the current name is absent
+from the baseline, the check compares the mapped previous folder and requires a
+major bump, because invocation changed. An unmapped new name is a new skill.
+
 The dependency-free author validator supports the package's deliberately small
 YAML shape: root string fields (`name`, `description`, optional `license`,
 `compatibility`, `allowed-tools`) and a `metadata` mapping of quoted strings.

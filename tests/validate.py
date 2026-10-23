@@ -2,7 +2,7 @@
 
 from pathlib import Path
 import argparse
-from skill_metadata import parse_frontmatter, skill_version, validate_baseline
+from skill_metadata import RENAMED_SKILLS, parse_frontmatter, skill_version, validate_baseline
 from native_manifests import validate_native
 import json
 import re
@@ -14,63 +14,63 @@ from package_documentation import check as validate_documentation
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL_NAMES = {
-    "aios", "aios-build-work", "aios-check", "aios-create-project",
-    "aios-maintain-context", "aios-manage-skills",
-    "aios-setup", "aios-context", "aios-interview", "aios-orchestrate-workers", "aios-review-work",
-    "aios-risky-changes", "aios-ship-work", "aios-spec-work", "aios-triage-improvement",
-    "aios-update", "aios-select-model", "human-writing", "write-code",
-    "content", "diffusion-studio", "clarify",
+    "osm", "osm-build-work", "osm-check", "osm-create-project",
+    "osm-maintain-context", "osm-manage-skills",
+    "osm-setup", "osm-context", "osm-interview", "osm-orchestrate-workers", "osm-review-work",
+    "osm-risky-changes", "osm-ship-work", "osm-spec-work", "osm-triage-improvement",
+    "osm-update", "osm-select-model", "osm-human-writing", "osm-write-code",
+    "content", "diffusion-studio", "osm-clarify",
 }
 LEGACY_ROUTE_TARGETS = {
-    "aios": ("../../aios/SKILL.md", "../SKILL.md", "../../aios-check/SKILL.md",
-             "../../aios-maintain-context/SKILL.md", "../../aios-update/SKILL.md"),
-    "aios-build-work": ("../../aios-build-work/SKILL.md",),
-    "aios-create-project": ("../../aios-create-project/SKILL.md",),
-    "aios-create-system": ("../../aios-manage-skills/SKILL.md",
-                           "../../aios-create-project/SKILL.md"),
-    "aios-evaluate-completeness": ("../../aios-review-work/SKILL.md",
-                                   "../../aios-review-work/references/completeness.md"),
-    "aios-evaluate-publish-safety": ("../../aios-ship-work/SKILL.md",
-                                     "../../aios-ship-work/references/publish-safety.md"),
-    "aios-evaluate-spec-work": ("../../aios-spec-work/SKILL.md",
-                                "../../aios-spec-work/references/readiness.md"),
+    "aios": ("../../osm/SKILL.md", "../SKILL.md", "../../osm-check/SKILL.md",
+             "../../osm-maintain-context/SKILL.md", "../../osm-update/SKILL.md"),
+    "aios-build-work": ("../../osm-build-work/SKILL.md",),
+    "aios-create-project": ("../../osm-create-project/SKILL.md",),
+    "aios-create-system": ("../../osm-manage-skills/SKILL.md",
+                           "../../osm-create-project/SKILL.md"),
+    "aios-evaluate-completeness": ("../../osm-review-work/SKILL.md",
+                                   "../../osm-review-work/references/completeness.md"),
+    "aios-evaluate-publish-safety": ("../../osm-ship-work/SKILL.md",
+                                     "../../osm-ship-work/references/publish-safety.md"),
+    "aios-evaluate-spec-work": ("../../osm-spec-work/SKILL.md",
+                                "../../osm-spec-work/references/readiness.md"),
     "aios-onboard": ("../SKILL.md",),
-    "aios-review-work": ("../../aios-review-work/SKILL.md",),
-    "aios-route-agentic-content-system": ("../../aios/SKILL.md",
-                                           "../../aios/references/routing.md"),
-    "aios-route-agentic-design-system": ("../../aios/SKILL.md",
-                                          "../../aios/references/routing.md"),
-    "aios-route-business-constraint": ("../../aios/SKILL.md",
-                                       "../../aios/references/routing.md"),
-    "aios-ship-work": ("../../aios-ship-work/SKILL.md",),
-    "aios-spec-work": ("../../aios-spec-work/SKILL.md",),
-    "aios-sync": ("../../aios-maintain-context/SKILL.md",
-                  "../../aios-maintain-context/references/sync.md"),
-    "aios-triage-improvement": ("../../aios-triage-improvement/SKILL.md",),
-    "aios-update": ("../../aios-update/SKILL.md", "migration.md"),
+    "aios-review-work": ("../../osm-review-work/SKILL.md",),
+    "aios-route-agentic-content-system": ("../../osm/SKILL.md",
+                                           "../../osm/references/routing.md"),
+    "aios-route-agentic-design-system": ("../../osm/SKILL.md",
+                                          "../../osm/references/routing.md"),
+    "aios-route-business-constraint": ("../../osm/SKILL.md",
+                                       "../../osm/references/routing.md"),
+    "aios-ship-work": ("../../osm-ship-work/SKILL.md",),
+    "aios-spec-work": ("../../osm-spec-work/SKILL.md",),
+    "aios-sync": ("../../osm-maintain-context/SKILL.md",
+                  "../../osm-maintain-context/references/sync.md"),
+    "aios-triage-improvement": ("../../osm-triage-improvement/SKILL.md",),
+    "aios-update": ("../../osm-update/SKILL.md", "migration.md"),
 }
 LEGACY_EXTERNAL_TARGETS = {
-    "clarify": "](../../clarify/SKILL.md)",
-    "manage-skills": "](../../aios-manage-skills/SKILL.md)",
-    "orchestrate-workers": "](../../aios-orchestrate-workers/SKILL.md)",
+    "clarify": "](../../osm-clarify/SKILL.md)",
+    "manage-skills": "](../../osm-manage-skills/SKILL.md)",
+    "orchestrate-workers": "](../../osm-orchestrate-workers/SKILL.md)",
     "route-models": "historical change `8b81375`",
     "shape-offer": "Retained in the public Global Skills archive",
 }
 # Core routes methods; domain details stay in the selected domain skill.
 FORBIDDEN_BOUNDARY_TEXT = {
-    "skills/aios/references/routing.md": (
+    "skills/osm/references/routing.md": (
         "ACS", "OpenPencil", "DESIGN.md", "HANDOFF.md", ".op",
     ),
-    "skills/aios-create-project/SKILL.md": (
+    "skills/osm-create-project/SKILL.md": (
         "scripts/create-project.sh", "--in-place", "--source-url", "--source-sha",
     ),
-    "skills/aios-manage-skills/SKILL.md": ("skills.sh", "npx skills"),
+    "skills/osm-manage-skills/SKILL.md": ("skills.sh", "npx skills"),
 }
 FORBIDDEN_SHIPPED_PATTERNS = (r"\bnpx skills\b", r"\bskills\.sh\b")
 DOMAIN_SKILLS = {"content", "diffusion-studio"}
 PRODUCT_PATHS = (".codex-plugin", ".claude-plugin", ".cursor-plugin",
                  "gemini-extension.json", "skills", "assets/icon.png", "LICENSE",
-                 "docs/aios.md", "runtime/sidebar")
+                 "docs/osm.md", "runtime/sidebar")
 FORBIDDEN_KEYS = {"scripts", "dependencies", "devDependencies", "peerDependencies"}
 SECRET_PATTERNS = (
     r"AKIA[0-9A-Z]{16}",
@@ -127,7 +127,7 @@ def validate(root=ROOT, release_tag=None):
     package = json.loads((root / "package.json").read_text())
     marketplace = json.loads((root / ".agents/plugins/marketplace.json").read_text())
 
-    require(manifest["name"] == package["name"] == "aios", "package identity")
+    require(manifest["name"] == package["name"] == "osm", "package identity")
     require(manifest["version"] == package["version"], "version mismatch")
     require(re.fullmatch(r"\d+\.\d+\.\d+", manifest["version"]), "invalid version")
     require(not (FORBIDDEN_KEYS & package.keys()), "consumer script or dependency")
@@ -145,7 +145,7 @@ def validate(root=ROOT, release_tag=None):
     entry = marketplace["plugins"]
     require(len(entry) == 1, "marketplace entry count")
     entry = entry[0]
-    require(entry["name"] == "aios", "marketplace identity")
+    require(entry["name"] == "osm", "marketplace identity")
     require((root / entry["source"]["path"]).resolve() == root.resolve(),
             "marketplace source")
     require(entry["policy"] == {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
@@ -179,33 +179,33 @@ def validate(root=ROOT, release_tag=None):
                 f"skill description: {path}")
         require("disable-model-invocation" not in fields, f"implicit invocation: {path}")
 
-    primary_targets = set(link_targets(skill_root / "aios/SKILL.md"))
-    for name in ("content", "human-writing", "write-code", "aios-interview", "aios-setup"):
+    primary_targets = set(link_targets(skill_root / "osm/SKILL.md"))
+    for name in ("content", "osm-human-writing", "osm-write-code", "osm-interview", "osm-setup"):
         require((skill_root / name / "SKILL.md").resolve() in primary_targets,
                 f"built-in method route missing: {name}")
-    for caller in ("aios-build-work", "aios-review-work"):
-        require((skill_root / "write-code/SKILL.md").resolve() in
+    for caller in ("osm-build-work", "osm-review-work"):
+        require((skill_root / "osm-write-code/SKILL.md").resolve() in
                 set(link_targets(skill_root / caller / "SKILL.md")),
                 f"shared code-quality route missing: {caller}")
-    creation_targets = set(link_targets(skill_root / "aios-create-project/SKILL.md"))
-    seed_reference = skill_root / "aios-create-project/references/repository-seed.md"
+    creation_targets = set(link_targets(skill_root / "osm-create-project/SKILL.md"))
+    seed_reference = skill_root / "osm-create-project/references/repository-seed.md"
     require(seed_reference.resolve() in creation_targets,
             "optional repository-seed route missing")
-    # Engineering foundation is a separately selected external method; AIOS
+    # Engineering foundation is a separately selected external method; OSM
     # must not reintroduce a bundled engineering contract under any name.
-    require(not (skill_root / "aios-project-foundation").exists(),
+    require(not (skill_root / "osm-project-foundation").exists(),
             "retired engineering-foundation skill shipped")
     # Spec owns contract preparation; tracking is one linked shared owner.
     # Native decisions require the independent behavioral probes, not wording tests.
-    spec_targets = set(link_targets(skill_root / "aios-spec-work/SKILL.md"))
-    for target in ("aios/references/lifecycle.md", "aios-spec-work/references/readiness.md",
-                   "aios-build-work/SKILL.md"):
+    spec_targets = set(link_targets(skill_root / "osm-spec-work/SKILL.md"))
+    for target in ("osm/references/lifecycle.md", "osm-spec-work/references/readiness.md",
+                   "osm-build-work/SKILL.md"):
         require((skill_root / target).resolve() in spec_targets,
                 f"Spec contract route missing: {target}")
-    risky_changes = (skill_root / "aios-risky-changes/SKILL.md").read_text()
-    spec_work = (skill_root / "aios-spec-work/SKILL.md").read_text()
-    review_work = (skill_root / "aios-review-work/SKILL.md").read_text()
-    require(skill_fields["aios-risky-changes"]["description"].startswith("Assess ") and
+    risky_changes = (skill_root / "osm-risky-changes/SKILL.md").read_text()
+    spec_work = (skill_root / "osm-spec-work/SKILL.md").read_text()
+    review_work = (skill_root / "osm-review-work/SKILL.md").read_text()
+    require(skill_fields["osm-risky-changes"]["description"].startswith("Assess ") and
             "not routine edits or lifecycle management" in risky_changes and
             "Name the material real-world assumptions" in risky_changes and
             "proportional baseline or check" in risky_changes and
@@ -215,20 +215,20 @@ def validate(root=ROOT, release_tag=None):
             "residual unknowns" in risky_changes and
             "does not create a lifecycle, goal, worker" in risky_changes,
             "risky-change owner boundary")
-    require("[Risky Changes](../aios-risky-changes/SKILL.md)" in spec_work and
+    require("[Risky Changes](../osm-risky-changes/SKILL.md)" in spec_work and
             "Routine edits do not select it." in spec_work and
-            "[Risky Changes](../aios-risky-changes/SKILL.md)" in review_work and
+            "[Risky Changes](../osm-risky-changes/SKILL.md)" in review_work and
             "Review still owns acceptance and does not gain Ship authority" in review_work,
             "risky-change caller routing")
-    primary = (skill_root / "aios/SKILL.md").read_text()
-    lifecycle = (skill_root / "aios/references/lifecycle.md").read_text()
+    primary = (skill_root / "osm/SKILL.md").read_text()
+    lifecycle = (skill_root / "osm/references/lifecycle.md").read_text()
     require("persistent-goal request boundary" in primary and
             re.search(r"If activation requires an explicit request and none\s+exists", lifecycle) and
             re.search(r"do\s+not silently substitute a note", lifecycle) and
             re.search(r"genuinely\s+has no native goal controls", lifecycle) and
             "The lead's default model remains the user's configured choice." in lifecycle,
             "native goal request boundary")
-    recovery = (skill_root / "aios/references/recovery.md").read_text()
+    recovery = (skill_root / "osm/references/recovery.md").read_text()
     require("## Native-state deadlock" in recovery and
             "standing owner fallback policy" in recovery and
             "native resumption\nis unavailable" in recovery and
@@ -238,44 +238,44 @@ def validate(root=ROOT, release_tag=None):
             "unresolved external, user-action or security blocker still stops" in recovery and
             "explicitly requires native-only continuation" in recovery,
             "native-state deadlock")
-    workflow_scenarios = (skill_root / "aios-check/references/workflow-scenarios.md").read_text()
+    workflow_scenarios = (skill_root / "osm-check/references/workflow-scenarios.md").read_text()
     require("| Native-state deadlock |" in workflow_scenarios and
             "| Native-only continuation |" in workflow_scenarios and
             "| No native task list |" in workflow_scenarios and
             "without hunting a session, deleting, reactivating, replacing or duplicating a goal or worker" in workflow_scenarios and
-            "[native tracking SOP](../aios/references/lifecycle.md)" in spec_work and
-            "[native tracking SOP](../aios/references/lifecycle.md)" in review_work,
+            "[native tracking SOP](../osm/references/lifecycle.md)" in spec_work and
+            "[native tracking SOP](../osm/references/lifecycle.md)" in review_work,
             "native-state deadlock scenario")
     require("| Routine risky-change boundary |" in workflow_scenarios and
             "do not load Risky Changes or create a lifecycle, goal, worker, or extra test suite" in workflow_scenarios,
             "routine risky-change negative route")
-    onboard = (skill_root / "aios-setup/SKILL.md").read_text()
-    manage_skills = (skill_root / "aios-manage-skills/SKILL.md").read_text()
-    require("[Manage Skills](../aios-manage-skills/SKILL.md)" in onboard and
+    onboard = (skill_root / "osm-setup/SKILL.md").read_text()
+    manage_skills = (skill_root / "osm-manage-skills/SKILL.md").read_text()
+    require("[Manage Skills](../osm-manage-skills/SKILL.md)" in onboard and
             re.search(r"normal setup does not\s+depend on an optional guard implementation", onboard, re.I) and
             "setup-guardrails" in manage_skills and
-            "[protection coverage](../aios-setup/references/harness-protection.md)" in manage_skills and
+            "[protection coverage](../osm-setup/references/harness-protection.md)" in manage_skills and
             "archived, not a preferred active installation" in manage_skills and
             "setup-agent-guardrails" not in manage_skills and
-            "not an AIOS prerequisite or package dependency" in manage_skills and
+            "not an OSM prerequisite or package dependency" in manage_skills and
             all(term in manage_skills for term in ("source identity", "installation state",
                                                    "trust/configuration state", "native-active observation")) and
             "| Optional autonomous-use guardrails |" in workflow_scenarios and
             "setup-guardrails" not in SKILL_NAMES,
             "optional guardrails route boundary")
-    orchestrate = (skill_root / "aios-orchestrate-workers/SKILL.md").read_text()
+    orchestrate = (skill_root / "osm-orchestrate-workers/SKILL.md").read_text()
     # Ownership and portability invariants; behavior needs independent model rehearsal.
-    selection = skill_root / "aios-select-model/SKILL.md"
-    for caller in ("aios-spec-work", "aios-build-work", "aios-orchestrate-workers"):
+    selection = skill_root / "osm-select-model/SKILL.md"
+    for caller in ("osm-spec-work", "osm-build-work", "osm-orchestrate-workers"):
         require(selection.resolve() in set(link_targets(skill_root / caller / "SKILL.md")),
                 f"model selection route missing: {caller}")
-    for source in (selection, skill_root / "aios-orchestrate-workers/SKILL.md"):
+    for source in (selection, skill_root / "osm-orchestrate-workers/SKILL.md"):
         require(not re.search(r"\b(?:gpt-\d|claude-\d|gemini-\d)", source.read_text()),
                 f"nonportable model default: {source}")
-    owner_assets = skill_root / "aios-setup/assets/owner"
+    owner_assets = skill_root / "osm-setup/assets/owner"
     require(not any("model" in p.name.lower() for p in owner_assets.rglob("*")),
             "owner template carries a model inventory")
-    sync = (skill_root / "aios-maintain-context/references/sync.md").read_text()
+    sync = (skill_root / "osm-maintain-context/references/sync.md").read_text()
     require("never `git add .`" in sync and
             "user-owned personal-skill folder identified" in sync and
             "shared\nplugin/library tree or an unrecorded folder" in sync and
@@ -289,17 +289,17 @@ def validate(root=ROOT, release_tag=None):
             "| Continuity provenance |" in workflow_scenarios and
             "| Continuity native behavior |" in workflow_scenarios,
             "continuity scope and provenance")
-    maintain = (skill_root / "aios-maintain-context/SKILL.md").read_text()
-    build = (skill_root / "aios-build-work/SKILL.md").read_text()
-    readiness = (skill_root / "aios-spec-work/references/readiness.md").read_text()
-    require("For an explicit `aios sync`, read [Sync](references/sync.md) first" in maintain and
+    maintain = (skill_root / "osm-maintain-context/SKILL.md").read_text()
+    build = (skill_root / "osm-build-work/SKILL.md").read_text()
+    readiness = (skill_root / "osm-spec-work/references/readiness.md").read_text()
+    require("For an explicit `osm sync` (or the earlier `aios sync`), read [Sync](references/sync.md)\nfirst" in maintain and
             "missing\nor genuinely empty chosen home" in maintain and
             "do not mistake that absence for a malformed owner home" in maintain and
             "fallback applies only to an\nalready verified goal state" in lifecycle and
             "does not waive initial activation" in build and
             "canonical blocked/terminal fallback applies only after prior verified activation" in readiness,
             "sync missing-home and native-goal gate ordering")
-    canonical_sources = skill_root / "aios/references/canonical-sources.md"
+    canonical_sources = skill_root / "osm/references/canonical-sources.md"
     require(canonical_sources.is_file(), "missing canonical source route")
     canonical_text = canonical_sources.read_text()
     require(canonical_sources.resolve() in primary_targets and
@@ -310,21 +310,21 @@ def validate(root=ROOT, release_tag=None):
             "Never inspect, copy, transport, or ask for credentials" in canonical_text and
             "never change\nvisibility or publish" in canonical_text,
             "canonical source isolation")
-    curation = (skill_root / "aios-maintain-context/references/curation.md").read_text()
+    curation = (skill_root / "osm-maintain-context/references/curation.md").read_text()
     require("Keep facts in one canonical source" in curation and
             "A read of MEMORY alone neither invokes this procedure nor grants write authority" in curation and
             "recorded or standing authority" in curation,
             "memory read/write separation")
-    continuation = skill_root / "aios/references/continuation.md"
+    continuation = skill_root / "osm/references/continuation.md"
     require(continuation.is_file() and
-            not (skill_root / "aios-select-model/references/continuation.md").exists() and
-            continuation.resolve() in set(link_targets(skill_root / "aios/references/lifecycle.md")) and
-            (skill_root / "aios-maintain-context/references/curation.md").resolve()
-            in set(link_targets(skill_root / "aios-setup/references/setup.md")),
+            not (skill_root / "osm-select-model/references/continuation.md").exists() and
+            continuation.resolve() in set(link_targets(skill_root / "osm/references/lifecycle.md")) and
+            (skill_root / "osm-maintain-context/references/curation.md").resolve()
+            in set(link_targets(skill_root / "osm-setup/references/setup.md")),
             "single continuation and context framework owners")
 
-    overview = root / "docs/aios.md"
-    require(overview.is_file(), "missing local AIOS overview")
+    overview = root / "docs/osm.md"
+    require(overview.is_file(), "missing local OSM overview")
     overview_text = overview.read_text()
     require("portable context and skills" in overview_text and
             "Shared method, owner context" in overview_text and
@@ -334,45 +334,73 @@ def validate(root=ROOT, release_tag=None):
             "Native package updates are separate from owner-data Sync" in overview_text,
             "local overview boundaries")
     distribution = (root / "docs/distribution.md").read_text()
-    require("docs/aios.md" in distribution and
+    require("docs/osm.md" in distribution and
             "## Local documentation" in distribution and
             "## Release and adoption" in distribution,
             "local documentation and release contract")
 
-    manager = skill_root / "aios-manage-skills"
+    manager = skill_root / "osm-manage-skills"
     owner_lifecycle = manager / "references/owner-skills.md"
     require(owner_lifecycle.is_file(), "missing personal-skill owner")
-    require(not (skill_root / "aios-maintain-context/references/owner-skills.md").exists(),
+    require(not (skill_root / "osm-maintain-context/references/owner-skills.md").exists(),
             "duplicate personal-skill owner")
     caller_targets = set()
     for relative in (
-        "skills/aios/SKILL.md",
-        "skills/aios-setup/SKILL.md",
-        "skills/aios-check/references/checks.md",
-        "skills/aios-maintain-context/references/curation.md",
+        "skills/osm/SKILL.md",
+        "skills/osm-setup/SKILL.md",
+        "skills/osm-check/references/checks.md",
+        "skills/osm-maintain-context/references/curation.md",
     ):
         caller_targets.update(link_targets(root / relative))
     require((manager / "SKILL.md").resolve() in caller_targets, "Manage Skills not routed")
     require(owner_lifecycle.resolve() in caller_targets, "personal-skill procedure not routed")
 
-    owner = skill_root / "aios-setup/assets/owner"
+    owner = skill_root / "osm-setup/assets/owner"
     require((owner / "AIOS_FORMAT").read_bytes() == b"2\n", "owner format")
     require(not (owner / "projects").exists() and not (owner / "systems").exists(),
             "mandatory owner registry in new scaffold")
     require(not list(owner.rglob("AGENTS.md")) and not list(owner.rglob("AGENTS.override.md")),
             "inherited owner instructions")
-    bridge = (skill_root / "aios-setup/assets/bridge.md").read_text()
+    bridge = (skill_root / "osm-setup/assets/bridge.md").read_text()
     require(len(bridge.splitlines()) <= 14 and "AIOS_ABSOLUTE_PATH" in bridge,
             "bridge scope")
     require("local AGENTS.md and lifecycle first" in bridge and
-            "Do not preload personal AIOS context" in bridge, "bridge isolation")
+            "Do not preload personal OSM context" in bridge, "bridge isolation")
     owner_skills = (owner / "skills/README.md").read_text()
     require("For continuity, identify each transferable personal method" in owner_skills and
             "| Personal skill | Canonical source | Owner |" in owner_skills and
             "shared plugin/library" in owner_skills,
             "personal-skill continuity provenance")
 
-    parity = (skill_root / "aios-setup/references/legacy-parity.md").read_text()
+    # OSM 0.30.0 renamed the package, not the owner state. Persisted names stay
+    # readable by earlier builds; renamed skills have exactly one current copy.
+    require(set(RENAMED_SKILLS) <= SKILL_NAMES and
+            not any(path.parent.name.startswith("aios") or path.parent.name in RENAMED_SKILLS.values()
+                    for path in skill_files),
+            "retired package skill name")
+    for relative in ("osm-context/assets/bridge.md", "osm-setup/assets/bridge.md"):
+        lines = (skill_root / relative).read_text().splitlines()
+        require(lines[0] == "<!-- AIOS:BEGIN -->" and lines[-1] == "<!-- AIOS:END -->",
+                "owner bridge markers")
+    require("use OSM Context" in (skill_root / "osm-context/assets/bridge.md").read_text() and
+            "Formerly AIOS Context." in skill_fields["osm-context"]["description"],
+            "legacy bridge route")
+    sidebar_state = (root / "apps/sidebar/sources.mjs").read_text()
+    sidebar_route = (root / "apps/sidebar/context-route.mjs").read_text()
+    require("['aios', 'panel']" in sidebar_state and "'.aios-lock'" in sidebar_route and
+            "'backups', 'aios-context'" in sidebar_route and
+            sidebar_route.count("<!-- AIOS:BEGIN -->") == 3,
+            "persisted sidebar state namespace")
+    identity = (skill_root / "osm-setup/references/migration.md").read_text()
+    require(all(row in identity for row in (
+                "| Package `osm` 0.30.0 or later", "| Package `aios` 0.29.x or earlier",
+                "| Package `osm` 0.1.x, or `osm-onboard` |",
+                "| A skill named `aios`, `aios-*`, `osm` or `osm-*` without proved provenance |")) and
+            "never a reason to remove a current 0.30.0+ registration" in identity and
+            "needs no owner-data\nmigration" in identity,
+            "package identity classification")
+
+    parity = (skill_root / "osm-setup/references/legacy-parity.md").read_text()
     parity_rows = {}
     parity_names = []
     for line in parity.splitlines():
@@ -406,13 +434,13 @@ def validate(root=ROOT, release_tag=None):
                         for pattern in FORBIDDEN_SHIPPED_PATTERNS),
                 f"external owner coupling: {path.relative_to(root)}")
 
-    readiness = (skill_root / "aios-spec-work/references/readiness.md").read_text()
-    completeness = (skill_root / "aios-review-work/references/completeness.md").read_text()
-    require("[Risky Changes](../../aios-risky-changes/SKILL.md)" in readiness and
+    readiness = (skill_root / "osm-spec-work/references/readiness.md").read_text()
+    completeness = (skill_root / "osm-review-work/references/completeness.md").read_text()
+    require("[Risky Changes](../../osm-risky-changes/SKILL.md)" in readiness and
             "baseline/check, recovery, and evidence-gap result" in readiness and
             "routine edits do not select it" in readiness,
             "consequential behavior contract")
-    require("[Risky Changes](../../aios-risky-changes/SKILL.md)" in completeness and
+    require("[Risky Changes](../../osm-risky-changes/SKILL.md)" in completeness and
             "representative before/after comparison and residual-unknown result" in completeness,
             "consequential behavior review")
 
@@ -456,24 +484,24 @@ def validate(root=ROOT, release_tag=None):
         require(not any(re.search(pattern, text) for pattern in SECRET_PATTERNS),
                 f"secret-like content: {path}")
 
-    with tempfile.TemporaryDirectory(prefix="aios-package-") as temporary:
-        staged = Path(temporary) / "aios"
+    with tempfile.TemporaryDirectory(prefix="osm-package-") as temporary:
+        staged = Path(temporary) / "osm"
         copy_product(root, staged)
         require(not any((staged / name).exists() for name in (".agents", "tests", "AGENTS.md")),
                 "author content in product")
         require({p.relative_to(staged).as_posix() for p in (staged / "docs").rglob("*")
-                 if p.is_file()} == {"docs/aios.md"},
+                 if p.is_file()} == {"docs/osm.md"},
                 "unapproved documentation in product")
         require(not any((staged / "skills" / name).exists()
                         for name in ("setup-guardrails", "shape-offer")),
                 "optional global capability shipped")
-        require((staged / "skills/human-writing/SKILL.md").is_file(), "built-in writing capability missing")
+        require((staged / "skills/osm-human-writing/SKILL.md").is_file(), "built-in writing capability missing")
         for path in staged.rglob("*.md"):
             list(link_targets(path, staged))
 
 
 def rejected(mutator, expected):
-    with tempfile.TemporaryDirectory(prefix="aios-negative-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="osm-negative-") as temporary:
         copy = Path(temporary) / "repo"
         shutil.copytree(ROOT, copy, ignore=shutil.ignore_patterns(".git", ".tmp", "node_modules"))
         mutator(copy)
@@ -487,26 +515,26 @@ def rejected(mutator, expected):
 
 def negative_controls():
     def missing_skill_version(root):
-        path = root / "skills/aios/SKILL.md"
+        path = root / "skills/osm/SKILL.md"
         path.write_text(re.sub(r'^  version: [^\n]*\n', '', path.read_text(), count=1, flags=re.M))
 
     def unquoted_skill_version(root):
-        path = root / "skills/aios/SKILL.md"
+        path = root / "skills/osm/SKILL.md"
         path.write_text(re.sub(r'^  version: [^\n]*', '  version: 1.0.0',
                                path.read_text(), count=1, flags=re.M))
 
     def missing_spec_tracking_route(root):
-        path = root / "skills/aios-spec-work/SKILL.md"
+        path = root / "skills/osm-spec-work/SKILL.md"
         path.write_text(path.read_text().replace(
-            "[native tracking SOP](../aios/references/lifecycle.md)", "tracking"))
+            "[native tracking SOP](../osm/references/lifecycle.md)", "tracking"))
 
     def missing_domain_route(root):
-        path = root / "skills/aios/SKILL.md"
+        path = root / "skills/osm/SKILL.md"
         path.write_text(path.read_text().replace(
-            "](../content/SKILL.md)", "](../human-writing/SKILL.md)"))
+            "](../content/SKILL.md)", "](../osm-human-writing/SKILL.md)"))
 
     def compulsory_registry(root):
-        (root / "skills/aios-setup/assets/owner/projects").mkdir()
+        (root / "skills/osm-setup/assets/owner/projects").mkdir()
 
     def split_source(root):
         package = json.loads((root / "package.json").read_text())
@@ -519,26 +547,26 @@ def negative_controls():
         (root / "package.json").write_text(json.dumps(package))
 
     def inherited_instructions(root):
-        (root / "skills/aios-setup/assets/owner/AGENTS.md").write_text("Read all owner data.\n")
+        (root / "skills/osm-setup/assets/owner/AGENTS.md").write_text("Read all owner data.\n")
 
     def duplicate_owner(root):
-        path = root / "skills/aios-maintain-context/references/owner-skills.md"
+        path = root / "skills/osm-maintain-context/references/owner-skills.md"
         path.write_text("# Duplicate owner\n")
 
     def runtime_script(root):
-        (root / "skills/aios/unsafe.sh").write_text("echo unexpected\n")
+        (root / "skills/osm/unsafe.sh").write_text("echo unexpected\n")
 
     def coupled_system_tool(root):
-        path = root / "skills/aios/references/routing.md"
+        path = root / "skills/osm/references/routing.md"
         path.write_text(path.read_text() + "\nUse OpenPencil for design.\n")
 
     def missing_legacy_route(root):
-        path = root / "skills/aios-setup/references/legacy-parity.md"
+        path = root / "skills/osm-setup/references/legacy-parity.md"
         path.write_text(path.read_text().replace(
-            "](../../aios-triage-improvement/SKILL.md)", "](missing-triage.md)", 1))
+            "](../../osm-triage-improvement/SKILL.md)", "](missing-triage.md)", 1))
 
     def duplicate_legacy_route(root):
-        path = root / "skills/aios-setup/references/legacy-parity.md"
+        path = root / "skills/osm-setup/references/legacy-parity.md"
         duplicate = next(line for line in path.read_text().splitlines()
                          if line.startswith("| aios-build-work |"))
         path.write_text(path.read_text() + duplicate + "\n")
@@ -546,12 +574,12 @@ def negative_controls():
     def local_phase_copy(root):
         folder = root / ".agents/skills/spec-project"
         folder.mkdir(parents=True)
-        shutil.copyfile(root / "skills/aios-spec-work/SKILL.md", folder / "SKILL.md")
+        shutil.copyfile(root / "skills/osm-spec-work/SKILL.md", folder / "SKILL.md")
 
     def local_phase_wrapper(root):
         folder = root / ".agents/skills/build-project"
         folder.mkdir(parents=True)
-        (folder / "SKILL.md").write_text("---\nname: build-project\ndescription: Use shared Build.\n---\nInvoke aios-build-work.\n")
+        (folder / "SKILL.md").write_text("---\nname: build-project\ndescription: Use shared Build.\n---\nInvoke osm-build-work.\n")
 
     def native_version_drift(root):
         path = root / 'gemini-extension.json'
@@ -569,6 +597,31 @@ def negative_controls():
         (root / 'hooks').mkdir()
         (root / 'hooks/hooks.json').write_text('{}')
 
+    def retired_skill_copy(root):
+        shutil.copytree(root / "skills/osm-check", root / "skills/aios-check")
+
+    def renamed_bridge_marker(root):
+        path = root / "skills/osm-context/assets/bridge.md"
+        path.write_text(path.read_text().replace("AIOS:BEGIN", "OSM:BEGIN"))
+
+    def dropped_legacy_bridge_route(root):
+        path = root / "skills/osm-context/SKILL.md"
+        path.write_text(path.read_text().replace(" Formerly AIOS Context.", ""))
+
+    def renamed_panel_storage(root):
+        path = root / "apps/sidebar/sources.mjs"
+        path.write_text(path.read_text().replace("['aios', 'panel']", "['osm', 'panel']"))
+
+    def prefix_only_classification(root):
+        path = root / "skills/osm-setup/references/migration.md"
+        path.write_text(path.read_text().replace(
+            "never a reason to remove a current 0.30.0+ registration", "a legacy package"))
+
+    rejected(retired_skill_copy, "skill inventory")
+    rejected(renamed_bridge_marker, "owner bridge markers")
+    rejected(dropped_legacy_bridge_route, "legacy bridge route")
+    rejected(renamed_panel_storage, "persisted sidebar state namespace")
+    rejected(prefix_only_classification, "package identity classification")
     rejected(native_version_drift, 'native identity/version drift')
     rejected(native_split_source, 'native split skill source')
     rejected(implicit_hook, 'unexpected native runtime')

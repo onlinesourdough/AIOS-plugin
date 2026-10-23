@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Transcribe footage locally with Whisper for the AIOS content.
+"""Transcribe footage locally with Whisper for the OSM content.
 
 Outputs agent-readable cached transcripts at:
 
@@ -185,7 +185,7 @@ def pack_transcripts(edit_dir: Path, helper: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Local Whisper transcription for AIOS content."
+        description="Local Whisper transcription for OSM content."
     )
     parser.add_argument("input", type=Path, help="Media file or source directory.")
     parser.add_argument(

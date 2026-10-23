@@ -12,6 +12,17 @@ import subprocess
 
 
 FIELDS = {"name", "description", "license", "compatibility", "allowed-tools", "metadata"}
+# OSM 0.30.0 renamed these skills; each keeps its version lineage under the new
+# name. A name change alters invocation, so it requires a major bump.
+RENAMED_SKILLS = {
+    "osm": "aios",
+    **{f"osm-{name}": f"aios-{name}" for name in (
+        "build-work", "check", "context", "create-project", "interview",
+        "maintain-context", "manage-skills", "orchestrate-workers", "review-work",
+        "risky-changes", "select-model", "setup", "ship-work", "spec-work",
+        "triage-improvement", "update")},
+    **{f"osm-{name}": name for name in ("clarify", "human-writing", "write-code")},
+}
 SEMVER = re.compile(
     r"(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)"
     r"(?:-((?:0|[1-9][0-9]*|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
@@ -102,7 +113,7 @@ def payload(files):
             for name, value in files.items()}
 
 
-def validate_change(before, after):
+def validate_change(before, after, renamed=False):
     current = skill_version(parse_frontmatter(after["SKILL.md"].decode()))
     old_fields = parse_frontmatter(before["SKILL.md"].decode()) if before else {}
     old = old_fields.get("metadata", {}).get("version")
@@ -111,12 +122,18 @@ def validate_change(before, after):
         return
     old_key, current_key = version_key(old), version_key(current)
     require(current_key >= old_key, "skill version regressed")
+    if renamed:
+        require(current_key[0] > old_key[0], "renamed skill requires a major bump")
     if payload(before) != payload(after):
         require(current_key > old_key, "changed skill requires a SemVer bump")
 
 
-def validate_baseline(root, ref, names):
-    """Compare owned skill files with an immutable local Git baseline; no fetch."""
+def validate_baseline(root, ref, names, renamed=RENAMED_SKILLS):
+    """Compare owned skill files with an immutable local Git baseline; no fetch.
+
+    A current name absent from the baseline is compared with its explicitly
+    mapped previous name, never by prefix guessing.
+    """
     commit = subprocess.check_output(
         ["git", "rev-parse", "--verify", "--end-of-options", ref + "^{commit}"],
         cwd=root, text=True).strip()
@@ -125,14 +142,16 @@ def validate_baseline(root, ref, names):
         cwd=root).decode().split("\0")
     for name in sorted(names):
         prefix = f"skills/{name}/"
-        before = {path[len(prefix):]: subprocess.check_output(
+        is_renamed = name in renamed and not any(path.startswith(prefix) for path in paths)
+        source = f"skills/{renamed[name]}/" if is_renamed else prefix
+        before = {path[len(source):]: subprocess.check_output(
             ["git", "show", f"{commit}:{path}"], cwd=root)
-            for path in paths if path.startswith(prefix)}
+            for path in paths if path.startswith(source)}
         folder = Path(root) / prefix
         after = {path.relative_to(folder).as_posix(): path.read_bytes()
                  for path in folder.rglob("*") if path.is_file()}
         try:
-            validate_change(before, after)
+            validate_change(before, after, renamed=is_renamed and bool(before))
         except AssertionError as error:
             raise AssertionError(f"{name}: {error}") from error
     return commit

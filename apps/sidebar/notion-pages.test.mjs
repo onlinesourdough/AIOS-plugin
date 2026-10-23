@@ -76,9 +76,9 @@ test('search reuses the existing connector, strips highlights and never starts a
 });
 
 test('transport limits narrow local capabilities without changing account or policy settings', () => {
-  assert.deepEqual(transportLimits({ plugins: { 'aios@example': { enabled: true }, 'notion@official': { enabled: false } },
+  assert.deepEqual(transportLimits({ plugins: { 'osm@example': { enabled: true }, 'notion@official': { enabled: false } },
     mcp_servers: { 'local.tool': { enabled: true }, codex_apps: { enabled: true } }, apps: { [NOTION_ID]: { enabled: false } }, approval_policy: 'on-request' }),
-  { plugins: { 'aios@example': { enabled: false } }, mcp_servers: { 'local.tool': { enabled: false } } });
+  { plugins: { 'osm@example': { enabled: false } }, mcp_servers: { 'local.tool': { enabled: false } } });
 });
 
 test('configured tool denials and required confirmations prevent direct page calls', async t => {

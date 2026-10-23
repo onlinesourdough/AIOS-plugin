@@ -7,7 +7,7 @@ import { readSources, saveSources } from './sources.mjs';
 import { readNotionSetup } from './codex-status.mjs';
 import { NotionPages } from './notion-pages.mjs';
 const port = Number(process.env.PORT || 43195);
-const liveNotion = process.env.AIOS_PREVIEW_LIVE_NOTION === '1';
+const liveNotion = process.env.OSM_PREVIEW_LIVE_NOTION === '1';
 const notionPages = new NotionPages();
 const examplePages = [
   { icon: '👾', title: 'Studio AIOS', target: 'https://app.notion.com/p/00000000000000000000000000000001' },
@@ -15,10 +15,10 @@ const examplePages = [
   { icon: '🤹', title: 'Writing & delivery', target: 'https://app.notion.com/p/00000000000000000000000000000003' },
   { icon: '🧠', title: 'Decisions', target: 'https://app.notion.com/p/00000000000000000000000000000004' },
 ];
-const scratch = await mkdtemp(join(tmpdir(), 'aios-ui-test-'));
+const scratch = await mkdtemp(join(tmpdir(), 'osm-ui-test-'));
 const roots = Object.fromEntries(['home','setup','test'].map(key=>[key,join(scratch,key)]));
 await Promise.all(Object.values(roots).map(path=>mkdir(path)));
-const bridge = await readFile(new URL('../../skills/aios-context/assets/bridge.md', import.meta.url), 'utf8');
+const bridge = await readFile(new URL('../../skills/osm-context/assets/bridge.md', import.meta.url), 'utf8');
 const version = JSON.parse(await readFile(new URL('./package.json', import.meta.url))).version;
 async function reset(codexHome, scenario) {
   await rm(join(codexHome, 'AGENTS.md'), { force: true });
@@ -52,11 +52,11 @@ const server = createServer(async (req, res) => {
     const codexHome=roots[workspace];
     if (action === 'icons') {
       const data = liveNotion ? await notionPages.icons(args.targets) : { icons: args.targets.map(target => ({ target, icon: examplePages.find(page => page.target === target)?.icon || null })), partial: false };
-      res.setHeader('Content-Type','application/json'); return res.end(JSON.stringify({ content: [], _meta: { 'aios/kind': 'icons', 'aios/icons': data } }));
+      res.setHeader('Content-Type','application/json'); return res.end(JSON.stringify({ content: [], _meta: { 'osm/kind': 'icons', 'osm/icons': data } }));
     }
     if (action === 'pages') {
       const data = liveNotion ? await notionPages.list(args?.query || '') : { pages: examplePages.filter(page=>page.title.toLowerCase().includes((args?.query || '').toLowerCase())), hasMore: false };
-      res.setHeader('Content-Type','application/json'); return res.end(JSON.stringify({ content: [], _meta: { 'aios/kind': 'pages', 'aios/pages': data } }));
+      res.setHeader('Content-Type','application/json'); return res.end(JSON.stringify({ content: [], _meta: { 'osm/kind': 'pages', 'osm/pages': data } }));
     }
     if (action === 'reset') await reset(codexHome,scenario);
     else if (action === 'save') await saveContextRoute(args, { codexHome, bridge });
@@ -67,7 +67,7 @@ const server = createServer(async (req, res) => {
     const context = await readContextRoute({ codexHome });
     const sources = context.state === 'configured' ? await readSources(context.target, { codexHome }) : {state:'missing', title:'', links:{}};
     const notion = liveNotion ? await readNotionSetup() : { state };
-    res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ content: [], _meta: { 'aios/status': { version, features: { notionPages: true, notionIcons: true }, notion, context, sources, checkedAt: new Date(lastCheck).toISOString() } } }));
+    res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify({ content: [], _meta: { 'osm/status': { version, features: { notionPages: true, notionIcons: true }, notion, context, sources, checkedAt: new Date(lastCheck).toISOString() } } }));
   } catch (error) { res.writeHead(400); res.end(JSON.stringify({ error: error.message })); }
-}).listen(port, '127.0.0.1', () => console.log(`AIOS preview (sample workspace): http://127.0.0.1:${port}/ — /setup — /settings`));
+}).listen(port, '127.0.0.1', () => console.log(`OSM preview (sample workspace): http://127.0.0.1:${port}/ — /setup — /settings`));
 for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(async () => { await notionPages.close(); await rm(scratch, { recursive: true, force: true }); process.exit(0); }));

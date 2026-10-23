@@ -4,13 +4,13 @@
     "name": "onlinesourdough"
   },
   "metadata": {
-    "description": "AIOS methods for portable owner context and reviewed work."
+    "description": "The Onlinesourdough Method (OSM) for portable owner context and reviewed work."
   },
   "plugins": [
     {
-      "name": "aios",
+      "name": "osm",
       "source": "./",
-      "version": "0.29.0",
+      "version": "0.30.0",
       "description": "Portable context and skills for planning, content and reviewed delivery."
     }
   ]

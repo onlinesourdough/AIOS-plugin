@@ -1,4 +1,0 @@
-interface:
-  display_name: "AIOS:context-and-methods"
-  short_description: "Your context and the right AIOS method, when a task needs them"
-  default_prompt: "Use $aios to plan this week's client work from my business context."

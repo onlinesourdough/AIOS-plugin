@@ -1,15 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, readdir, writeFile, rm, symlink } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, readdir, writeFile, rm, symlink } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { readContextRoute, saveContextRoute } from './context-route.mjs';
 import { readSources, saveSources, contextIdentity } from './sources.mjs';
-const bridge = await readFile(new URL('../../skills/aios-context/assets/bridge.md', import.meta.url), 'utf8');
+const bridge = await readFile(new URL('../../skills/osm-context/assets/bridge.md', import.meta.url), 'utf8');
 const target = 'https://app.notion.com/p/00000000000000000000000000000001';
 const links = { docs: { title: 'Documents', target: 'https://example.com/docs' }, personalSkills: { title: 'My skills', target: 'https://example.com/skills' }, memory: { title: 'Decisions', target: 'https://example.com/memory' } };
 async function fixture(t) {
-  const codexHome = await mkdtemp(join(tmpdir(), 'aios-sources-test-')); t.after(() => rm(codexHome,{recursive:true,force:true}));
+  const codexHome = await mkdtemp(join(tmpdir(), 'osm-sources-test-')); t.after(() => rm(codexHome,{recursive:true,force:true}));
   const options = { codexHome, bridge };
   const before = await readContextRoute(options);
   const context = await saveContextRoute({target,expectedRevision:before.revision},options);
@@ -23,6 +24,15 @@ test('source links persist independently of instructions and repeating the save 
   assert.deepEqual(await readFile(join(options.codexHome,'AGENTS.md')),before);
   assert.deepEqual(await saveSources({...args,expectedRevision:saved.revision},options),saved);
   assert.equal((await readdir(join(options.codexHome,'aios/panel'))).length,1);
+});
+test('links saved by 0.29.0 under CODEX_HOME/aios/panel load without migration', async t => {
+  const {options}=await fixture(t), identity=contextIdentity(target);
+  const name=createHash('sha256').update(identity).digest('hex')+'.json';
+  await mkdir(join(options.codexHome,'aios/panel'),{recursive:true});
+  await writeFile(join(options.codexHome,'aios/panel',name),JSON.stringify({version:1,contextIdentity:identity,title:'Our AIOS',links},null,2)+'\n');
+  const read=await readSources(target,options);
+  assert.equal(read.state,'saved'); assert.equal(read.title,'Our AIOS'); assert.deepEqual(read.links,links);
+  assert.deepEqual(await readdir(options.codexHome),['AGENTS.md','aios']);
 });
 test('different contexts cannot inherit sources; copied Notion URLs preserve page identity', async t => {
   const {options,args,context}=await fixture(t); await saveSources(args,options);

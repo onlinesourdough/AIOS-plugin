@@ -14,10 +14,10 @@ learning only for a current decision. Use project-local `content/` as needed,
 preserving existing files and identities. Skill files are immutable methods;
 work data, learning, media and caches belong outside the installed package.
 
-Use [human-writing](../human-writing/SKILL.md) for prose. A short standalone
+Use [human-writing](../osm-human-writing/SKILL.md) for prose. A short standalone
 piece needs the requested draft/revision and an editorial read, without an
 obligatory graph, editor, brief or production folder. Substantive work reuses
-the accepted [shared lifecycle](../aios/references/lifecycle.md).
+the accepted [shared lifecycle](../osm/references/lifecycle.md).
 
 Read only the detail needed:
 

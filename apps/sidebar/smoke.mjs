@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
-const scratch = await mkdtemp(join(tmpdir(), 'aios-sidebar-smoke-'));
-const client = new Client({ name: 'aios-sidebar-check', version: '1' });
+const scratch = await mkdtemp(join(tmpdir(), 'osm-sidebar-smoke-'));
+const client = new Client({ name: 'osm-sidebar-check', version: '1' });
 const transport = new StdioClientTransport({
   command: process.execPath, args: [fileURLToPath(new URL('../../runtime/sidebar/server.cjs', import.meta.url))],
   env: { PATH: process.env.PATH, HOME: scratch, CODEX_HOME: scratch }, stderr: 'pipe',
@@ -15,9 +15,9 @@ const transport = new StdioClientTransport({
 try {
   await client.connect(transport);
   const { tools } = await client.listTools();
-  assert.deepEqual(tools.map((tool) => tool.name), ['aios_open', 'aios_notion_pages', 'aios_notion_icons', 'aios_status', 'aios_settings', 'aios_save_context', 'aios_sources', 'aios_save_sources']);
+  assert.deepEqual(tools.map((tool) => tool.name), ['osm_open', 'osm_notion_pages', 'osm_notion_icons', 'osm_status', 'osm_settings', 'osm_save_context', 'osm_sources', 'osm_save_sources']);
   assert.deepEqual(tools[0]._meta['openai/ui'].entrypoints, [{ type: 'global' }]);
-  for (const name of ['aios_notion_pages', 'aios_notion_icons', 'aios_status']) {
+  for (const name of ['osm_notion_pages', 'osm_notion_icons', 'osm_status']) {
     assert.deepEqual(tools.find(tool => tool.name === name)._meta.ui.visibility, ['app']);
     assert.equal(tools.find(tool => tool.name === name).annotations.openWorldHint, true);
   }
@@ -25,7 +25,7 @@ try {
   // theme-less SVG, and no other tool has an icon.
   const icons = client.getServerVersion().icons;
   assert.deepEqual(tools[0].icons, icons);
-  assert.deepEqual(tools.filter(tool => tool.icons).map(tool => tool.name), ['aios_open']);
+  assert.deepEqual(tools.filter(tool => tool.icons).map(tool => tool.name), ['osm_open']);
   assert.equal(icons.length, 1);
   const [icon] = icons;
   assert.equal(icon.theme, undefined);
@@ -44,33 +44,33 @@ try {
   const nodes = circles.filter(circle => !circle.filled);
   assert.equal(nodes.length, 4);
   for (const { x, y } of nodes) assert.ok(nodes.some(other => other.x === 20 - x && other.y === 20 - y), `node ${x},${y} has an opposite`);
-  const view = await client.readResource({ uri: 'ui://aios/home-v5' });
+  const view = await client.readResource({ uri: 'ui://osm/home-v1' });
   assert.equal(view.contents[0].mimeType, 'text/html;profile=mcp-app');
   assert.deepEqual(view.contents[0]._meta['openai/ui'], { preferredDisplayMode: 'fullscreen', availableDisplayModes: ['fullscreen'] });
   assert.ok(view.contents[0].text.includes('onlinesourdough'));
-  const settings = await client.callTool({ name: 'aios_settings', arguments: {} });
-  assert.equal(settings._meta['aios/view'], 'settings');
-  assert.equal(tools.find(tool=>tool.name==='aios_settings')._meta['openai/ui'].entrypoints[0].type, 'settings');
-  const result = await client.callTool({ name: 'aios_open', arguments: {} });
+  const settings = await client.callTool({ name: 'osm_settings', arguments: {} });
+  assert.equal(settings._meta['osm/view'], 'settings');
+  assert.equal(tools.find(tool=>tool.name==='osm_settings')._meta['openai/ui'].entrypoints[0].type, 'settings');
+  const result = await client.callTool({ name: 'osm_open', arguments: {} });
   assert.equal(result.isError, undefined);
-  assert.equal(result._meta['aios/status'].context.state, 'missing');
-  assert.ok(['unknown', 'not_connected', 'not_installed'].includes(result._meta['aios/status'].notion.state));
+  assert.equal(result._meta['osm/status'].context.state, 'missing');
+  assert.ok(['unknown', 'not_connected', 'not_installed'].includes(result._meta['osm/status'].notion.state));
   assert.equal(JSON.stringify(result.content).includes('Context:'), false);
   const target = 'https://app.notion.com/p/00000000000000000000000000000001';
-  const invalid = await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: 'stale' } });
+  const invalid = await client.callTool({ name: 'osm_save_context', arguments: { target, expectedRevision: 'stale' } });
   assert.equal(invalid.isError, true);
-  const saved =await client.callTool({ name: 'aios_save_context', arguments: { target, expectedRevision: result._meta['aios/status'].context.revision } });
+  const saved =await client.callTool({ name: 'osm_save_context', arguments: { target, expectedRevision: result._meta['osm/status'].context.revision } });
   assert.equal(saved.isError, undefined);
-  assert.equal(saved._meta['aios/status'].context.target, target);
-  const read = await client.callTool({ name: 'aios_status', arguments: {} });
-  assert.equal(read._meta['aios/status'].context.target, target);
-  assert.equal(tools.find(tool=>tool.name==='aios_save_context').annotations.readOnlyHint, false);
-  assert.deepEqual(tools.find(tool=>tool.name==='aios_save_context')._meta.ui.visibility, ['app']);
+  assert.equal(saved._meta['osm/status'].context.target, target);
+  const read = await client.callTool({ name: 'osm_status', arguments: {} });
+  assert.equal(read._meta['osm/status'].context.target, target);
+  assert.equal(tools.find(tool=>tool.name==='osm_save_context').annotations.readOnlyHint, false);
+  assert.deepEqual(tools.find(tool=>tool.name==='osm_save_context')._meta.ui.visibility, ['app']);
   const links = { memory: { title: 'Decisions', target: 'https://example.com/memory' }, teamMemory: { title: 'Team decisions', target: 'https://example.com/team-memory' } };
-  const sources = await client.callTool({ name: 'aios_save_sources', arguments: { target, expectedContextRevision: read._meta['aios/status'].context.revision, expectedRevision: read._meta['aios/status'].sources.revision, title: 'My AIOS', links } });
+  const sources = await client.callTool({ name: 'osm_save_sources', arguments: { target, expectedContextRevision: read._meta['osm/status'].context.revision, expectedRevision: read._meta['osm/status'].sources.revision, title: 'My AIOS', links } });
   assert.equal(sources.isError, undefined);
-  assert.deepEqual(sources._meta['aios/status'].sources.links, links);
-  const metadata = await client.callTool({ name: 'aios_sources', arguments: {} });
+  assert.deepEqual(sources._meta['osm/status'].sources.links, links);
+  const metadata = await client.callTool({ name: 'osm_sources', arguments: {} });
   assert.deepEqual(JSON.parse(metadata.content[0].text).sources.links, links);
   console.log('PASS: bundled stdio server, global entrypoint, fullscreen resource and isolated first run.');
 } finally { await client.close(); await rm(scratch, { recursive: true, force: true }); }

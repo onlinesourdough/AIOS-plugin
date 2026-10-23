@@ -18,7 +18,7 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PLUGIN_ID = "aios@online-sourdough"
+PLUGIN_ID = "osm@online-sourdough"
 VERSION = json.loads((ROOT / "package.json").read_text())["version"]
 EXPECTED = {p.parent.name for p in (ROOT / "skills").glob("*/SKILL.md")}
 NEXT_VERSION = "99.0.0-rehearsal"
@@ -43,8 +43,8 @@ def check_contract():
     market = read_json(ROOT / ".claude-plugin/marketplace.json")
     require(set(plugin) == {"name", "version", "description", "author", "skills",
                             "repository", "license"}, "Unexpected plugin fields")
-    require(plugin["name"] == "aios" and plugin["version"] == VERSION,
-            "Expected current AIOS version")
+    require(plugin["name"] == "osm" and plugin["version"] == VERSION,
+            "Expected current OSM version")
     require(plugin["skills"] == "./skills/", "Canonical root skills required")
     require(set(market) == {"name", "owner", "metadata", "plugins"},
             "Unexpected marketplace fields")
@@ -53,7 +53,7 @@ def check_contract():
     entry = market["plugins"][0]
     require(set(entry) == {"name", "source", "version", "description"},
             "Marketplace must not redefine components")
-    require(entry["name"] == "aios" and entry["source"] == "./" and
+    require(entry["name"] == "osm" and entry["source"] == "./" and
             entry["version"] == plugin["version"], "Marketplace source/version")
     skills = sorted((ROOT / "skills").glob("*/SKILL.md"))
     require({p.parent.name for p in skills} == EXPECTED, "Expected canonical skills")
@@ -129,8 +129,8 @@ def rehearse(base, claude, install, names):
             require(re.search(r"(?<![\w-])" + re.escape(name) + r"(?![\w-])", details),
                     "Native details missing skill: " + name)
 
-    inline = run("--plugin-dir", ROOT, "plugin", "details", "aios")
-    require("aios@inline" in inline and f"aios {VERSION}" in inline, "Inline identity/version")
+    inline = run("--plugin-dir", ROOT, "plugin", "details", "osm")
+    require("osm@inline" in inline and f"osm {VERSION}" in inline, "Inline identity/version")
     inspect_details(inline)
     print("PASS: native inline discovery reports declared skills and zero agents/hooks/MCP servers")
     if not install:
@@ -143,9 +143,9 @@ def rehearse(base, claude, install, names):
     source.mkdir()
     for name in (".claude-plugin", "skills"):
         shutil.copytree(ROOT / name, source / name)
-    overview = source / "docs/aios.md"
+    overview = source / "docs/osm.md"
     overview.parent.mkdir(parents=True)
-    shutil.copy2(ROOT / "docs/aios.md", overview)
+    shutil.copy2(ROOT / "docs/osm.md", overview)
     sentinel = config / "skills" / "fixture-sentinel" / "SKILL.md"
     sentinel.parent.mkdir(parents=True)
     sentinel.write_text("---\nname: fixture-sentinel\ndescription: Fixture only.\n---\nFixture.\n")
@@ -167,9 +167,9 @@ def rehearse(base, claude, install, names):
         cache = Path(row["installPath"]).resolve()
         require(cache.is_relative_to(config.resolve()), "Cache escaped isolated config")
         require(payload_hashes(cache) == payload_hashes(source), "Cached skill bytes differ")
-        require((cache / "docs/aios.md").read_bytes() == overview.read_bytes(),
+        require((cache / "docs/osm.md").read_bytes() == overview.read_bytes(),
                 "Cached documentation differs")
-        require(f"AIOS version: {version}\n" in overview.read_text(),
+        require(f"OSM version: {version}\n" in overview.read_text(),
                 "Installed documentation version differs")
         inspect_details(run("plugin", "details", PLUGIN_ID))
         preserved()
@@ -184,8 +184,8 @@ def rehearse(base, claude, install, names):
         data = read_json(path)
         (data if name == "plugin.json" else data["plugins"][0])["version"] = NEXT_VERSION
         path.write_text(json.dumps(data, indent=2) + "\n")
-    overview.write_text(overview.read_text().replace(f"AIOS version: {VERSION}\n",
-                                                    f"AIOS version: {NEXT_VERSION}\n"))
+    overview.write_text(overview.read_text().replace(f"OSM version: {VERSION}\n",
+                                                    f"OSM version: {NEXT_VERSION}\n"))
     run("plugin", "marketplace", "update", "online-sourdough")
     run("plugin", "update", PLUGIN_ID, "--scope", "user")
     installed(NEXT_VERSION)
@@ -214,7 +214,7 @@ def main():
         print("Lifecycle fixture retained beneath ../portability-research/claude-fixture")
         rehearse(base, claude, True, names)
     else:
-        with tempfile.TemporaryDirectory(prefix="aios-claude-schema-") as directory:
+        with tempfile.TemporaryDirectory(prefix="osm-claude-schema-") as directory:
             rehearse(Path(directory), claude, False, names)
 
 

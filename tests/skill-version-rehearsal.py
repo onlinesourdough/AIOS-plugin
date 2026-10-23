@@ -1,8 +1,12 @@
 """Exercise frontmatter and version transitions with synthetic skill payloads."""
 
+from pathlib import Path
+import subprocess
+import tempfile
 import unittest
 
-from skill_metadata import parse_frontmatter, skill_version, validate_change, version_key
+from skill_metadata import (RENAMED_SKILLS, parse_frontmatter, skill_version,
+                            validate_baseline, validate_change, version_key)
 
 
 def skill(version='"1.0.0"', body="Do the accepted work.\n"):
@@ -82,6 +86,66 @@ class MetadataTests(unittest.TestCase):
                 validate_change(files(), files(version))
         with self.assertRaisesRegex(AssertionError, "bump"):
             validate_change(files(), files('"1.0.0+build"', body="Changed.\n"))
+
+    def test_renamed_skill_keeps_lineage_with_major_bump(self):
+        validate_change(files('"1.4.2"'), files('"2.0.0"'), renamed=True)
+        for version in ('"1.5.0"', '"1.4.3"', '"1.4.2"'):
+            with self.subTest(version=version), self.assertRaisesRegex(AssertionError, "major"):
+                validate_change(files('"1.4.2"'), files(version), renamed=True)
+        with self.assertRaisesRegex(AssertionError, "regressed"):
+            validate_change(files('"1.4.2"'), files('"1.0.0"'), renamed=True)
+
+
+class RenameBaselineTests(unittest.TestCase):
+    """The baseline follows only the explicit rename map, never a name prefix."""
+
+    def repository(self, skills):
+        temporary = tempfile.TemporaryDirectory(prefix="osm-rename-baseline-")
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        def git(*args):
+            subprocess.run(["git", *args], cwd=root, check=True, capture_output=True)
+        git("init", "-q")
+        for name, version in skills.items():
+            (root / "skills" / name).mkdir(parents=True)
+            (root / "skills" / name / "SKILL.md").write_bytes(files(version)["SKILL.md"])
+        git("add", "-A")
+        git("-c", "user.name=t", "-c", "user.email=t@example.invalid", "commit", "-qm", "base")
+        return root
+
+    def rename(self, root, old, new, version):
+        (root / "skills" / old).rename(root / "skills" / new)
+        (root / "skills" / new / "SKILL.md").write_bytes(files(version)["SKILL.md"])
+
+    def test_mapped_rename_compares_previous_name(self):
+        root = self.repository({"aios-check": '"2.2.1"', "write-code": '"1.1.1"'})
+        self.rename(root, "aios-check", "osm-check", '"3.0.0"')
+        self.rename(root, "write-code", "osm-write-code", '"2.0.0"')
+        validate_baseline(root, "HEAD", {"osm-check", "osm-write-code"})
+
+    def test_mapped_rename_rejects_reset_or_minor_bump(self):
+        for version, message in (('"1.0.0"', "skill version regressed"),
+                                 ('"2.3.0"', "renamed skill requires a major bump")):
+            with self.subTest(version=version):
+                root = self.repository({"aios-check": '"2.2.1"'})
+                self.rename(root, "aios-check", "osm-check", version)
+                with self.assertRaisesRegex(AssertionError, "osm-check: " + message):
+                    validate_baseline(root, "HEAD", {"osm-check"})
+
+    def test_unmapped_name_is_a_new_skill(self):
+        root = self.repository({"aios-check": '"2.2.1"'})
+        self.rename(root, "aios-check", "osm-unmapped", '"3.0.0"')
+        with self.assertRaisesRegex(AssertionError, "initial"):
+            validate_baseline(root, "HEAD", {"osm-unmapped"})
+
+    def test_current_name_in_baseline_is_not_remapped(self):
+        root = self.repository({"osm-check": '"3.0.0"', "aios-check": '"9.0.0"'})
+        validate_baseline(root, "HEAD", {"osm-check"})
+
+    def test_map_covers_renamed_package_skills_only(self):
+        self.assertEqual(len(RENAMED_SKILLS), 20)
+        self.assertTrue(all(name == "osm" or name.startswith("osm-") for name in RENAMED_SKILLS))
+        self.assertFalse({"content", "diffusion-studio"} & set(RENAMED_SKILLS.values()))
 
 
 if __name__ == "__main__":

@@ -8,7 +8,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCT_PREFIXES = ("skills/", ".codex-plugin/", "assets/")
-PRODUCT_FILES = {"package.json", "LICENSE", "README.md", "docs/aios.md"}
+PRODUCT_FILES = {"package.json", "LICENSE", "README.md", "docs/osm.md"}
 
 
 def write(root, relative, text):
@@ -82,8 +82,8 @@ def prepare(destination, baseline):
     write(destination, "source-hashes.json", json.dumps(manifest, indent=2) + "\n")
 
     prompts = {
-        "documentation": """Forklar kort, hvad AIOS er, hvordan ejerkontekst adskiller sig fra
-de indbyggede metoder, og hvilken AIOS-version denne installation beskriver.
+        "documentation": """Forklar kort, hvad OSM er, hvordan ejerkontekst adskiller sig fra
+de indbyggede metoder, og hvilken OSM-version denne installation beskriver.
 """,
         "onboard": """Set up a small reusable context for me in owner-home.
 I am Rowan, a solo owner of Studio North. I have chosen new local onboarding;
@@ -125,7 +125,7 @@ Keep the function interface and verify the supplied cases with python3 check.py.
         for folder in sorted((package / "skills").iterdir()):
             if (folder / "SKILL.md").is_file():
                 (skill_dir / folder.name).symlink_to(folder, target_is_directory=True)
-        bridge = (package / "skills/aios-setup/assets/bridge.md").read_text().replace(
+        bridge = (package / "skills/osm-setup/assets/bridge.md").read_text().replace(
             "AIOS_ABSOLUTE_PATH", str(root / "owner-home"))
         boundary = f"""This is an isolated local task. Use only files under {root}
 and the read-only installed skill package at {package}. No real owner files,

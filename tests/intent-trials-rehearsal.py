@@ -9,10 +9,10 @@ import subprocess
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ROOT / "tests/fixtures/intent-trials-cases.json"
 SOURCES = (
-    "skills/aios/SKILL.md",
-    "skills/aios-interview/SKILL.md",
-    "skills/aios-spec-work/SKILL.md",
-    "skills/aios-spec-work/references/local-trials.md",
+    "skills/osm/SKILL.md",
+    "skills/osm-interview/SKILL.md",
+    "skills/osm-spec-work/SKILL.md",
+    "skills/osm-spec-work/references/local-trials.md",
 )
 FIELDS = {"id": "string", "interview": "boolean", "trial": "boolean",
           "question": "boolean", "next_action": "string", "reply": "string"}

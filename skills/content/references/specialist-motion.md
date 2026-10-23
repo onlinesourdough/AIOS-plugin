@@ -9,7 +9,7 @@ Start with the available upstream `/hyperframes` router and follow its selected
 workflow. If absent, resolve installation through the native harness and
 current upstream instructions within installation authority; do not clone a
 skill, wrap an installer in a hook or make motion setup obligatory for content.
-Keep specialist projects and renders external to the immutable AIOS package.
+Keep specialist projects and renders external to the immutable OSM package.
 
 Give each scene one job. Establish where to look before motion starts. Keep
 text readable at phone size. Motion explains, reveals or emphasizes; design

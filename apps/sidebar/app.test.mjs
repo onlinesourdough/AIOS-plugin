@@ -19,7 +19,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
   let time = 100000, host, fail = Boolean(options.initialFailure), delay, release, revision = 0, linkFailure = false;
   const calls = [], links = [], document = createDocument(template);
   const status = { features: { notionPages: Boolean(options.pages), notionIcons: Boolean(options.icons) }, notion: { state: options.notion || 'connected' }, context, sources, checkedAt: new Date(time).toISOString() };
-  const snapshot = () => ({ _meta: { 'aios/status': structuredClone({ ...status, checkedAt: new Date(time).toISOString() }) } });
+  const snapshot = () => ({ _meta: { 'osm/status': structuredClone({ ...status, checkedAt: new Date(time).toISOString() }) } });
   const rejected = text => ({ isError: true, content: [{ type: 'text', text }] });
   class App {
     constructor() { host = this; }
@@ -27,7 +27,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
     async connect() {
       if (options.initial === 'none') return;
       const result = options.initial === 'malformed' ? {} : snapshot();
-      if (options.view) result._meta['aios/view'] = options.view;
+      if (options.view) result._meta['osm/view'] = options.view;
       this.ontoolresult(result);
     }
     async openLink(args) {
@@ -39,15 +39,15 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
     async callServerTool({ name, arguments: args }) {
       calls.push({ name, args: plain(args) }); if (delay) await delay;
       if (fail) throw new Error('Request failed');
-      if (name === 'aios_notion_pages') return { _meta: { 'aios/pages': await options.pages(args.query) } };
-      if (name === 'aios_notion_icons') return { _meta: { 'aios/kind': 'icons', 'aios/icons': await options.icons(args.targets) } };
+      if (name === 'osm_notion_pages') return { _meta: { 'osm/pages': await options.pages(args.query) } };
+      if (name === 'osm_notion_icons') return { _meta: { 'osm/kind': 'icons', 'osm/icons': await options.icons(args.targets) } };
       time += 10;
-      if (name === 'aios_save_context') {
+      if (name === 'osm_save_context') {
         if (args.expectedRevision !== status.context.revision) return rejected('Your context changed. Refresh before trying again.');
         status.context = { state: 'configured', ...classifyTarget(args.target), revision: String(++revision).padStart(64, 'b') };
         status.sources = options.recoveredSources || { state: 'missing', revision: 'c'.repeat(64), title: '', links: {} };
       }
-      if (name === 'aios_save_sources') {
+      if (name === 'osm_save_sources') {
         if (options.failSources) return rejected('Could not save source names.');
         if (args.target !== status.context.target || args.expectedContextRevision !== status.context.revision
           || args.expectedRevision !== status.sources.revision) return rejected('Source links changed. Refresh before saving again.');
@@ -56,7 +56,7 @@ async function ui(context = { state: 'missing', revision: 'a'.repeat(64) }, sour
       return snapshot();
     }
   }
-  const sandbox = { App, classifyTarget, connectionCopy, __AIOS_VERSION__: 'test', applyDocumentTheme() {}, applyHostStyleVariables() {},
+  const sandbox = { App, classifyTarget, connectionCopy, __OSM_VERSION__: 'test', applyDocumentTheme() {}, applyHostStyleVariables() {},
     document, URL, structuredClone, setTimeout, clearTimeout, Date: class extends Date { static now() { return time; } } };
   await vm.runInNewContext(`(async () => {${source}})()`, sandbox);
   const get = id => document.getElementById(id);
@@ -89,7 +89,7 @@ test('onboarding saves the context, then each source step without chat, and open
   const u = await ui();
   assert.equal(u.text('heading'), 'Get started'); assert.equal(u.shown('panel-1'), true);
   await u.input(target); await u.submit();
-  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_save_context']);
   assert.equal(u.shown('panel-1'), true); assert.equal(u.focused(), 'setup-docs-picker');
   await u.addLink('setup-docs-picker', 'https://example.com/docs'); await u.submit();
   assert.equal(u.shown('panel-2'), true);
@@ -98,8 +98,8 @@ test('onboarding saves the context, then each source step without chat, and open
   assert.equal(u.text('continue-3'), 'Finish');
   await u.addLink('setup-memory-picker', 'https://example.com/memory'); await u.addLink('setup-teamMemory-picker', 'https://example.com/team-memory');
   await u.submit();
-  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('heading'), 'AIOS'); assert.equal(u.focused(), 'heading');
-  assert.deepEqual(u.names(), ['aios_save_context', 'aios_save_sources', 'aios_save_sources', 'aios_save_sources']);
+  assert.equal(u.shown('dashboard'), true); assert.equal(u.text('heading'), 'OSM'); assert.equal(u.focused(), 'heading');
+  assert.deepEqual(u.names(), ['osm_save_context', 'osm_save_sources', 'osm_save_sources', 'osm_save_sources']);
   assert.deepEqual(u.calls[3].args.links, { docs: { title: 'Docs', target: 'https://example.com/docs' },
     personalSkills: { title: 'Writing skills', target: 'https://example.com/skills' }, teamSkills: { title: 'Team skills', target: 'https://example.com/team' },
     memory: { title: 'Memory', target: 'https://example.com/memory' }, teamMemory: { title: 'Team memory', target: 'https://example.com/team-memory' } });
@@ -123,14 +123,14 @@ test('jumping between steps keeps the source draft and one Continue saves every 
   await u.click('step-0'); await u.click('step-2');
   assert.equal(u.get('setup-personalSkills-picker').textContent, 'Personal skills');
   await u.click('step-3'); await u.submit();
-  assert.deepEqual(u.names(), ['aios_save_context', 'aios_save_sources']);
+  assert.deepEqual(u.names(), ['osm_save_context', 'osm_save_sources']);
   assert.deepEqual(Object.keys(u.calls[1].args.links), ['personalSkills', 'memory']);
   assert.equal(u.shown('dashboard'), true);
 });
 
 test('an existing context opens the dashboard with Personal and Team slots and a quiet Add', async () => {
   const u = await ui(configured(), saved({ personalSkills: { title: 'Writing skills', target: 'https://example.com/skills' }, memory: { title: 'Memory', target: 'https://example.com/memory' } }));
-  assert.equal(u.text('heading'), 'AIOS'); assert.equal(u.shown('badge'), true); assert.equal(u.shown('setup'), false);
+  assert.equal(u.text('heading'), 'OSM'); assert.equal(u.shown('badge'), true); assert.equal(u.shown('setup'), false);
   assert.equal(u.text('context-meta'), 'Our AIOS');
   assert.deepEqual(['personalSkills', 'teamSkills', 'memory', 'teamMemory'].map(role => u.text(`${role}-meta`)), ['Writing skills', 'Add', 'example.com/memory', 'Add']);
   await u.click('open-personalSkills'); assert.deepEqual(u.links, ['https://example.com/skills']);
@@ -148,7 +148,7 @@ test('Settings Save persists every pending edit once and keeps untouched keys', 
   await u.addLink('settings-teamSkills-picker', 'https://example.com/team', 'Studio methods');
   assert.equal(u.get('drawer-save').disabled, false);
   await Promise.all([u.click('drawer-save'), u.click('drawer-save')]);
-  assert.deepEqual(u.names(), ['aios_save_sources']);
+  assert.deepEqual(u.names(), ['osm_save_sources']);
   assert.deepEqual(u.calls[0].args.links, { personalSkills: skills, teamSkills: { title: 'Studio methods', target: 'https://example.com/team' }, memory });
   assert.equal(u.get('drawer').open, false); assert.equal(u.focused(), 'settings');
   assert.equal(u.text('teamSkills-meta'), 'Studio methods'); assert.equal(u.text('docs-meta'), 'Add');
@@ -207,7 +207,7 @@ test('an unapplied link keeps its original context and asks before closing Setti
   await u.click('drawer-refresh');
   assert.equal(u.get('settings-memory-picker-link').value, 'https://example.com/unapplied');
   await u.click('settings-memory-picker-apply'); await u.click('drawer-save');
-  assert.equal(u.names().includes('aios_save_sources'), false);
+  assert.equal(u.names().includes('osm_save_sources'), false);
   assert.equal(u.shown('drawer-reload'), true);
 });
 
@@ -222,7 +222,7 @@ test('switching context explicitly discards unapplied editors as well as applied
   await u.click('settings-context-picker-apply');
   assert.equal(u.get('settings-memory-picker-link').parentNode.parentNode.hidden, true);
   assert.equal(u.get('settings-memory-picker').textContent, 'None');
-  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_save_context']);
 });
 
 test('pending save locks input and blocks double submit; failures keep the draft', async () => {
@@ -243,7 +243,7 @@ test('pending save locks input and blocks double submit; failures keep the draft
 test('failed refresh clears Connected; late snapshots cannot restore it and retry recovers', async () => {
   const u = await ui(); u.fail(true); await u.click('refresh');
   assert.equal(u.text('connection-label'), 'Could not verify');
-  u.notify({ _meta: { 'aios/status': u.status } });
+  u.notify({ _meta: { 'osm/status': u.status } });
   assert.equal(u.text('connection-label'), 'Could not verify');
   u.fail(false); await u.click('refresh'); assert.equal(u.text('connection-label'), '✓ Connected');
 });
@@ -260,7 +260,7 @@ test('non-Notion contexts omit connection actions; ambiguous instructions cannot
 });
 
 test('malformed status removes the Connected claim and leaves a working retry', async () => {
-  const u = await ui(); u.notify({ _meta: { 'aios/status': { notion: { state: 'connected' }, context: { state: 'configured' }, checkedAt: new Date(100005).toISOString() } } });
+  const u = await ui(); u.notify({ _meta: { 'osm/status': { notion: { state: 'connected' }, context: { state: 'configured' }, checkedAt: new Date(100005).toISOString() } } });
   assert.equal(u.text('connection-label'), 'Could not verify');
   assert.equal(u.get('refresh').disabled, false);
   await u.click('refresh'); assert.equal(u.text('connection-label'), '✓ Connected');
@@ -270,10 +270,10 @@ test('refresh in progress blocks a new save until the current snapshot arrives',
   const u = await ui(); await u.input(target); u.delay();
   const refreshing = u.click('refresh');
   assert.equal(u.get('continue-1').disabled, true);
-  await u.submit(); assert.deepEqual(u.names(), ['aios_status']);
+  await u.submit(); assert.deepEqual(u.names(), ['osm_status']);
   u.release(); await refreshing;
   assert.equal(u.get('continue-1').disabled, false);
-  await u.submit(); assert.deepEqual(u.names(), ['aios_status', 'aios_save_context']);
+  await u.submit(); assert.deepEqual(u.names(), ['osm_status', 'osm_save_context']);
 });
 
 test('switching context in Settings warns about pending edits and never carries sources over', async () => {
@@ -283,7 +283,7 @@ test('switching context in Settings warns about pending edits and never carries 
   assert.equal(u.get('settings-context-picker-apply').textContent, 'Discard and switch');
   assert.equal(u.get('settings-context-picker').parentNode.parentNode.textContent.includes('Unsaved source changes will be discarded.'), true);
   u.get('settings-context-picker-link').value = other; await u.click('settings-context-picker-apply');
-  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_save_context']);
   assert.equal(u.text('drawer-feedback-text'), 'Switched context. Showing its saved sources.');
   assert.equal(u.get('settings-docs-picker').textContent, 'None'); assert.equal(u.get('settings-memory-picker').textContent, 'None');
   assert.equal(u.get('drawer-save').disabled, true);
@@ -299,9 +299,9 @@ test('changing the context during onboarding asks before discarding source edits
   await u.click('step-1'); await u.input(other);
   assert.equal(u.get('setup-personalSkills-picker').disabled, true);
   await u.submit();
-  assert.equal(u.text('continue-1'), 'Discard and continue'); assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.equal(u.text('continue-1'), 'Discard and continue'); assert.deepEqual(u.names(), ['osm_save_context']);
   await u.submit();
-  assert.deepEqual(u.names(), ['aios_save_context', 'aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_save_context', 'osm_save_context']);
   assert.equal(u.get('setup-personalSkills-picker').textContent, 'None');
 });
 
@@ -310,7 +310,7 @@ test('refresh while editing cannot apply an old draft to newly observed source l
   await u.click('settings'); await u.addLink('settings-docs-picker', 'https://example.com/draft');
   u.status.sources = { state: 'saved', revision: 'e'.repeat(64), title: 'New name', links: { memory: { title: 'New memory', target: 'https://example.com/new' } } };
   await u.click('drawer-refresh'); await u.click('drawer-save');
-  assert.deepEqual(u.names(), ['aios_status']);
+  assert.deepEqual(u.names(), ['osm_status']);
   assert.equal(u.get('drawer-feedback').dataset.error, 'true'); assert.equal(u.shown('drawer-reload'), true);
   assert.equal(u.get('settings-docs-picker').textContent, 'Docs');
   await u.click('drawer-reload');
@@ -322,12 +322,12 @@ test('restoring a missing pointer loads the existing source map before any sourc
   const recovered = { state: 'saved', revision: 'e'.repeat(64), title: 'My AIOS', links: { personalSkills: { title: 'My methods', target: 'https://example.com/skills' }, memory: { title: 'Decisions', target: 'https://example.com/memory' } } };
   const u = await ui(undefined, undefined, { recoveredSources: recovered });
   await u.input(target); await u.submit();
-  assert.deepEqual(u.names(), ['aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_save_context']);
   assert.equal(u.get('setup-personalSkills-picker').textContent, 'My methods');
   assert.equal(u.get('setup-memory-picker').textContent, 'Decisions');
   await u.submit(); await u.submit();
   await u.addLink('setup-teamMemory-picker', 'https://example.com/team-memory'); await u.submit();
-  assert.deepEqual(u.names(), ['aios_save_context', 'aios_save_sources']);
+  assert.deepEqual(u.names(), ['osm_save_context', 'osm_save_sources']);
   assert.equal(u.calls[1].args.title, 'My AIOS');
   assert.deepEqual(u.calls[1].args.links, { ...recovered.links, teamMemory: { title: 'Team memory', target: 'https://example.com/team-memory' } });
 });
@@ -339,7 +339,7 @@ test('a failed initial read has a visible retry and recovers to a usable form', 
   u.fail(false); await u.click('retry-load');
   assert.equal(u.shown('retry-load'), false);
   await u.input(target); await u.submit();
-  assert.deepEqual(u.names(), ['aios_status', 'aios_status', 'aios_save_context']);
+  assert.deepEqual(u.names(), ['osm_status', 'osm_status', 'osm_save_context']);
   assert.equal(u.get('setup-docs-picker').disabled, false);
 });
 
@@ -354,7 +354,7 @@ test('changed instructions during first setup can be reconciled without Settings
   const u = await ui(); await u.input(target);
   u.status.context = { state: 'missing', revision: 'f'.repeat(64) };
   await u.click('refresh'); await u.submit();
-  assert.deepEqual(u.names(), ['aios_status']);
+  assert.deepEqual(u.names(), ['osm_status']);
   assert.equal(u.get('target').value, target);
   assert.equal(u.shown('panel-1'), true);
   await u.submit();
@@ -381,7 +381,7 @@ test('connected onboarding selects real page metadata and keeps its title withou
   await u.key('setup-context-picker-search', 'Enter');
   assert.equal(u.get('target').value, target); assert.equal(u.text('setup-context-picker'), 'Studio AIOS');
   await u.submit();
-  assert.deepEqual(u.names(), ['aios_notion_pages', 'aios_save_context', 'aios_save_sources']);
+  assert.deepEqual(u.names(), ['osm_notion_pages', 'osm_save_context', 'osm_save_sources']);
   assert.equal(u.calls[2].args.title, 'Studio AIOS');
   await u.click('setup-docs-picker'); await settled();
   await u.options('setup-docs-picker').find(item=>item.textContent.startsWith('Company docs')).dispatch('click');
@@ -402,7 +402,7 @@ test('slow searches coalesce to the newest query and late results cannot replace
   await new Promise(resolve=>setTimeout(resolve,320));
   first({ pages: [{ title: 'Old result', target }], hasMore: false }); await settled();
   assert.equal(u.options('setup-context-picker').some(option=>option.textContent.startsWith('Old result')), false);
-  assert.deepEqual(u.calls.filter(call=>call.name==='aios_notion_pages').map(call=>call.args.query), ['', 'newest']);
+  assert.deepEqual(u.calls.filter(call=>call.name==='osm_notion_pages').map(call=>call.args.query), ['', 'newest']);
   second({ pages: [{ title: 'New context', target: other }], hasMore: false }); await settled();
   assert.equal(u.options('setup-context-picker')[0].textContent.startsWith('New context'), true);
   await u.key('setup-context-picker-search','Escape');
@@ -421,7 +421,7 @@ test('a disconnected or unknown connection still allows a manual Notion page', a
     await u.click('step-1');
     assert.equal(u.get('setup-context-picker').disabled, false);
     await u.addLink('setup-context-picker', target); await u.submit();
-    assert.deepEqual(u.names(), ['aios_save_context']);
+    assert.deepEqual(u.names(), ['osm_save_context']);
     assert.equal(u.status.context.target, target);
   }
 });
@@ -459,7 +459,7 @@ test('page identity preserves a saved label and avoids an unnecessary context sw
   assert.equal(options.length, 2); assert.equal(options[0].getAttribute('aria-selected'), 'true');
   assert.equal(options[0].textContent.startsWith('Our AIOS'), true);
   await options[0].dispatch('click');
-  assert.equal(u.calls.some(call=>call.name==='aios_save_context'), false);
+  assert.equal(u.calls.some(call=>call.name==='osm_save_context'), false);
   await u.click('settings-docs-picker'); await settled();
   assert.equal(u.options('settings-docs-picker')[0].textContent.startsWith('Our docs'), true);
   assert.equal(u.get('drawer-save').disabled, true);
@@ -471,7 +471,7 @@ test('a manually entered page never persists its placeholder and can adopt a dis
     await u.addLink('setup-context-picker', target);
     await u.click('setup-context-picker'); await settled();
     await u.options('setup-context-picker')[0].dispatch('click'); await u.submit();
-    const naming = u.calls.find(call=>call.name==='aios_save_sources');
+    const naming = u.calls.find(call=>call.name==='osm_save_sources');
     if (fetched.length) assert.equal(naming.args.title, 'Real company title');
     else assert.equal(naming, undefined);
   }
@@ -487,7 +487,7 @@ test('switching back from a folder does not list that folder as a Notion page', 
 
 test('an echoed picker failure does not overwrite the connection or current setup', async () => {
   const u = await ui(configured(), saved({}));
-  await u.notify({ isError: true, content: [{ type: 'text', text: 'Could not load pages.' }], _meta: { 'aios/kind': 'pages' } });
+  await u.notify({ isError: true, content: [{ type: 'text', text: 'Could not load pages.' }], _meta: { 'osm/kind': 'pages' } });
   assert.equal(u.shown('badge'), true); assert.equal(u.shown('dashboard'), true);
   assert.equal(u.text('feedback-text'), '');
 });
@@ -498,7 +498,7 @@ test('choosing another page in Settings asks before switching and does not carry
   });
   await u.click('settings'); await u.click('settings-context-picker'); await settled();
   await u.options('settings-context-picker').find(item=>item.textContent.startsWith('Client B')).dispatch('click');
-  assert.equal(u.calls.some(call=>call.name==='aios_save_context'),false);
+  assert.equal(u.calls.some(call=>call.name==='osm_save_context'),false);
   assert.equal(u.get('settings-context-picker-link').parentNode.hidden,true);
   assert.equal(u.focused(),'settings-context-picker-apply');
   await u.click('settings-context-picker-apply');
@@ -514,19 +514,19 @@ test('saved destinations receive their real icons without rewriting navigation o
   assert.equal(u.get('docs-meta').children[0].tagName, 'IMG');
   assert.equal(u.get('docs-meta').children[0].src, 'https://www.notion.so/icons/copy_lightgray.svg');
   assert.equal((u.text('memory-meta').match(/🧠/g) || []).length, 1);
-  assert.deepEqual(u.names(), ['aios_notion_icons']);
+  assert.deepEqual(u.names(), ['osm_notion_icons']);
   assert.deepEqual(plain(u.status.sources), original);
   await u.click('settings');
   assert.equal(u.get('settings-docs-picker').children[0].children[0].tagName, 'IMG');
   assert.equal(u.get('drawer-save').disabled, true);
-  assert.deepEqual(u.names(), ['aios_notion_icons']);
+  assert.deepEqual(u.names(), ['osm_notion_icons']);
 });
 
 test('failed or late icon metadata cannot break setup, change connection state, or overwrite another source', async () => {
   let finish;
   const u = await ui(configured(), saved({ docs: { title: 'Docs', target: other } }), { pages: async () => ({ pages: [] }), icons: () => new Promise(resolve => { finish = resolve; }) });
   await settled();
-  await u.notify({ isError: true, _meta: { 'aios/kind': 'icons' }, content: [{ type: 'text', text: 'unavailable' }] });
+  await u.notify({ isError: true, _meta: { 'osm/kind': 'icons' }, content: [{ type: 'text', text: 'unavailable' }] });
   assert.equal(u.shown('dashboard'), true); assert.equal(u.shown('badge'), true);
   finish({ icons: [{ target: 'https://app.notion.com/p/00000000000000000000000000000003', icon: '💀' }] });
   await settled();
@@ -560,7 +560,7 @@ test('the dashboard Context section shows Primary and Docs rows with their real 
   assert.doesNotMatch(u.text('dashboard'), /Start here/);
   await u.click('open-context'); await u.click('open-docs');
   assert.deepEqual(u.links, [target, other]);
-  assert.equal(u.status.sources.title, 'Studio AIOS'); assert.deepEqual(u.names(), ['aios_notion_icons']);
+  assert.equal(u.status.sources.title, 'Studio AIOS'); assert.deepEqual(u.names(), ['osm_notion_icons']);
   const empty = await ui(configured(), saved({}));
   assert.equal(empty.text('docs-meta'), 'Add'); assert.equal(empty.get('open-docs').getAttribute('aria-label'), 'Add Docs');
   await empty.click('open-docs');
@@ -572,16 +572,16 @@ test('choosing a page with an icon saves only the source title and target', asyn
   await u.click('settings'); await u.click('settings-docs-picker'); await settled();
   await u.options('settings-docs-picker').find(option => option.title === other).dispatch('click');
   await u.click('drawer-save');
-  const write = u.calls.find(call => call.name === 'aios_save_sources');
+  const write = u.calls.find(call => call.name === 'osm_save_sources');
   assert.deepEqual(write.args.links, { docs: { title: 'Docs', target: other } });
 });
 
-const repository = 'https://github.com/onlinesourdough/AIOS-plugin';
+const repository = 'https://github.com/onlinesourdough/OSM-plugin';
 
-test('the GitHub button is in setup and on the dashboard and opens only the AIOS repository', async () => {
+test('the GitHub button is in setup and on the dashboard and opens only the OSM repository', async () => {
   const u = await ui();
   assert.equal(u.shown('setup'), true); assert.equal(u.shown('help'), true); assert.equal(u.shown('settings'), false);
-  assert.equal(u.get('help').getAttribute('aria-label'), 'Open AIOS on GitHub');
+  assert.equal(u.get('help').getAttribute('aria-label'), 'Open OSM on GitHub');
   await u.click('help');
   assert.deepEqual(u.links, [repository]); assert.deepEqual(u.calls, []);
   const d = await ui(configured(), saved({}));
@@ -623,7 +623,7 @@ test('GitHub failures and retries keep a stale draft with Load latest, unavailab
       return [u, 'Saved source links need attention. They have been left unchanged.', false];
     },
     async sameLinkSource() {
-      const u = await ui(configured(), saved({ docs: { title: 'AIOS repository', target: repository } }));
+      const u = await ui(configured(), saved({ docs: { title: 'OSM repository', target: repository } }));
       u.failLinks('throw'); await u.click('open-docs'); u.failLinks(false);
       return [u, `Could not open the link. ${repository}`, false];
     },

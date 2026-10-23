@@ -21,7 +21,7 @@ readiness does not block content setup or writing.
 Invoke the portable [launcher](scripts/diffusion-studio.mjs) by its resolved
 path. `open` requires `--production-root /absolute/work/content/outcome` and one
 project path, resolved relative to that root. Keep project data, editor checkout,
-runtime state and caches outside the immutable AIOS package. Never vendor the
+runtime state and caches outside the immutable OSM package. Never vendor the
 editor, reset owner state, silently update the pin or install through auto hooks.
 
 Only open the returned one-time URL in the available in-app browser. Require

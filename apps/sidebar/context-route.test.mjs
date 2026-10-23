@@ -4,10 +4,10 @@ import { mkdtemp, readFile, writeFile, readdir, rm, symlink } from 'node:fs/prom
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { readContextRoute, saveContextRoute, replaceContext } from './context-route.mjs';
-const bridge = await readFile(new URL('../../skills/aios-context/assets/bridge.md', import.meta.url), 'utf8');
+const bridge = await readFile(new URL('../../skills/osm-context/assets/bridge.md', import.meta.url), 'utf8');
 const target = 'https://app.notion.com/p/00000000000000000000000000000001';
 async function fixture(t) {
-  const codexHome = await mkdtemp(join(tmpdir(), 'aios-context-'));
+  const codexHome = await mkdtemp(join(tmpdir(), 'osm-context-'));
   t.after(() => rm(codexHome, { recursive: true, force: true }));
   return { codexHome, bridge };
 }
@@ -30,6 +30,19 @@ test('changes retain custom policy and unrelated bytes, back up the original and
   assert.equal(await readFile(join(backupDir, before.revision + '.md'), 'utf8'), original);
   assert.deepEqual(await saveContextRoute({ target: nextTarget, expectedRevision: after.revision }, options), after);
   assert.equal((await readdir(backupDir)).length, 1);
+});
+test('a 0.29.0 AIOS block stays readable and only its Context line changes', async (t) => {
+  // Persisted owner state keeps the AIOS markers and wording written by earlier builds.
+  const options = await fixture(t);
+  const legacy = `<!-- AIOS:BEGIN -->\nContext: ${target}.\nFor work using or changing this context, use AIOS Context and read its\nguidance once per session. Load only what the task needs.\nReport gaps; do not invent context or silently switch sources.\n<!-- AIOS:END -->\n`;
+  assert.match(bridge, /^<!-- AIOS:BEGIN -->\n[\s\S]*use OSM Context[\s\S]*<!-- AIOS:END -->\n$/);
+  await writeFile(join(options.codexHome, 'AGENTS.md'), legacy);
+  const before = await readContextRoute(options);
+  assert.equal(before.state, 'configured'); assert.equal(before.target, target);
+  const nextTarget = '/work/company';
+  await saveContextRoute({ target: nextTarget, expectedRevision: before.revision }, options);
+  assert.equal(await readFile(join(options.codexHome, 'AGENTS.md'), 'utf8'), legacy.replace(target, nextTarget));
+  assert.equal(await readFile(join(options.codexHome, 'backups/aios-context', before.revision + '.md'), 'utf8'), legacy);
 });
 test('concurrent panels and external edits cannot overwrite a newer observed revision', async (t) => {
   const options = await fixture(t), before = await readContextRoute(options);
