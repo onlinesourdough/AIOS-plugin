@@ -14,9 +14,11 @@ models, tools and permissions.
 The method was previously called AIOS. The released plugin still uses `aios`
 installation identifiers and AIOS labels while the [coordinated migration](https://github.com/onlinesourdough/AIOS-plugin/issues/76)
 is implemented. The commands and native labels below describe that available
-release; an OSM package is not yet published. Your context stays in its existing home.
+release. No package with the new OSM identifiers has been published yet. Earlier
+OSM 0.1.x releases are a retired legacy identity; do not install them. Your context
+stays in its existing home.
 
-AIOS supports business work, decisions, content, design and practical automation.
+The method supports business work, decisions, content, design and practical automation.
 Its code guidance and verification stay proportional to the task. Projects own
 their source, engineering standards, design and delivery configuration.
 
@@ -28,7 +30,7 @@ environment.
 
 [Factory](https://github.com/arcitai/factory) is a separate package of
 engineering methods for T3 Code and native coding agents: Foundation, AgentOps
-and the ADLC methods such as implement and review. AIOS and Factory are
+and the ADLC methods such as implement and review. The method and Factory are
 independent; neither depends on nor installs the other. The project carries its
 accepted scope and relevant sources between them, while the selected environment
 owns tools, access and execution protection.
@@ -68,7 +70,7 @@ and tools the agent can operate**. Skills guide the work and pass useful results
 to each other. The project holds the brief, sources, working files and reviewed
 outputs. A workbench adds a visual production environment when the task needs it.
 
-AIOS includes the Agentic Content System as connected methods in this plugin.
+The plugin includes the Agentic Content System as connected methods.
 You work with them in your existing Codex task and workspace. The agent selects
 the relevant steps; a small request does not need a full production process or
 an external editor.
@@ -344,7 +346,7 @@ detail. It adds no separate approval step.
 
 ## What is shared
 
-The **AIOS plugin** is onlinesourdough's shared method. **Your AIOS home**,
+**The Onlinesourdough Method** supplies shared skills. **Your context home**,
 selected through Context, contains your context and personal skills. They have separate
 owners, locations and update paths.
 
