@@ -102,3 +102,12 @@ For work that uses my context, read this once per session; see <mention url="${p
 - Approver: <mention-user url="${page(72)}">Person</mention-user> reviews changes.
 </content>
 </page>`;
+
+// The current official Notion fetch writes a standalone child-page reference as
+// three lines: the opening tag, the page title, then the closing tag, with no
+// list bullet. Sanitized: invented identities and titles only.
+export const childPageModel = `${nativeModel.replace('</content>', `## Recovery
+<page url="${page(99)}">
+Recovery guide
+</page>
+</content>`)}`;

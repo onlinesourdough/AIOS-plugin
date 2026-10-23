@@ -1,5 +1,26 @@
 # Verification
 
+On 2026-10-23 the lead installed `0.30.1-setup-preview.2` (`791f033`, tag
+`osm-setup-preview-0.30.1-2`, CI run 39987263047) through Codex's native plugin
+manager and refreshed the overview from the current model through the official
+Notion fetch. It returned `ready` with 10 of the 11 earlier links, including the
+OSM root label; six protected instruction and shortcut files were unchanged.
+The eleventh source is a standalone child page that the fetch writes on three
+lines (`<page url="…">`, its title, `</page>`), which the line reader counted as
+left out, dropping its group. A sanitized fixture of that shape, with invented
+identities, reproduced it before the fix: `ready`, five links, one skipped,
+partial, no Recovery group. `0.30.1-setup-preview.3` accepts only that exact
+three-line shape at one tab depth. New tests cover it with tabs and entities,
+and as negatives: blank lines, no title, markup in the title, a nested body
+(not read), a close at another depth, an extra attribute, no URL, a database
+tag, a list bullet, an unclosed tag (later section kept), an unsafe URL, a code
+fence, a quotation and prose. With Node 22.22.3 and Python 3.14.5, 160 sidebar
+unit tests and the smoke passed; the rebuilt bundled server returned `ready`
+with six links for the fixture; `validate.py` passed with `--baseline`
+`791f033`, `c6432c5` and `169b129`, as did the maintained rehearsals and
+fixture preparation. The owner's native refresh and readback of all 11 links
+remain the lead's checks.
+
 On 2026-10-23 an end-to-end naming check on the owner's Codex, which runs
 `0.30.1-setup-preview.1` (`2d34543`), found the cached overview still naming the
 old AIOS root. A native refresh from the current model, through the official

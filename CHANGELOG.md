@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.30.1-setup-preview.3 — unreleased preview
+
+Not a release; #58 and #60 holds remain. A second correctness fix for the
+preview's overview reader, found by a native refresh of the current model.
+
+- A standalone child page that the current official Notion fetch writes as
+  three lines (`<page url="…">`, its title, `</page>`) is now a source, like the
+  one-line form. Before, it was counted as left out and its section dropped.
+  Only that exact shape counts: blank lines, markup in the title, a nested
+  body, an extra attribute or a close at another depth are counted as left out,
+  their lines up to the close are not read, and an unclosed tag never hides a
+  later section. Code, quotations and prose stay excluded.
+
 ## 0.30.1-setup-preview.2 — unreleased preview
 
 Not a release; #58 and #60 holds remain. A correctness fix for the preview's

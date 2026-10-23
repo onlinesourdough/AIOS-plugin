@@ -75,14 +75,33 @@ function shortLabel(target) {
   return cleanLabel(url.hostname.replace(/^www\./, '') + (url.pathname === '/' ? '' : url.pathname), 60);
 }
 
+// The current fetch writes a standalone child page as three lines at one tab
+// depth: <page url="…">, its plain title, then </page>. Only that exact shape is
+// a reference. Any other block opened this way is counted once, and its lines up
+// to a close at the same depth before the next heading are skipped rather than
+// read as model structure. An unclosed tag never hides a later section.
+const pageOpen = /^(\t*)<page url="([^"<>]*)">[ \t]*$/;
+function childPage(lines, index) {
+  const open = lines[index].match(pageOpen);
+  if (!open) return null;
+  let end = -1;
+  for (let next = index + 1; next < lines.length && !/^\s*#{1,6}\s/.test(lines[next]); next++) {
+    if (lines[next].replace(/[ \t]+$/, '') === `${open[1]}</page>`) { end = next; break; }
+  }
+  const title = lines[index + 1]?.trim();
+  if (end === index + 2 && title && !/[<>]/.test(title) && !/^(?:`{3,}|~{3,})/.test(title)) return { reference: { title, url: open[2], rest: '' }, next: end };
+  return { reference: null, next: end < 0 ? index : end };
+}
+
 function sectionsOf(content) {
   const close = content.lastIndexOf('</content>'), open = content.indexOf('<content>');
   const body = open < 0 ? content : content.slice(open + 9, close > open ? close : undefined);
   const sections = [], stack = [];
   let current = { path: [], refs: [], others: 0, loose: 0 }, fence = null;
   sections.push(current);
-  for (const raw of body.split(/\r?\n/)) {
-    const line = raw.trim();
+  const lines = body.split(/\r?\n/);
+  for (let index = 0; index < lines.length; index++) {
+    const raw = lines[index], line = raw.trim();
     // Fences are read from the raw line: at most three spaces may precede the
     // marker. Leading tabs are Notion's nesting of child blocks, so a code block
     // closes only at the tab depth it opened with, on a bare run of its own
@@ -95,6 +114,11 @@ function sectionsOf(content) {
     }
     if (marker && !(marker[3][0] === '`' && marker[4].includes('`'))) { fence = { depth: marker[1], run: marker[3] }; continue; }
     if (!line || line.startsWith('>')) continue;
+    const block = childPage(lines, index);
+    if (block) {
+      if (block.reference) current.refs.push(block.reference); else current.loose++;
+      index = block.next; continue;
+    }
     const heading = line.match(/^(#{1,6})\s+(.*?)\s*(?:\{[^{}]*\})?$/);
     if (heading) {
       const level = heading[1].length;

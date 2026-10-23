@@ -58,7 +58,10 @@ at most a short annotation, or starts with a bold role label ending in one
 colon (`**Role:**` or `**Role**:`, or the current Notion fetch's `<b>Role:</b>`
 or `<b>Role</b>:`) followed directly by the reference, then any explanation.
 References are Markdown links, typed mentions such as `<mention-page>`, or the
-generic `<mention url>`, paired or self-closed. User mentions and unknown tags
+generic `<mention url>`, paired or self-closed. A standalone child page may also
+be the current fetch's three lines at one depth: `<page url="…">`, its plain
+title, `</page>`; any other multi-line shape is counted as left out and its
+lines up to that close are not read. User mentions and unknown tags
 are never documents; a label in another HTML element, such as `<strong>`, is
 counted as left out. A labelled link is named by its role, plus the reference's own
 text when it has any. A role label of any length is recognized; only its shown

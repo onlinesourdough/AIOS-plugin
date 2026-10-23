@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { deriveOverview, readOverview, overviewView, LIMITS } from './model-overview.mjs';
-import { ownerModel, teamModel, mixedModel, modelTarget, nativeModel } from './model-fixtures.mjs';
+import { ownerModel, teamModel, mixedModel, modelTarget, nativeModel, childPageModel } from './model-fixtures.mjs';
 
 const page = n => `https://app.notion.com/p/${String(n).padStart(32, '0')}`;
 const titles = overview => overview.groups.map(group => [group.title, group.links.map(link => link.title)]);
@@ -190,6 +190,61 @@ test('user and unknown mention tags are never documents; an unsafe generic menti
   // Typed mentions and Markdown labels keep working beside the native forms.
   const both = deriveOverview(['## Mixed forms', `- **Role A:** <mention-page url="${notion(1)}"/>`, `- <b>Role B:</b> <mention url="${notion(2)}" />`].join('\n'));
   assert.deepEqual(both.groups, [{ title: 'Mixed forms', links: [{ title: 'Role A', target: notion(1) }, { title: 'Role B', target: notion(2) }] }]);
+});
+
+// A standalone child page in the current fetch spans three lines: <page url="…">,
+// its title, </page>. Only that exact shape is a reference; nothing else is read as XML.
+const childPage = (url, ...lines) => [`<page url="${url}">`, ...lines];
+const childRows = (rows, after = []) => ['## Children', ...rows, ...after].join('\n');
+const shown = overview => overview.groups.flatMap(group => group.links.map(link => link.target));
+test('a three-line native child page under a heading is a source; the Home rows stay as before', () => {
+  const overview = deriveOverview(childPageModel);
+  assert.equal(overview.state, 'ready'); assert.equal(overview.partial, false); assert.equal(overview.skipped, 0);
+  assert.deepEqual(overview.groups.map(group => group.title), ['Home', 'Recovery']);
+  assert.equal(overview.groups[0].links.length, 5);
+  assert.deepEqual(overview.groups[1], { title: 'Recovery', links: [{ title: 'Recovery guide', target: page(99) }] });
+  // Tabs from nesting, an entity in the title and a one-line form beside it.
+  const nested = deriveOverview(childRows(['\t<page url="' + notion(1) + '">', '\tNotes &amp; plans', '\t</page>', `<page url="${notion(2)}">One line</page>`]));
+  assert.deepEqual(nested.groups, [{ title: 'Children', links: [{ title: 'Notes & plans', target: notion(1) }, { title: 'One line', target: notion(2) }] }]);
+  assert.equal(nested.skipped, 0); assert.equal(nested.partial, false);
+});
+
+test('any other multi-line page shape is counted as left out, never a route or a parsed body', () => {
+  const valid = [`<page url="${notion(4)}">Example child</page>`];
+  for (const [name, rows] of [
+    ['a blank line before the title', childPage(notion(1), '', 'Title', '</page>')],
+    ['a blank line before the close', childPage(notion(1), 'Title', '', '</page>')],
+    ['no title', childPage(notion(1), '</page>')],
+    ['a title with markup', childPage(notion(1), '<b>Title</b>', '</page>')],
+    ['a nested body', childPage(notion(1), 'Title', `- [Inner](${notion(2)})`, '</page>')],
+    ['a close at another depth', childPage(notion(1), 'Title', '\t</page>')],
+    ['an extra attribute', [`<page url="${notion(1)}" inline="false">`, 'Title', '</page>']],
+    ['no url', ['<page>', 'Title', '</page>']],
+    ['a database tag', [`<database url="${notion(1)}">`, 'Title', '</database>']],
+    ['a list bullet', [`- <page url="${notion(1)}">`, 'Title', '</page>']],
+  ]) {
+    const overview = deriveOverview(childRows(rows, ['## Valid', ...valid]));
+    assert.ok(!shown(overview).includes(notion(1)) && !shown(overview).includes(notion(2)), `${name}: not a route`);
+    assert.deepEqual(overview.groups.map(group => group.title), ['Valid'], `${name}: only the valid section`);
+    assert.ok(overview.partial && overview.skipped >= 1, `${name}: counted, so the overview is not complete`);
+  }
+  // An unclosed tag never swallows the following section.
+  const unclosed = deriveOverview(childRows(childPage(notion(1), 'Title'), ['## Valid', ...valid]));
+  assert.deepEqual(unclosed.groups.map(group => group.title), ['Valid']); assert.equal(unclosed.skipped, 1);
+  const unsafe = deriveOverview(childRows(childPage('javascript:alert(1)', 'Title', '</page>'), ['## Valid', ...valid]));
+  assert.deepEqual(unsafe.groups.map(group => group.title), ['Valid']); assert.equal(unsafe.skipped, 1);
+});
+
+test('a three-line page in a code fence, a quotation or prose is never navigation', () => {
+  for (const text of [
+    ['## Example', '```', `<page url="${notion(1)}">`, 'Title', '</page>', '```'].join('\n'),
+    ['## Example', `> <page url="${notion(1)}">`, '> Title', '> </page>'].join('\n'),
+    ['## Example', `See <page url="${notion(1)}">`, 'Title', '</page> for details.'].join('\n'),
+  ]) {
+    const overview = deriveOverview(text);
+    assert.ok(!shown(overview).includes(notion(1)), text);
+    assert.equal(overview.state, 'unsupported', text);
+  }
 });
 
 test('a role label longer than the display bound is still a route; only its shown name is cut', () => {
